@@ -23,6 +23,18 @@ Unit tests have only been run on macOS so far. Also run `dotnet test PcCheck.sln
 - Inside the VM, C: had only about 1% free.
 - The `--mock` preview of the fix and undo screens has not been seen rendered yet (the VM stopped first). Walk it once: `vm.sh gui --mock`, `invoke FixButton`, `invoke FixStartButton`, `invoke ApproveButton` x3, `invoke GoUndoButton`, `invoke UndoRunButton`, capturing each step.
 
+## v0.1.1 (2026-11-06)
+
+Added at the user's request while they tested a real PC: `APP-PHOTOS`, `SYS-DISPLAY`, and Slack webhook delivery
+(`SlackReportFormatter`, `SlackWebhookSender`; URL from the result screen or `PCCHECK_SLACK_WEBHOOK`, never stored, never in the repo).
+Field reports from that PC, not yet fixed (each needs the user's go-ahead):
+- ST-SUSPECT fails with PowerShellException on a real PC: one bad path aborts the whole batched `Get-AuthenticodeSignature` call. Make it per-file try/catch and chunk the paths.
+- Defender quick scan reported "Errors were encountered when attempting to scan"; show the reason (third-party AV primary, scan already running).
+- TASK-SUSPECT flags signed apps in AppData (Opera GX); require "unsigned" like ST-SUSPECT.
+- Unresolved `PUA:` threats are Critical and force "Format"; lower PUA to High.
+- Several antivirus products installed: proposed `SEC-AV-EXTRA` (pick one keeper, offer the rest for interactive uninstall) and Korean banking security modules; awaiting the user's answers.
+- Bundle results into one zip for transfer.
+
 ## Next tasks, in order
 
 1. **Ask the user: should `RM-TEMP-CLEAN` stay Auto?** The spec says Auto, but in the VM it silently deleted 14 GB without any prompt, which surprised the user. Proposal: make it Confirm and show the size and file count on the card. Do not change it without an answer.
