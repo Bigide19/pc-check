@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "programs": [
+    { "displayNameMatch": "업무 프로그램", "note": "보호할 업무 프로그램 (실제 이름으로 교체)" }
+  ],
+  "paths": [
+    "C:\\Program Files\\Example Member Manager\\"
+  ],
+  "services": [],
+  "tasks": []
+}

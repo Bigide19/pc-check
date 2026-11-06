@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "sampling": { "durationSec": 120, "quickDurationSec": 30, "intervalSec": 2, "topProcesses": 5 },
+  "collectors": { "defaultTimeoutSec": 60, "samplingGraceSec": 30, "defenderQuickScanTimeoutSec": 900 },
+  "severityScore": { "Critical": 40, "High": 15, "Medium": 5, "Low": 1, "Info": 0 },
+  "thresholds": {
+    "diskFreePercent": { "medium": 15, "high": 5 },
+    "ramGb": { "high": 4, "medium": 8 },
+    "cpuAvgPercent": { "medium": 60, "high": 85 },
+    "memAvailableMb": { "high": 1024 },
+    "memCommittedPercent": { "high": 90 },
+    "diskIdlePercent": { "high": 20 },
+    "diskQueueLength": { "high": 2 },
+    "startupCount": { "medium": 15 },
+    "defenderSignatureAgeDays": { "medium": 7 },
+    "lastUpdateAgeDays": { "medium": 60 },
+    "unexpectedShutdowns7d": { "medium": 3 },
+    "tempSizeGb": { "low": 2 },
+    "uptimeDays": { "low": 14 },
+    "recentInstallDays": 30
+  },
+  "verdict": {
+    "formatSuspectHighCount": 5,
+    "formatSoftwareScore": 80,
+    "cleanupSoftwareScore": 10
+  }
+}
