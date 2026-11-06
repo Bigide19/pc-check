@@ -30,6 +30,8 @@ public static class RemediationCatalog
         new("ADV-DISK-CHECK", RiskLevel.AdviceOnly, "디스크 검사", false, "디스크 오류가 기록되어 있습니다. 백업 후 디스크 검사(chkdsk)와 교체를 검토하세요."),
         new("ADV-POWER", RiskLevel.AdviceOnly, "전원, 과열 점검", false, "전원 케이블과 멀티탭, 본체 과열(먼지), 드라이버를 점검하세요."),
         new("ADV-AV-UPDATE", RiskLevel.AdviceOnly, "백신 업데이트", false, "백신 프로그램을 열어 업데이트하세요."),
+        new("ADV-PHOTOS", RiskLevel.AdviceOnly, "사진 앱 복구", false, "설정 > 앱 > 설치된 앱 > 사진 > 고급 옵션에서 복구, 초기화 순서로 해 보세요. 그래도 안 되면 사진 앱을 지우고 Microsoft Store에서 다시 설치하세요. 원인이 그래픽 드라이버나 백신으로 나오면 그쪽을 먼저 고치세요."),
+        new("ADV-GPU-DRIVER", RiskLevel.AdviceOnly, "그래픽 드라이버 재설치", false, "그래픽카드 제조사(Intel, NVIDIA, AMD) 사이트에서 최신 드라이버를 받아 설치하세요. 화면 깜빡임이 함께 있다면 케이블 재연결, 고정 주사율(60Hz), 가변 주사율 끄기도 확인하세요."),
         new("ADV-AV-DUP", RiskLevel.AdviceOnly, "백신 하나만 사용", false, "백신은 하나만 쓰세요. 쓰지 않는 백신을 제거하면 속도가 좋아집니다."),
     ];
 

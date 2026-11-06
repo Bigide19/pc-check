@@ -15,6 +15,7 @@
     "defenderSignatureAgeDays": { "medium": 7 },
     "lastUpdateAgeDays": { "medium": 60 },
     "unexpectedShutdowns7d": { "medium": 3 },
+    "displayDriverResets7d": { "medium": 1 },
     "tempSizeGb": { "low": 2 },
     "uptimeDays": { "low": 14 },
     "recentInstallDays": 30

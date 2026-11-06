@@ -306,3 +306,47 @@ public class CollectorEvaluateTests
         Assert.Empty(MiscCollector.Evaluate(new MiscInfo(Guid.NewGuid(), "균형 조정", 1024, TimeSpan.FromDays(1)), Rules));
     }
 }
+
+public class PhotosAndDisplayTests
+{
+    private static readonly RulesConfig Rules = new();
+    private static AppCrash Crash(string module) => new(DateTimeOffset.Now, "Microsoft.Photos.exe", module, "c0000005");
+
+    [Fact]
+    public void Photos_crash_in_graphics_module_points_to_driver()
+    {
+        var f = Assert.Single(PhotosCollector.Evaluate(new PhotosStatus { Installed = true, Status = "Ok", Crashes = [Crash("igd10iumd64.dll"), Crash("igd10iumd64.dll")] }));
+        Assert.Equal(Severity.High, f.Severity);
+        Assert.Equal("ADV-GPU-DRIVER", f.RemediationId);
+        Assert.Equal("그래픽 드라이버", f.Evidence["likelyCause"]);
+    }
+
+    [Theory]
+    [InlineData("d3d11.dll", "그래픽 드라이버")]
+    [InlineData("aswhook.dll", "백신")]
+    [InlineData("KERNELBASE.dll", null)]
+    public void Crash_module_cause(string module, string? cause) => Assert.Equal(cause, PhotosCollector.CauseOf(module));
+
+    [Fact]
+    public void Photos_package_states()
+    {
+        Assert.Empty(PhotosCollector.Evaluate(new PhotosStatus { Installed = true, Status = "Ok" }));
+        Assert.Equal(Severity.High, PhotosCollector.Evaluate(new PhotosStatus { Installed = true, Status = "Modified" }).Single().Severity);
+        Assert.Equal(Severity.Medium, PhotosCollector.Evaluate(new PhotosStatus { Installed = false }).Single().Severity);
+        Assert.Equal(Severity.Medium, PhotosCollector.Evaluate(new PhotosStatus { Installed = true, Status = "Ok", ActivationFailures = 2 }).Single().Severity);
+    }
+
+    [Fact]
+    public void Headless_system_run_is_not_reported_as_missing_when_a_user_has_it() =>
+        Assert.Empty(PhotosCollector.Evaluate(new PhotosStatus { RunningAsSystem = true, Installed = false, InstalledForAnyUser = true, Status = "Ok" }));
+
+    [Fact]
+    public void Display_checks()
+    {
+        var ok = new VideoAdapter("Intel(R) UHD Graphics 630", "31.0.101.2125", "2023-04-01", 0);
+        Assert.Empty(DisplayCollector.Evaluate(new DisplayStatus([ok], 0), Rules));
+        Assert.Equal(Severity.Medium, DisplayCollector.Evaluate(new DisplayStatus([ok], 2), Rules).Single().Severity);
+        Assert.Equal(Severity.High, DisplayCollector.Evaluate(new DisplayStatus([new("Microsoft 기본 디스플레이 어댑터", "10.0", "2006-06-21", 0)], 0), Rules).Single().Severity);
+        Assert.Equal(Severity.High, DisplayCollector.Evaluate(new DisplayStatus([ok with { ErrorCode = 43 }], 0), Rules).Single().Severity);
+    }
+}
