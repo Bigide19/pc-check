@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PcCheck.Analysis/PcCheck.Analysis.csproj" />
+    <Project Path="src/PcCheck.App/PcCheck.App.csproj" />
+    <Project Path="src/PcCheck.Collectors/PcCheck.Collectors.csproj" />
+    <Project Path="src/PcCheck.Core/PcCheck.Core.csproj" />
+    <Project Path="src/PcCheck.Remediation/PcCheck.Remediation.csproj" />
+    <Project Path="src/PcCheck.Report/PcCheck.Report.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PcCheck.Analysis.Tests/PcCheck.Analysis.Tests.csproj" />
+    <Project Path="tests/PcCheck.Collectors.Tests/PcCheck.Collectors.Tests.csproj" />
+    <Project Path="tests/PcCheck.Core.Tests/PcCheck.Core.Tests.csproj" />
+    <Project Path="tests/PcCheck.Remediation.Tests/PcCheck.Remediation.Tests.csproj" />
+  </Folder>
+</Solution>
