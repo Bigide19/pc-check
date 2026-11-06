@@ -36,17 +36,29 @@ public sealed class StartupSuspectCollector(StartupSource source, ISignatureVeri
     }
 
     public static IReadOnlyList<Finding> Evaluate(IReadOnlyList<StartupEntry> entries,
-        IReadOnlyDictionary<string, SignatureInfo> sigs, ProtectConfig protect) =>
-        entries
+        IReadOnlyDictionary<string, SignatureInfo> sigs, ProtectConfig protect)
+    {
+        var candidates = entries
             .Where(e => e.Enabled && PathRules.IsUserWritable(e.TargetPath))
             .Where(e => !protect.IsProtectedPath(e.TargetPath) && !protect.IsProtectedProgram(e.Name))
-            .Select(e => (e, sig: e.TargetPath is not null && sigs.TryGetValue(e.TargetPath, out var s) ? s : null))
-            .Where(x => x.sig is null || !x.sig.IsValid)
+            .Select(e => (e, sig: e.TargetPath is not null && sigs.TryGetValue(e.TargetPath, out var s) ? s : new SignatureInfo("Unknown", null)))
+            .ToList();
+
+        var findings = candidates.Where(x => x.sig.IsUnsigned)
             .Select(x => F.Make("ST-SUSPECT", Categories.Startup, Severity.High, $"의심 시작 항목: {x.e.Name}",
                 "서명이 없는 파일이 사용자가 쓸 수 있는 경로에서 부팅 때마다 실행됩니다.", "RM-STARTUP-DISABLE",
                 ("target", x.e.DisplayTarget), ("name", x.e.Name), ("command", x.e.Command), ("path", x.e.TargetPath),
-                ("signature", x.sig?.Status ?? "Unknown"), ("approvedKey", x.e.ApprovedKey), ("approvedValue", x.e.ApprovedValue)))
+                ("signature", x.sig.Status), ("approvedKey", x.e.ApprovedKey), ("approvedValue", x.e.ApprovedValue)))
             .ToList();
+
+        // Counting these as unsigned would inflate the suspect count that drives a "Format" verdict.
+        var unknown = candidates.Where(x => x.sig.IsUnknown).ToList();
+        if (unknown.Count > 0)
+            findings.Add(F.Make("ST-SUSPECT", Categories.Startup, Severity.Info, $"서명을 확인하지 못한 시작 항목 {unknown.Count}개",
+                "사용자 폴더에서 실행되는 시작 항목이지만 파일을 읽지 못해 서명 여부를 판단하지 못했습니다. 아는 프로그램인지 직접 확인하세요.", null,
+                unknown.Take(20).Select((x, i) => ($"{i + 1:00}", (object?)$"{x.e.Name} = {x.e.TargetPath}{(x.sig.Error is null ? "" : $" ({x.sig.Error})")}")).ToArray()));
+        return findings;
+    }
 }
 
 public sealed record ServiceEntry(string Name, string DisplayName, string PathName, string? TargetPath, string State);
@@ -71,8 +83,8 @@ public sealed class ServiceSuspectCollector(IWmi wmi, ISignatureVerifier signatu
             .Where(s => s.TargetPath is not null && !protect.IsProtectedService(s.Name) && !protect.IsProtectedPath(s.TargetPath)
                         && !protect.IsProtectedProgram(s.DisplayName))
             .Select(s => (s, sig: sigs.TryGetValue(s.TargetPath!, out var v) ? v : null))
-            // A missing binary is a broken service, not a running threat.
-            .Where(x => x.sig is { IsValid: false, IsMissing: false })
+            // A missing binary is a broken service, not a running threat; an unreadable one is not known to be unsigned.
+            .Where(x => x.sig is { IsUnsigned: true })
             .Select(x => F.Make("SVC-SUSPECT", Categories.Startup, Severity.High, $"서명 없는 자동 시작 서비스: {x.s.DisplayName}",
                 "디지털 서명이 없는 서비스가 부팅 때 자동으로 시작됩니다.", "RM-SERVICE-DISABLE",
                 ("service", x.s.Name), ("displayName", x.s.DisplayName), ("path", x.s.PathName),

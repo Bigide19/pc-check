@@ -350,3 +350,53 @@ public class PhotosAndDisplayTests
         Assert.Equal(Severity.High, DisplayCollector.Evaluate(new DisplayStatus([ok with { ErrorCode = 43 }], 0), Rules).Single().Severity);
     }
 }
+
+public class SignatureRobustnessTests
+{
+    private sealed class FakePs(Func<string, string> respond) : IPowerShell
+    {
+        public List<string> Scripts { get; } = [];
+        public Task<System.Text.Json.JsonElement> RunJsonAsync(string script, CancellationToken ct)
+        {
+            Scripts.Add(script);
+            return Task.FromResult(System.Text.Json.JsonDocument.Parse(respond(script)).RootElement);
+        }
+    }
+
+    [Fact]
+    public async Task Verifier_chunks_paths_and_keeps_per_file_errors()
+    {
+        var paths = Enumerable.Range(0, 95).Select(i => $@"C:\Users\a\AppData\Local\app{i}\a.exe").ToList();
+        var ps = new FakePs(script =>
+        {
+            var json = System.Text.RegularExpressions.Regex.Match(script, @"@\('(.*)' \| ConvertFrom-Json\)").Groups[1].Value.Replace("''", "'");
+            var batch = System.Text.Json.JsonSerializer.Deserialize<string[]>(json)!;
+            return System.Text.Json.JsonSerializer.Serialize(batch.Select((p, i) =>
+                new { Path = p, Status = i == 0 ? "Error" : "Valid", Signer = (string?)null, Error = i == 0 ? "Access denied" : null }));
+        });
+        var result = await new SignatureVerifier(ps).VerifyAsync(paths, default);
+        Assert.Equal(3, ps.Scripts.Count);
+        Assert.Equal(95, result.Count);
+        Assert.True(result[paths[0]].IsUnknown);
+        Assert.Equal("Access denied", result[paths[0]].Error);
+        Assert.True(result[paths[1]].IsValid);
+    }
+
+    [Fact]
+    public void Unreadable_startup_file_is_info_not_a_suspect()
+    {
+        var entry = new StartupEntry { Location = "HKCU", Name = "StoreApp", Command = "x", TargetPath = @"C:\Users\a\AppData\Local\x\a.exe" };
+        var f = Assert.Single(StartupSuspectCollector.Evaluate([entry],
+            new Dictionary<string, SignatureInfo> { [entry.TargetPath!] = new("Error", null, "Access denied") }, new ProtectConfig()));
+        Assert.Equal(Severity.Info, f.Severity);
+        Assert.Contains("Access denied", f.Evidence["01"]);
+    }
+
+    [Fact]
+    public void Clixml_error_text_is_decoded()
+    {
+        const string clixml = "#< CLIXML\r\n<Objs Version=\"1.1.0.1\" xmlns=\"http://schemas.microsoft.com/powershell/2004/04\"><S S=\"Error\">Get-AuthenticodeSignature : 액세스가 거부되었습니다._x000D__x000A_</S><S S=\"Error\">위치 줄:5 문자:12_x000D__x000A_</S></Objs>";
+        Assert.Equal("Get-AuthenticodeSignature : 액세스가 거부되었습니다.", PowerShellRunner.ErrorText(clixml));
+        Assert.Equal("plain failure", PowerShellRunner.ErrorText("plain failure\n+ CategoryInfo"));
+    }
+}

@@ -50,7 +50,7 @@ public sealed class PowerShellRunner : IPowerShell
 
         var output = (await stdout).Trim();
         if (p.ExitCode != 0)
-            throw new PowerShellException(FirstLine(await stderr) ?? $"exit code {p.ExitCode}");
+            throw new PowerShellException(ErrorText(await stderr) ?? $"exit code {p.ExitCode}");
         if (output.Length == 0) return JsonDocument.Parse("[]").RootElement;
 
         var root = JsonDocument.Parse(output).RootElement;
@@ -58,8 +58,20 @@ public sealed class PowerShellRunner : IPowerShell
         return root.ValueKind == JsonValueKind.Array ? root : JsonDocument.Parse($"[{output}]").RootElement;
     }
 
-    private static string? FirstLine(string s) =>
-        s.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).FirstOrDefault();
+    public static string? ErrorText(string stderr)
+    {
+        var text = stderr.Trim();
+        if (text.StartsWith("#< CLIXML", StringComparison.Ordinal))
+        {
+            var parts = System.Text.RegularExpressions.Regex.Matches(text, "<S S=\"Error\">(.*?)</S>", System.Text.RegularExpressions.RegexOptions.Singleline)
+                .Select(m => System.Net.WebUtility.HtmlDecode(m.Groups[1].Value).Replace("_x000D_", "").Replace("_x000A_", "\n"));
+            text = string.Concat(parts);
+        }
+        var lines = text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(l => !l.StartsWith("+ ", StringComparison.Ordinal) && !l.StartsWith("위치 ", StringComparison.Ordinal) && !l.StartsWith("At line", StringComparison.Ordinal))
+            .ToList();
+        return lines.Count == 0 ? null : string.Join(" ", lines.Take(2));
+    }
 }
 
 public static class Json
