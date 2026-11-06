@@ -28,7 +28,7 @@ Unit tests have only been run on macOS so far. Also run `dotnet test PcCheck.sln
 Added at the user's request while they tested a real PC: `APP-PHOTOS`, `SYS-DISPLAY`, and Slack webhook delivery
 (`SlackReportFormatter`, `SlackWebhookSender`; URL from the result screen or `PCCHECK_SLACK_WEBHOOK`, never stored, never in the repo).
 Field reports from that PC, not yet fixed (each needs the user's go-ahead):
-- ST-SUSPECT fails with PowerShellException on a real PC: one bad path aborts the whole batched `Get-AuthenticodeSignature` call. Make it per-file try/catch and chunk the paths.
+- ST-SUSPECT failed with PowerShellException on a real PC. v0.1.2 made the signature check per-file and chunked, and decodes PowerShell's CLIXML stderr so the real message shows. Root cause on that PC is still unconfirmed: if it fails again, the collector error now carries the actual text.
 - Defender quick scan reported "Errors were encountered when attempting to scan"; show the reason (third-party AV primary, scan already running).
 - TASK-SUSPECT flags signed apps in AppData (Opera GX); require "unsigned" like ST-SUSPECT.
 - Unresolved `PUA:` threats are Critical and force "Format"; lower PUA to High.
