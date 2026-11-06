@@ -1,0 +1,37 @@
+<Window x:Class="PcCheck.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:PcCheck.App.ViewModels"
+        xmlns:views="clr-namespace:PcCheck.App.Views"
+        Title="{Binding Title}" Width="1120" Height="780" MinWidth="900" MinHeight="620"
+        WindowStartupLocation="CenterScreen" Icon="Assets/pitstop.ico"
+        FontFamily="{StaticResource UiFont}" FontSize="14"
+        Background="{StaticResource BgBrush}" Foreground="{StaticResource TextBrush}"
+        UseLayoutRounding="True" TextOptions.TextFormattingMode="Display">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:StartViewModel}"><views:StartView/></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ProgressViewModel}"><views:ProgressView/></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ResultViewModel}"><views:ResultView/></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:FixViewModel}"><views:FixView/></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:UndoViewModel}"><views:UndoView/></DataTemplate>
+    </Window.Resources>
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Background="{StaticResource BrandSurfaceBrush}" Padding="32,12"
+                BorderBrush="{StaticResource BrandBrush}" BorderThickness="0,0,0,3">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Viewbox Width="27" Height="25" Margin="0,0,12,0" AutomationProperties.Name="Pitstop 심볼">
+                        <Canvas Width="28" Height="26">
+                            <Path Fill="{StaticResource BrandBrush}" Data="M 9,0 L 17,0 L 8,26 L 0,26 Z"/>
+                            <Path Fill="White" Data="M 20,0 L 28,0 L 19,26 L 11,26 Z"/>
+                        </Canvas>
+                    </Viewbox>
+                    <TextBlock Text="pitstop" FontFamily="Segoe UI" FontSize="26" FontWeight="Bold" Foreground="White"/>
+                </StackPanel>
+                <TextBlock Text="PC 진단 및 정비" Foreground="#CDD0D1" FontSize="12"
+                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+        <ContentControl Content="{Binding Page}" Focusable="False"/>
+    </DockPanel>
+</Window>

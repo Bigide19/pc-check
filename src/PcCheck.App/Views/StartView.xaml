@@ -1,0 +1,74 @@
+<UserControl x:Class="PcCheck.App.Views.StartView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DockPanel>
+        <Border DockPanel.Dock="Bottom" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="40,14">
+            <StackPanel Orientation="Horizontal" MaxWidth="820">
+                <Button Content="점검 시작" AutomationProperties.AutomationId="StartButton" Style="{StaticResource PrimaryButton}" Command="{Binding StartCommand}"/>
+                <Button Content="이전 조치 되돌리기" Style="{StaticResource SecondaryButton}" Margin="12,0,0,0" Command="{Binding UndoCommand}"
+                        Visibility="{Binding CanUndo, Converter={StaticResource BoolToVisibility}}" AutomationProperties.AutomationId="UndoButton"/>
+            </StackPanel>
+        </Border>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="40,28" MaxWidth="820">
+            <TextBlock Text="다시 쾌적하게, PC 점검" Style="{StaticResource H1}"/>
+            <TextBlock Margin="0,6,0,24" Style="{StaticResource Muted}" TextWrapping="Wrap"
+                       Text="느려진 원인을 진단하고 정리로 충분한지, 포맷이나 하드웨어 교체가 필요한지 판정합니다. 진단 중에는 시스템을 바꾸지 않습니다."/>
+
+            <ItemsControl ItemsSource="{Binding Warnings}" Margin="0,0,0,16">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="{StaticResource WarnBgBrush}" BorderBrush="#D4A72C" BorderThickness="1"
+                                CornerRadius="6" Padding="14,10" Margin="0,0,0,8">
+                            <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Border Style="{StaticResource Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="점검할 PC" Style="{StaticResource H2}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="110"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="28"/><RowDefinition Height="28"/><RowDefinition Height="28"/>
+                            <RowDefinition Height="28"/><RowDefinition Height="28"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="PC 이름" Style="{StaticResource Muted}" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Machine.Name}" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="1" Text="운영체제" Style="{StaticResource Muted}" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Machine.Os}" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="2" Text="CPU" Style="{StaticResource Muted}" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Machine.Cpu}" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="3" Text="메모리" Style="{StaticResource Muted}" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Machine.RamGb, StringFormat={}{0} GB}" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="4" Text="실행 계정" Style="{StaticResource Muted}" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Machine.User}" VerticalAlignment="Center"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Margin="0,0,0,24">
+                <StackPanel>
+                    <TextBlock Text="측정 방식" Style="{StaticResource H2}"/>
+                    <RadioButton GroupName="Duration" Content="{Binding DurationLabel}" IsChecked="True"/>
+                    <RadioButton GroupName="Duration" Content="{Binding QuickLabel}" IsChecked="{Binding Quick}" AutomationProperties.AutomationId="QuickRadio"/>
+                    <TextBlock Margin="22,0,0,14" Style="{StaticResource Muted}" TextWrapping="Wrap"
+                               Text="평소 사용하는 프로그램(업무 프로그램 등)을 띄운 상태에서 측정해야 실제 부하가 잡힙니다."/>
+                    <TextBlock Text="Defender 검사" FontWeight="SemiBold" Margin="0,4,0,8"/>
+                    <RadioButton GroupName="Defender" Content="검사 안 함 (위협 이력만 확인)" IsChecked="True"/>
+                    <RadioButton GroupName="Defender" Content="빠른 검사 (몇 분)" IsChecked="{Binding DefenderQuick}"/>
+                    <RadioButton GroupName="Defender" Content="전체 검사 (수십 분 이상)" IsChecked="{Binding DefenderFull}"/>
+                    <TextBlock Margin="22,0,0,0" Style="{StaticResource Muted}" TextWrapping="Wrap"
+                               Text="위협이 발견되면 Defender가 자동으로 격리할 수 있습니다."/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>
