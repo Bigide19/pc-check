@@ -38,8 +38,13 @@ public sealed class VerdictBrushConverter : IValueConverter
 
 public sealed class NullToCollapsedConverter : IValueConverter
 {
-    public object Convert(object? value, Type targetType, object parameter, CultureInfo culture) =>
-        value is null || value as string == "" ? Visibility.Collapsed : Visibility.Visible;
+    // parameter "invert" shows the element only when the value is empty.
+    public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
+    {
+        var empty = value is null || value as string == "";
+        if (parameter as string == "invert") empty = !empty;
+        return empty ? Visibility.Collapsed : Visibility.Visible;
+    }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();
 }

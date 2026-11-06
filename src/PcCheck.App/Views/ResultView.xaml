@@ -223,12 +223,51 @@
             </TabItem>
         </TabControl>
 
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+        <Grid Grid.Row="3" Margin="0,14,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MinWidth="220"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid VerticalAlignment="Center" Margin="0,0,12,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid>
+                    <TextBox Text="{Binding SlackUrl, UpdateSourceTrigger=PropertyChanged}" FontFamily="{StaticResource MonoFont}" FontSize="12"
+                             Padding="8,7" VerticalContentAlignment="Center" BorderBrush="{StaticResource BorderBrush}"
+                             AutomationProperties.AutomationId="SlackUrlBox" AutomationProperties.Name="Slack 웹훅 주소"/>
+                    <TextBlock Text="Slack 웹훅 주소 붙여 넣기 (저장하지 않음)" Style="{StaticResource Muted}" FontSize="12" Margin="10,0,0,0"
+                               VerticalAlignment="Center" IsHitTestVisible="False"
+                               Visibility="{Binding SlackUrl, Converter={StaticResource NullToCollapsed}, ConverterParameter=invert}"/>
+                </Grid>
+                <Button Grid.Column="1" Content="Slack으로 보내기" Style="{StaticResource SecondaryButton}" Command="{Binding SendSlackCommand}"
+                        AutomationProperties.AutomationId="SlackSendButton"/>
+                <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding SlackStatus}" FontSize="12" Margin="2,4,0,0" TextWrapping="Wrap"
+                           Visibility="{Binding SlackStatus, Converter={StaticResource NullToCollapsed}}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SlackFailed}" Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource CriticalBrush}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
             <Button Content="리포트 열기" Style="{StaticResource SecondaryButton}" Command="{Binding OpenReportCommand}" IsEnabled="{Binding CanOpenReport}" AutomationProperties.AutomationId="OpenReportButton"/>
             <Button Content="결과 폴더 열기" Style="{StaticResource SecondaryButton}" Command="{Binding OpenFolderCommand}"/>
             <Button Content="새 점검" Style="{StaticResource SecondaryButton}" Command="{Binding NewScanCommand}" AutomationProperties.AutomationId="NewScanButton"/>
             <Button Content="조치 진행" Style="{StaticResource PrimaryButton}" Margin="8,0,0,0" Padding="22,9" FontSize="14" Command="{Binding FixCommand}"
                     IsEnabled="{Binding CanFix}" AutomationProperties.AutomationId="FixButton"/>
         </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>

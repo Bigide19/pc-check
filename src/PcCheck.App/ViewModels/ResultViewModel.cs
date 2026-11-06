@@ -1,3 +1,4 @@
+using System.Net.Http;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -113,6 +114,40 @@ public sealed partial class ResultViewModel : ObservableObject
 
     [RelayCommand]
     private void Fix() => _main.ShowFix(_outcome);
+
+    // Kept in memory only; prefilled from the environment so a technician's machine can skip pasting.
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SendSlackCommand))] private string _slackUrl =
+        Environment.GetEnvironmentVariable(SlackWebhookSender.EnvVar) ?? "";
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SendSlackCommand))] private bool _isSendingSlack;
+    [ObservableProperty] private string? _slackStatus;
+    [ObservableProperty] private bool _slackFailed;
+
+    private bool CanSendSlack() => !IsSendingSlack && SlackWebhookSender.IsValidUrl(SlackUrl);
+
+    [RelayCommand(CanExecute = nameof(CanSendSlack))]
+    private async Task SendSlackAsync()
+    {
+        IsSendingSlack = true;
+        SlackFailed = false;
+        var messages = SlackReportFormatter.Format(Report);
+        SlackStatus = $"보내는 중 (0/{messages.Count})";
+        try
+        {
+            using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
+            var progress = new Progress<int>(n => SlackStatus = $"보내는 중 ({n}/{messages.Count})");
+            await new SlackWebhookSender(http).SendAsync(SlackUrl, messages, progress, CancellationToken.None);
+            SlackStatus = $"보냈습니다 (메시지 {messages.Count}개)";
+        }
+        catch (Exception ex) when (ex is ArgumentException or HttpRequestException or TaskCanceledException)
+        {
+            SlackFailed = true;
+            SlackStatus = ex is TaskCanceledException ? "Slack이 응답하지 않습니다. 인터넷 연결을 확인하세요." : ex.Message;
+        }
+        finally
+        {
+            IsSendingSlack = false;
+        }
+    }
 
     private static void Shell(string path) => Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
 }

@@ -1,7 +1,9 @@
+using System.Net.Http;
 using System.Windows;
 using PcCheck.App.Services;
 using PcCheck.App.ViewModels;
 using PcCheck.Core;
+using PcCheck.Report;
 
 namespace PcCheck.App;
 
@@ -31,8 +33,22 @@ public partial class App : Application
         var options = new ScanOptions(args.Contains("--quick"), defender, args.Contains("--vt"));
         try
         {
-            await new ScanPipeline().RunAsync(options, null, null, CancellationToken.None);
-            return 0;
+            var outcome = await new ScanPipeline().RunAsync(options, null, null, CancellationToken.None);
+            if (!args.Contains("--slack")) return 0;
+
+            // The webhook URL is a secret: environment only, never an argument (visible in process lists) or a file.
+            var url = Environment.GetEnvironmentVariable(SlackWebhookSender.EnvVar);
+            try
+            {
+                using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
+                await new SlackWebhookSender(http).SendAsync(url ?? "", SlackReportFormatter.Format(outcome.Report), null, CancellationToken.None);
+                return 0;
+            }
+            catch (Exception ex) when (ex is ArgumentException or HttpRequestException or TaskCanceledException)
+            {
+                await File.WriteAllTextAsync(Path.Combine(outcome.OutputDir, "slack-error.txt"), ex.Message);
+                return 3;
+            }
         }
         catch (Exception ex)
         {

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\PcCheck.Analysis\PcCheck.Analysis.csproj" />
     <ProjectReference Include="..\..\src\PcCheck.Core\PcCheck.Core.csproj" />
+    <ProjectReference Include="..\..\src\PcCheck.Report\PcCheck.Report.csproj" />
   </ItemGroup>
 
 </Project>
