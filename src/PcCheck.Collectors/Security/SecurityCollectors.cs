@@ -106,7 +106,11 @@ public sealed record ThreatDetection(string ThreatId, string Name, int StatusId,
     public bool Unresolved => UnresolvedStatus.Contains(StatusId) || ActionSuccess == false || IsActive == true;
 }
 
-public sealed record ThreatReport(IReadOnlyList<ThreatDetection> Detections, DefenderScanType ScanType, string? ScanError);
+public sealed record ThreatReport(IReadOnlyList<ThreatDetection> Detections, DefenderScanType ScanType, string? ScanError)
+{
+    public string? RunningMode { get; init; }
+    public IReadOnlyList<string> OtherAntivirus { get; init; } = [];
+}
 
 public sealed class ThreatCollector(IPowerShell ps, TimeProvider? clock = null) : ICollector
 {
@@ -135,7 +139,11 @@ public sealed class ThreatCollector(IPowerShell ps, TimeProvider? clock = null) 
             Resources = [string](@($_.Resources) -join '; ')
           }
         })
-        [pscustomobject]@{ ScanError = $scanError; Detections = $det }
+        # Why a scan can be refused: another antivirus is primary and Defender sits in passive mode.
+        $mode = [string](Get-MpComputerStatus).AMRunningMode
+        $others = @(Get-CimInstance -Namespace root\SecurityCenter2 -ClassName AntiVirusProduct -ErrorAction SilentlyContinue |
+          Where-Object { $_.displayName -notmatch 'Defender' -and ((([int]$_.productState) -shr 12) -band 0xF) -eq 1 } | ForEach-Object { [string]$_.displayName })
+        [pscustomobject]@{ ScanError = $scanError; Detections = $det; RunningMode = $mode; OtherAv = $others }
         """;
 
     public async Task<CollectorResult> CollectAsync(CollectContext ctx, CancellationToken ct)
@@ -149,7 +157,11 @@ public sealed class ThreatCollector(IPowerShell ps, TimeProvider? clock = null) 
                 x.Bool("ActionSuccess"), x.Bool("IsActive"), x.Date("Detected"), x.Str("Resources") ?? "")).ToList()
             : [];
         var now = (clock ?? TimeProvider.System).GetLocalNow();
-        return CollectorResult.Ok(Id, Evaluate(new ThreatReport(dets, scan, r.Str("ScanError")), now));
+        var others = r.TryGetProperty("OtherAv", out var o) && o.ValueKind == JsonValueKind.Array
+            ? o.EnumerateArray().Select(x => x.GetString() ?? "").Where(x => x.Length > 0).ToList()
+            : r.Str("OtherAv") is { Length: > 0 } one ? [one] : [];
+        var report = new ThreatReport(dets, scan, r.Str("ScanError")) { RunningMode = r.Str("RunningMode"), OtherAntivirus = others };
+        return CollectorResult.Ok(Id, Evaluate(report, now));
     }
 
     public static IReadOnlyList<Finding> Evaluate(ThreatReport report, DateTimeOffset now)
@@ -174,9 +186,19 @@ public sealed class ThreatCollector(IPowerShell ps, TimeProvider? clock = null) 
                 "Defender가 최근 위협을 찾아 처리했습니다. 같은 경로로 다시 들어오지 않는지 확인하세요.", null,
                 recent.Select((t, i) => ($"{i + 1:00}", (object?)$"{Name(t)} ({t.Detected:yyyy-MM-dd}) {t.Resources}")).ToArray()));
 
-        if (report.ScanError is not null && findings.Count == 0)
-            findings.Add(F.Make("SEC-THREAT", Categories.Security, Severity.Info, "Defender 검사를 실행하지 못함",
-                report.ScanError, null, ("scan", report.ScanType)));
+        if (report.ScanError is not null)
+        {
+            var passive = report.RunningMode?.Contains("Passive", StringComparison.OrdinalIgnoreCase) == true;
+            var other = string.Join(", ", report.OtherAntivirus);
+            var detail = report.OtherAntivirus.Count > 0
+                ? $"다른 백신({other})이 주 백신이라 Defender가 검사를 거부했습니다. 정상적인 동작입니다. 바이러스 검사는 {other}에서 하세요."
+                : passive
+                    ? "Defender가 대기(수동) 모드라 검사를 거부했습니다. 다른 백신이 주 백신으로 설정되어 있을 수 있습니다."
+                    : $"Defender가 검사를 시작하지 못했습니다. Windows 보안 앱에서 직접 검사해 보세요. ({report.ScanError})";
+            findings.Add(F.Make("SEC-THREAT", Categories.Security, Severity.Info, "Defender 검사를 실행하지 못함", detail, null,
+                ("scan", report.ScanType), ("defenderMode", report.RunningMode), ("otherAntivirus", other.Length > 0 ? other : null),
+                ("error", report.ScanError)));
+        }
         return findings;
     }
 
