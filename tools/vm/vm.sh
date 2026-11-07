@@ -26,6 +26,8 @@ case "${1:-}" in
   deploy)
     ps "Stop-Process -Name PcCheck -Force -ErrorAction SilentlyContinue; New-Item -ItemType Directory -Force '$TOOLS_DIR' | Out-Null"
     prlctl exec "$VM" --current-user cmd /c "robocopy $REPO_SHARE\\publish $APP_DIR /MIR /XD PcCheck_* /NJH /NJS /NDL /NFL" >/dev/null || true
+    # robocopy can fail silently (share not mounted yet); show what actually landed.
+    ps "'deployed PcCheck.exe ' + (Get-Item '$APP_DIR\\PcCheck.exe').VersionInfo.ProductVersion"
     # Base64 so no quoting survives the trip; scripts must stay ASCII (PowerShell 5.1 reads BOM-less files as ANSI).
     for f in "$(dirname "$0")"/ui.ps1 "$(dirname "$0")"/fixtest/*.ps1; do
       b64=$(base64 < "$f" | tr -d '\n')
