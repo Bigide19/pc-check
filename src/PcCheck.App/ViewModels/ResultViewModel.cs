@@ -106,6 +106,15 @@ public sealed partial class ResultViewModel : ObservableObject
     [RelayCommand]
     private void OpenFolder() => Shell(OutputDir);
 
+    // Rebuilt at click time so actions.json from a later fix is included; explorer then highlights the file.
+    [RelayCommand]
+    private void OpenBundle()
+    {
+        var zip = ResultBundle.Create(OutputDir);
+        if (zip is null) { Shell(OutputDir); return; }
+        Process.Start(new ProcessStartInfo("explorer.exe", $"/select,\"{zip}\"") { UseShellExecute = true });
+    }
+
     [RelayCommand]
     private void NewScan() => _main.ShowStart();
 

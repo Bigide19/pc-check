@@ -16,6 +16,7 @@ public enum ScanStage { Config, Collect, Analyze, Save }
 public sealed class ScanPipeline
 {
     public static string BaseDir => AppContext.BaseDirectory;
+    public static string ToolVersion => typeof(ScanPipeline).Assembly.GetName().Version?.ToString(3) ?? "";
     public static string ConfigDir => Path.Combine(BaseDir, "config");
 
     public IReadOnlyList<ICollector> Collectors { get; } = CollectorCatalog.CreateAll();
@@ -32,6 +33,7 @@ public sealed class ScanPipeline
         onStage?.Invoke(ScanStage.Config);
         var startedAt = DateTimeOffset.Now;
         var outputDir = CreateOutputDir(startedAt);
+        // Disposed early (before bundling) as well; Serilog's Dispose is safe to repeat.
         using var log = new LoggerConfiguration()
             .MinimumLevel.Debug()
             .WriteTo.File(Path.Combine(outputDir, "pccheck.log"))
@@ -67,6 +69,7 @@ public sealed class ScanPipeline
 
         var report = new ScanReport
         {
+            ToolVersion = ToolVersion,
             ScannedAt = TruncateToSeconds(startedAt),
             // Only what was actually sampled; 0 when the resource collectors did not finish.
             SamplingSec = results.Any(r => r.CollectorId == "RES-CPU" && r.Status == CollectorStatus.Ok) ? (int)ctx.SamplingDuration.TotalSeconds : 0,
@@ -82,6 +85,8 @@ public sealed class ScanPipeline
         var path = await FindingsJsonWriter.WriteAsync(report, outputDir, ct);
         var html = await HtmlReportRenderer.WriteAsync(report, outputDir, ct);
         log.Information("Wrote {Path}, {Html}", path, html);
+        log.Dispose();
+        ResultBundle.Create(outputDir);
         return new ScanOutcome(report, outputDir);
     }
 

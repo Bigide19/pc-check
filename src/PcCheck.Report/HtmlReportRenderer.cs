@@ -82,6 +82,7 @@ public static class HtmlReportRenderer
             <span class="muted">실행 계정</span><span>{H(m.User)}{(m.IsAdmin ? "" : " (관리자 아님)")}</span>
             <span class="muted">실행 일시</span><span>{r.ScannedAt:yyyy-MM-dd HH:mm}</span>
             <span class="muted">샘플링</span><span>{(r.SamplingSec > 0 ? $"{r.SamplingSec}초" : "측정 안 함")}</span>
+            <span class="muted">툴 버전</span><span>pitstop {H(r.ToolVersion)}</span>
             </div></div>
             """);
 

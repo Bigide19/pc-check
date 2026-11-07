@@ -30,7 +30,7 @@ public static class SlackReportFormatter
     {
         var m = r.Machine;
         var head = new StringBuilder();
-        head.AppendLine($"*pitstop 점검 결과*{(string.IsNullOrWhiteSpace(label) ? "" : $" ({E(label)})")}");
+        head.AppendLine($"*pitstop {E(r.ToolVersion)} 점검 결과*{(string.IsNullOrWhiteSpace(label) ? "" : $" ({E(label)})")}");
         head.AppendLine($"*{E(Labels.Of(r.Verdict.Primary))}*{(r.Verdict.Secondary is { } s ? $"  (보조 판정: {E(Labels.Of(s))})" : "")}");
         head.AppendLine(E(Labels.DescribeVerdict(r.Verdict.Primary)));
         head.AppendLine($"근거: `{(r.Verdict.Basis.Count > 0 ? string.Join(", ", r.Verdict.Basis) : "없음")}`"

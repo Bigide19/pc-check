@@ -4,6 +4,7 @@ namespace PcCheck.Core;
 public sealed record ScanReport
 {
     public int Version { get; init; } = 1;
+    public string ToolVersion { get; init; } = "";
     public DateTimeOffset ScannedAt { get; init; }
     public int SamplingSec { get; init; }
     public required MachineInfo Machine { get; init; }

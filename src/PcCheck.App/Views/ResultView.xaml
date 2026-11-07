@@ -263,7 +263,8 @@
             </Grid>
         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
             <Button Content="리포트 열기" Style="{StaticResource SecondaryButton}" Command="{Binding OpenReportCommand}" IsEnabled="{Binding CanOpenReport}" AutomationProperties.AutomationId="OpenReportButton"/>
-            <Button Content="결과 폴더 열기" Style="{StaticResource SecondaryButton}" Command="{Binding OpenFolderCommand}"/>
+            <Button Content="결과 묶음(zip)" Style="{StaticResource SecondaryButton}" Command="{Binding OpenBundleCommand}"
+                    ToolTip="결과 파일을 zip 하나로 묶고 탐색기에서 보여 줍니다" AutomationProperties.AutomationId="OpenBundleButton"/>
             <Button Content="새 점검" Style="{StaticResource SecondaryButton}" Command="{Binding NewScanCommand}" AutomationProperties.AutomationId="NewScanButton"/>
             <Button Content="조치 진행" Style="{StaticResource PrimaryButton}" Margin="8,0,0,0" Padding="22,9" FontSize="14" Command="{Binding FixCommand}"
                     IsEnabled="{Binding CanFix}" AutomationProperties.AutomationId="FixButton"/>
