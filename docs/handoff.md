@@ -1,6 +1,6 @@
 # Handoff
 
-Last updated 2026-11-07 by Claude Code. v0.1.3 is implemented, tested on macOS and in the Windows VM, and pushed to `main`; it is NOT released yet (latest release is v0.1.2).
+Last updated 2026-11-07 by Claude Code. v0.1.3 is implemented, tested on macOS and in the Windows VM, pushed to `main`, and released (2026-11-07).
 
 ## Stage status
 
@@ -16,7 +16,7 @@ Tests: 108 pass on macOS and in the VM (`dotnet test PcCheck.slnx`, 2026-11-07).
 
 ## Release warning
 
-**v0.1.2 (the current latest release) has a regression**: its signature script wrapped `ConvertFrom-Json` output in `@()`, which PowerShell 5.1 nests, so no path matched and every file came back "unknown". ST-SUSPECT and SVC-SUSPECT therefore never flag anything in v0.1.2. Fixed on `main` in v0.1.3 (assign, then enumerate; and the verifier now fails loudly when no path matches). Release v0.1.3 soon; the user has not ordered it yet.
+**v0.1.2 (the current latest release) has a regression**: its signature script wrapped `ConvertFrom-Json` output in `@()`, which PowerShell 5.1 nests, so no path matched and every file came back "unknown". ST-SUSPECT and SVC-SUSPECT therefore never flag anything in v0.1.2. Fixed in v0.1.3, released 2026-11-07 (assign, then enumerate; and the verifier now fails loudly when no path matches). Anyone still holding a v0.1.2 exe should replace it.
 
 ## Environment state
 
@@ -60,7 +60,7 @@ Held for the user's confirmation (were bundled with the rejected verdict change)
 
 ## Next tasks, in order
 
-1. **Release v0.1.3** once the user says so (see the release warning above). Build locally as before: `dotnet publish src/PcCheck.App -c Release -o publish`, zip `PcCheck.exe` + `config/`, `gh release create` with SHA-256 sums.
+1. **Releases** are built locally: `dotnet publish src/PcCheck.App -c Release -o publish`, zip `PcCheck.exe` + `config/`, `gh release create` with SHA-256 sums. Release only on the user's order.
 2. **Ask: should `RM-TEMP-CLEAN` stay Auto?** In the VM it deleted 14 GB without a prompt and surprised the user. Proposal: Confirm, with size and file count on the card.
 3. **Held items** (see above): TASK-SUSPECT signature check, PUA severity. Ask first.
 4. **Not covered end to end**: `RM-DEFENDER` (Tamper Protection blocks turning real-time protection off for a test) and `RM-UNINSTALL` (interactive vendor uninstallers; exercised only in the `--mock` preview). Say so rather than force it.
