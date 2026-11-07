@@ -38,3 +38,26 @@ public class ScanRunnerTests
         Assert.Equal(CollectorStatus.Failed, results[3].Status);
     }
 }
+
+public class ShippedConfigTests
+{
+    private static string ConfigDir()
+    {
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+        while (dir is not null && !File.Exists(Path.Combine(dir.FullName, "config", "kr-modules.json"))) dir = dir.Parent;
+        return Path.Combine(dir!.FullName, "config");
+    }
+
+    [Fact]
+    public void Shipped_config_loads_cleanly_and_matches_field_paths()
+    {
+        var (config, warnings) = PcCheck.Core.Config.ConfigLoader.Load(ConfigDir());
+        Assert.Empty(warnings);
+        Assert.True(config.KrModules.Modules.Count >= 10);
+        Assert.Equal("touchen-nxkey", config.KrModules.MatchDll("TENXWGuard64_127.dll")?.Id);
+        Assert.Equal("ipinside-lws", config.KrModules.MatchPath(@"C:\Program Files (x86)\IPinside_LWS\I3GProc.exe")?.Id);
+        Assert.Equal("crossex", config.KrModules.MatchPath(@"C:\Program Files (x86)\iniLINE\CrossEX\crossex\CrossEXService.exe")?.Id);
+        Assert.Null(config.KrModules.MatchProgram("KakaoTalk", "Kakao Corp."));
+        Assert.All(config.KrModules.Modules.SelectMany(m => m.KnownIssues), i => Assert.StartsWith("http", i.Source));
+    }
+}

@@ -93,7 +93,7 @@ public class CollectorEvaluateTests
     [Fact]
     public void Series_percentile()
     {
-        var s = Series.Of(Enumerable.Range(1, 100).Select(i => (double)i).ToList());
+        var s = Series.Of(Enumerable.Range(1, 100).Select(i => (double)i).ToList())!;
         Assert.Equal(50.5, s.Avg);
         Assert.Equal(95, s.P95);
     }
@@ -313,13 +313,8 @@ public class PhotosAndDisplayTests
     private static AppCrash Crash(string module) => new(DateTimeOffset.Now, "Microsoft.Photos.exe", module, "c0000005");
 
     [Fact]
-    public void Photos_crash_in_graphics_module_points_to_driver()
-    {
-        var f = Assert.Single(PhotosCollector.Evaluate(new PhotosStatus { Installed = true, Status = "Ok", Crashes = [Crash("igd10iumd64.dll"), Crash("igd10iumd64.dll")] }));
-        Assert.Equal(Severity.High, f.Severity);
-        Assert.Equal("ADV-GPU-DRIVER", f.RemediationId);
-        Assert.Equal("그래픽 드라이버", f.Evidence["likelyCause"]);
-    }
+    public void Photos_leaves_crashes_to_APP_CRASHES() =>
+        Assert.Empty(PhotosCollector.Evaluate(new PhotosStatus { Installed = true, Status = "Ok", Crashes = [Crash("igd10iumd64.dll")] }));
 
     [Theory]
     [InlineData("d3d11.dll", "그래픽 드라이버")]
@@ -369,7 +364,7 @@ public class SignatureRobustnessTests
         var paths = Enumerable.Range(0, 95).Select(i => $@"C:\Users\a\AppData\Local\app{i}\a.exe").ToList();
         var ps = new FakePs(script =>
         {
-            var json = System.Text.RegularExpressions.Regex.Match(script, @"@\('(.*)' \| ConvertFrom-Json\)").Groups[1].Value.Replace("''", "'");
+            var json = System.Text.RegularExpressions.Regex.Match(script, @"\$paths = '(.*)' \| ConvertFrom-Json").Groups[1].Value.Replace("''", "'");
             var batch = System.Text.Json.JsonSerializer.Deserialize<string[]>(json)!;
             return System.Text.Json.JsonSerializer.Serialize(batch.Select((p, i) =>
                 new { Path = p, Status = i == 0 ? "Error" : "Valid", Signer = (string?)null, Error = i == 0 ? "Access denied" : null }));
@@ -398,5 +393,160 @@ public class SignatureRobustnessTests
         const string clixml = "#< CLIXML\r\n<Objs Version=\"1.1.0.1\" xmlns=\"http://schemas.microsoft.com/powershell/2004/04\"><S S=\"Error\">Get-AuthenticodeSignature : 액세스가 거부되었습니다._x000D__x000A_</S><S S=\"Error\">위치 줄:5 문자:12_x000D__x000A_</S></Objs>";
         Assert.Equal("Get-AuthenticodeSignature : 액세스가 거부되었습니다.", PowerShellRunner.ErrorText(clixml));
         Assert.Equal("plain failure", PowerShellRunner.ErrorText("plain failure\n+ CategoryInfo"));
+    }
+}
+
+public class DefenderReasonTests
+{
+    [Fact]
+    public void Refused_scan_names_the_primary_antivirus()
+    {
+        var r = new ThreatReport([], DefenderScanType.Full, "Errors were encountered when attempted to scan your device.")
+        { RunningMode = "Passive Mode", OtherAntivirus = ["ALYac", "Avast Antivirus"] };
+        var f = Assert.Single(ThreatCollector.Evaluate(r, DateTimeOffset.Now));
+        Assert.Equal(Severity.Info, f.Severity);
+        Assert.Contains("ALYac, Avast Antivirus", f.Detail);
+        Assert.Equal(0, f.Score);
+    }
+
+    [Fact]
+    public void Refused_scan_without_other_antivirus_keeps_the_raw_error() =>
+        Assert.Contains("boom", ThreatCollector.Evaluate(new ThreatReport([], DefenderScanType.Quick, "boom") { RunningMode = "Normal" }, DateTimeOffset.Now).Single().Detail);
+}
+
+public class CrashAndKrModuleTests
+{
+    private static PcCheckConfig Config() => PcCheckConfig.Default();
+
+    private static CrashEvent Crash(string app, string appPath, string module, string modulePath) =>
+        new(DateTimeOffset.Now, app, appPath, module, modulePath, "c0000005");
+
+    private const string PhotosPath = @"C:\Program Files\WindowsApps\Microsoft.Windows.Photos_2025.11010.4004.0_x64__8wekyb3d8bbwe\Photos.exe";
+
+    // The 2026-11-06 field case, names removed: TouchEn nxKey's injected DLL killed the Photos app 21 times.
+    [Fact]
+    public void Field_case_names_TouchEn_nxKey_and_offers_its_uninstaller()
+    {
+        const string dll = @"C:\Program Files (x86)\RaonSecure\TouchEn nxKey\TENXWGuard64_127.dll";
+        var events = Enumerable.Repeat(Crash("Photos.exe", PhotosPath, "TENXWGuard64_127.dll", dll), 21).ToList();
+        var programs = new List<InstalledProgram>
+        {
+            new("TouchEn nxKey with E2E for 64bit", "RaonSecure Co., Ltd.", null, @"""C:\Program Files (x86)\RaonSecure\TouchEn nxKey\unins000.exe""", "HKLM\\x")
+            { InstallLocation = @"C:\Program Files (x86)\RaonSecure\TouchEn nxKey\" },
+        };
+        var f = Assert.Single(CrashCollector.Evaluate(events, _ => new ModuleOwner("RaonSecure Co., Ltd.", "TouchEn nxKey"), programs, Config()));
+        Assert.Equal(Severity.High, f.Severity);
+        Assert.Equal("RM-UNINSTALL", f.RemediationId);
+        Assert.Equal("KoreanSecurity", f.Evidence["cause"]);
+        Assert.Equal("21", f.Evidence["crashes7d"]);
+        Assert.Contains("TouchEn nxKey", f.Title);
+        Assert.Contains("unins000.exe", f.Evidence["uninstallString"]);
+    }
+
+    [Fact]
+    public void App_crashing_in_its_own_files_is_not_blamed_on_anyone() =>
+        Assert.Empty(CrashCollector.Evaluate(
+            Enumerable.Repeat(Crash("chrome.exe", @"C:\Program Files\Google\Chrome\Application\chrome.exe", "chrome.dll", @"C:\Program Files\Google\Chrome\Application\140.0\chrome.dll"), 6).ToList(),
+            _ => new ModuleOwner("Google LLC", "Google Chrome"), [], Config()));
+
+    [Fact]
+    public void Microsoft_modules_are_skipped() =>
+        Assert.Empty(CrashCollector.Evaluate(
+            Enumerable.Repeat(Crash("Photos.exe", PhotosPath, "KERNELBASE.dll", @"C:\Windows\System32\KERNELBASE.dll"), 9).ToList(),
+            _ => new ModuleOwner("Microsoft Corporation", "Microsoft® Windows® Operating System"), [], Config()));
+
+    [Fact]
+    public void Graphics_driver_gets_driver_advice_not_uninstall()
+    {
+        var f = Assert.Single(CrashCollector.Evaluate(
+            Enumerable.Repeat(Crash("Photos.exe", PhotosPath, "amdxx64.dll", @"C:\Windows\System32\DriverStore\FileRepository\u0399.inf_amd64\B399\amdxx64.dll"), 3).ToList(),
+            _ => new ModuleOwner("Advanced Micro Devices, Inc.", "AMD driver"), [], Config()));
+        Assert.Equal("ADV-GPU-DRIVER", f.RemediationId);
+    }
+
+    [Fact]
+    public void One_crash_is_below_the_threshold() =>
+        Assert.Empty(CrashCollector.Evaluate([Crash("app.exe", @"C:\Apps\app.exe", "hook.dll", @"C:\Vendor\hook.dll")],
+            _ => new ModuleOwner("Vendor", "Hook"), [], Config()));
+
+    // The field case's startup entries (names and paths only).
+    private static readonly (string Name, string Path)[] FieldStartup =
+    [
+        ("wizvera-veraport-x64", @"C:\Program Files\Wizvera\Veraport20\veraport-x64.exe"),
+        ("AhnLab Safe Transaction Application", @"C:\Program Files\AhnLab\Safe Transaction\stsess.exe"),
+        ("ipinside-lws", @"C:\Program Files (x86)\IPinside_LWS\I3GProc.exe"),
+        ("MagicLine4NX", @"C:\Program Files (x86)\DreamSecurity\MagicLine4NX\MagicLine4NX.exe"),
+        ("wizvera-delfino-pc", @"C:\Program Files (x86)\Wizvera\Delfino-G3\delfino.exe"),
+        ("CROSSCERT UniCRSV3", @"C:\Program Files (x86)\Crosscert\UniSignCRSV3\UniCRSLocalServer.exe"),
+        ("MaEPSBroker", @"C:\Program Files (x86)\MarkAny\EPSBroker\MaEPSBroker.exe"),
+        ("AnySign4PC", @"C:\Program Files (x86)\SoftForum\XecureWeb\AnySign\dll\AnySign4PC.exe"),
+        ("CrossEXService", @"C:\Program Files (x86)\iniLINE\CrossEX\crossex\CrossEXService.exe"),
+        ("KakaoTalk", @"C:\Program Files (x86)\Kakao\KakaoTalk\KakaoTalk.exe"),
+    ];
+
+    [Fact]
+    public void Field_startup_list_yields_the_nine_security_modules_and_not_KakaoTalk()
+    {
+        var entries = FieldStartup.Select(e => new StartupEntry { Location = "HKLM", Name = e.Name, Command = e.Path, TargetPath = e.Path }).ToList();
+        var f = KrModulesCollector.Evaluate([], entries, Config());
+        Assert.Equal(9, f.Count);
+        Assert.DoesNotContain(f, x => x.Title.Contains("KakaoTalk"));
+        Assert.All(f, x => Assert.Equal("ADV-KR-MODULES", x.RemediationId));
+    }
+
+    [Fact]
+    public void Installed_module_becomes_an_uninstall_target_unless_protected()
+    {
+        var p = new InstalledProgram("TouchEn nxKey with E2E for 64bit", "RaonSecure", null, "unins000.exe", "k");
+        Assert.Equal("RM-UNINSTALL", KrModulesCollector.Evaluate([p], [], Config()).Single().RemediationId);
+        var cfg = Config();
+        cfg.Protect.Programs.Add(new ProtectProgram { DisplayNameMatch = "TouchEn", Regex = new("TouchEn") });
+        Assert.Empty(KrModulesCollector.Evaluate([p], [], cfg));
+    }
+
+    [Fact]
+    public void Security_module_service_is_not_a_suspect()
+    {
+        var svc = new ServiceEntry("CrossEXService", "CrossEX Service", @"C:\Program Files (x86)\iniLINE\CrossEX\crossex\CrossEXService.exe",
+            @"C:\Program Files (x86)\iniLINE\CrossEX\crossex\CrossEXService.exe", "Running");
+        var sigs = new Dictionary<string, SignatureInfo>(StringComparer.OrdinalIgnoreCase) { [svc.TargetPath!] = new("NotSigned", null) };
+        Assert.Single(ServiceSuspectCollector.Evaluate([svc], sigs, new ProtectConfig()));
+        Assert.Empty(ServiceSuspectCollector.Evaluate([svc], sigs, new ProtectConfig(), Config().KrModules));
+    }
+}
+
+public class KrModulePathTests
+{
+    [Theory]
+    [InlineData(@"C:\Program Files\AhnLab\Safe Transaction\stsess.exe", "ahnlab-safe-transaction")]
+    [InlineData(@"C:\Program Files\Wizvera\Veraport20\veraport-x64.exe", "veraport")]
+    [InlineData(@"C:\Program Files (x86)\RaonSecure\TouchEn nxKey\TENXWGuard64_127.dll", "touchen-nxkey")]
+    [InlineData(@"C:\Program Files\AhnLab\V3Lite40\V3Lite.exe", null)]
+    public void Built_in_path_patterns_match_real_install_folders(string path, string? id) =>
+        Assert.Equal(id, new KrModulesConfig().MatchPath(path)?.Id);
+}
+
+public class SignatureScriptShapeTests
+{
+    [Fact]
+    public void Script_assigns_the_parsed_array_before_enumerating_it()
+    {
+        var script = SignatureVerifier.Script([@"C:\a.exe", @"C:\b.exe"]);
+        Assert.Contains("$paths = '", script);
+        Assert.DoesNotContain("@('", script);
+        Assert.Contains("foreach ($p in @($paths))", script);
+    }
+
+    [Fact]
+    public async Task Unmatched_output_fails_instead_of_marking_everything_unknown()
+    {
+        var ps = new FakeAll("[{\"Path\":[\"C:\\\\a.exe\",\"C:\\\\b.exe\"],\"Status\":\"Valid\"}]");
+        await Assert.ThrowsAsync<PowerShellException>(() => new SignatureVerifier(ps).VerifyAsync([@"C:\a.exe", @"C:\b.exe"], default));
+    }
+
+    private sealed class FakeAll(string json) : IPowerShell
+    {
+        public Task<System.Text.Json.JsonElement> RunJsonAsync(string script, CancellationToken ct) =>
+            Task.FromResult(System.Text.Json.JsonDocument.Parse(json).RootElement);
     }
 }
