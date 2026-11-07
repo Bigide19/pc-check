@@ -22,11 +22,11 @@ public static class MockData
             Verdict = new VerdictResult(Verdict.HardwareReplace, Verdict.Cleanup, ["HW-DISK-TYPE", "RES-DISK"]),
             Scores = new ScoreSummary
             {
-                Hardware = 30, Software = 71,
+                Hardware = 30, Software = 96,
                 ByCategory = new Dictionary<string, int>
                 {
                     [Categories.Hardware] = 30, [Categories.Resource] = 15, [Categories.Startup] = 35,
-                    [Categories.BrowserNetwork] = 15, [Categories.System] = 6, [Categories.Program] = 0,
+                    [Categories.BrowserNetwork] = 15, [Categories.System] = 6, [Categories.Program] = 25,
                 },
             },
             Findings =
@@ -56,6 +56,16 @@ public static class MockData
                     Ev(("tempGb", "2.8"))),
                 new("SYS-UPDATE", Categories.System, Severity.Medium, "재부팅 대기 중", "업데이트 설치 후 재부팅되지 않았습니다.", 5, "ADV-UPDATE",
                     Ev(("rebootRequired", "true"))),
+                new("APP-CRASHES", Categories.Program, Severity.High, "TouchEn nxKey이(가) 앱을 21번 종료시킴",
+                    "은행, 공공기관 보안 프로그램(TouchEn nxKey)의 모듈이 Photos.exe 안에 끼어들어 종료시켰습니다. 이 프로그램을 지우면 해결됩니다. 사이트가 필요할 때 다시 설치를 안내합니다.", 15, "RM-UNINSTALL",
+                    Ev(("module", "TENXWGuard64_127.dll"), ("cause", "KoreanSecurity"), ("apps", "Photos.exe"), ("crashes7d", "21"),
+                       ("displayName", "TouchEn nxKey with E2E for 64bit"), ("uninstallString", @"C:\Program Files (x86)\RaonSecure\TouchEn nxKey\unins000.exe"), ("registryKey", "sample"))),
+                new("SEC-KR-MODULES", Categories.Program, Severity.Medium, "보안 모듈: Veraport",
+                    "은행, 공공기관 사이트용 보안 프로그램입니다. 지워도 되고, 사이트가 필요할 때 다시 설치를 안내합니다.", 5, "RM-UNINSTALL",
+                    Ev(("module", "Veraport"), ("vendor", "Wizvera"), ("displayName", "Veraport"), ("uninstallString", @"C:\Program Files\Wizvera\Veraport20\unins.exe"), ("registryKey", "sample"))),
+                new("SEC-KR-MODULES", Categories.Program, Severity.Medium, "보안 모듈: IPinside LWS Agent",
+                    "은행, 공공기관 사이트용 보안 프로그램입니다. 지워도 되고, 사이트가 필요할 때 다시 설치를 안내합니다.", 5, "RM-UNINSTALL",
+                    Ev(("module", "IPinside LWS"), ("vendor", "Interezen"), ("displayName", "IPinside LWS Agent"), ("uninstallString", @"C:\Program Files (x86)\IPinside_LWS\uninstall.exe"), ("registryKey", "sample"))),
                 new("APP-RECENT", Categories.Program, Severity.Info, "최근 30일 설치 프로그램 3개", "판정 보조 정보", 0, null,
                     Ev(("1", "PDF Viewer Plus (2026-10-28)"), ("2", "KakaoTalk (2026-10-20)"), ("3", "Chrome (2026-10-11)"))),
             ],

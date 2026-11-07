@@ -215,12 +215,18 @@ public sealed class UninstallRemediation(ISystemOps sys, Func<string, Cancellati
 
     public override IReadOnlyList<RemediationTarget> Plan(Finding f) =>
         f.Evidence.TryGetValue("uninstallString", out var u) && u.Length > 0
-            ? [new(Id, f.Id, f.Evidence.GetValueOrDefault("displayName") ?? u, $"프로그램 제거: {f.Evidence.GetValueOrDefault("displayName")}", f.Evidence)]
+            ? [new(Id, f.Id, f.Evidence.GetValueOrDefault("displayName") ?? u, $"프로그램 제거: {f.Evidence.GetValueOrDefault("displayName") ?? u}", f.Evidence)]
             : [];
 
     // The vendor uninstaller runs with its own UI; no silent flags are added.
     public override async Task<ActionRecord> ApplyAsync(RemediationTarget t, CancellationToken ct)
     {
+        if (t.Data.GetValueOrDefault("processNames") is { Length: > 0 } names)
+        {
+            var list = string.Join(",", names.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Select(n => Json.PsLiteral(Path.GetFileNameWithoutExtension(n))));
+            await Sys.PowerShellAsync($"Stop-Process -Name {list} -Force -ErrorAction SilentlyContinue", ct);
+        }
         var exit = await runInteractive(t.Data["uninstallString"], ct);
         return Record(t, new() { ["uninstallString"] = t.Data["uninstallString"], ["registryKey"] = t.Data.GetValueOrDefault("registryKey") ?? "" },
             new() { ["exitCode"] = exit.ToString() });

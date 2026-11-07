@@ -73,5 +73,7 @@ public sealed class ProtectProgram
 
 public sealed record PcCheckConfig(RulesConfig Rules, KnownBadConfig KnownBad, ProtectConfig Protect)
 {
+    public KrModulesConfig KrModules { get; init; } = new();
+
     public static PcCheckConfig Default() => new(new RulesConfig(), new KnownBadConfig(), new ProtectConfig());
 }

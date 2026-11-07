@@ -60,11 +60,12 @@ public sealed partial class FixViewModel : ObservableObject
     public string CurrentKind => Current is null ? "" : RemediationCatalog.Find(Current.Target.RemediationId)?.Name ?? Current.Target.RemediationId;
     public string CurrentReversible => Current is null ? "" : Current.Reversible ? "나중에 되돌릴 수 있습니다." : "되돌릴 수 없는 조치입니다. 복원 지점으로만 되돌릴 수 있습니다.";
     public bool CurrentIrreversible => Current is { Reversible: false };
+    public bool HasSameKind => SameKindRemaining > 0;
     public string CurrentCommand => Current?.Target.Data.GetValueOrDefault("command") ?? Current?.Target.Data.GetValueOrDefault("execute") ?? "";
 
     partial void OnCurrentChanged(PlannedAction? value)
     {
-        foreach (var p in new[] { nameof(CurrentTitle), nameof(CurrentTarget), nameof(CurrentKind), nameof(CurrentReversible), nameof(CurrentIrreversible), nameof(CurrentCommand) })
+        foreach (var p in new[] { nameof(CurrentTitle), nameof(CurrentTarget), nameof(CurrentKind), nameof(CurrentReversible), nameof(CurrentIrreversible), nameof(CurrentCommand), nameof(SameKindRemaining), nameof(ApproveKindText), nameof(HasSameKind) })
             OnPropertyChanged(p);
     }
 
@@ -159,6 +160,31 @@ public sealed partial class FixViewModel : ObservableObject
         State = FixState.Working;
         WorkingText = $"{a.Target.Title} 진행 중";
         await ApplyAsync(a);
+        NextConfirm();
+    }
+
+    public int SameKindRemaining => Current is null ? 0 : _pending.Count(a => a.Target.FindingId == Current.Target.FindingId);
+    public string ApproveKindText => $"같은 종류 모두 승인 ({SameKindRemaining + 1}개)";
+
+    // Each uninstaller still opens its own window; this only saves clicking "승인" for every module.
+    [RelayCommand]
+    private async Task ApproveKindAsync()
+    {
+        var kind = Current!.Target.FindingId;
+        var batch = new List<PlannedAction> { Current };
+        var rest = new Queue<PlannedAction>();
+        while (_pending.Count > 0)
+        {
+            var a = _pending.Dequeue();
+            if (a.Target.FindingId == kind) batch.Add(a); else rest.Enqueue(a);
+        }
+        while (rest.Count > 0) _pending.Enqueue(rest.Dequeue());
+        State = FixState.Working;
+        foreach (var a in batch)
+        {
+            WorkingText = $"{a.Target.Title} 진행 중";
+            await ApplyAsync(a);
+        }
         NextConfirm();
     }
 

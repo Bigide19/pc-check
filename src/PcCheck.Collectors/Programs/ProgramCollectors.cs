@@ -6,7 +6,10 @@ using PcCheck.Core.Config;
 
 namespace PcCheck.Collectors.Programs;
 
-public sealed record InstalledProgram(string DisplayName, string? Publisher, DateOnly? InstallDate, string? UninstallString, string RegistryKey);
+public sealed record InstalledProgram(string DisplayName, string? Publisher, DateOnly? InstallDate, string? UninstallString, string RegistryKey)
+{
+    public string? InstallLocation { get; init; }
+}
 
 public sealed class UninstallSource
 {
@@ -35,7 +38,8 @@ public sealed class UninstallSource
             if (k.GetValue("SystemComponent") is int sc && sc == 1) continue;
             if (k.GetValue("ParentKeyName") is string) continue;
             list.Add(new InstalledProgram(name, k.GetValue("Publisher") as string, ParseDate(k.GetValue("InstallDate") as string),
-                k.GetValue("UninstallString") as string, $@"{rootName}\{Path}\{sub}"));
+                k.GetValue("UninstallString") as string, $@"{rootName}\{Path}\{sub}")
+            { InstallLocation = k.GetValue("InstallLocation") as string });
         }
     }
 

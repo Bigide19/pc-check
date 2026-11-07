@@ -1,0 +1,559 @@
+{
+  "version": 1,
+  "_note": "은행, 공공기관 보안 모듈 목록. pathPatterns는 정규식이 아니라 경로에 그대로 포함되는 폴더 조각이고, 나머지 *Patterns는 대소문자 무시 정규식. knownIssues와 compatibility는 출처가 있는 내용만 적고, 확인하지 못한 항목은 unverified에 둔다.",
+  "modules": [
+    {
+      "id": "touchen-nxkey",
+      "name": "TouchEn nxKey",
+      "vendor": "RaonSecure (라온시큐어)",
+      "purpose": "키보드 입력을 암호화해 키로거를 막는다는 키보드 보안 프로그램",
+      "displayNamePatterns": [
+        "TouchEn\\s*nxKey"
+      ],
+      "publisherPatterns": [
+        "RaonSecure|라온시큐어"
+      ],
+      "pathPatterns": [
+        "\\RaonSecure\\",
+        "\\TouchEn",
+        "\\RaonSecure\\TouchEn nxKey\\"
+      ],
+      "processNames": [
+        "CKAgentNXE.exe"
+      ],
+      "serviceNames": [],
+      "dllPatterns": [
+        "^TENX",
+        "^TKAppm\\.dll$",
+        "^TKMain\\.dll$"
+      ],
+      "knownIssues": [
+        {
+          "year": 2023,
+          "summary": "Palant 분석: 아무 웹사이트나 키 입력을 평문으로 받을 수 있는 키로깅 API 노출, 드라이버 직접 접근, 힙 오버플로, DoS, CKAgentNXE.exe로 임의 DLL을 임의 프로세스에 로드 가능 등 7건 (1.0.0.78 기준)",
+          "source": "https://palant.info/2023/01/09/touchen-nxkey-the-keylogging-anti-keylogger-solution/"
+        },
+        {
+          "year": 2023,
+          "summary": "KISA 권고: XSS 등 취약점, 1.0.0.78 이하 취약, 1.0.0.82에서 수정",
+          "source": "https://www.boannews.com/news/articleView.html?idxno=113908"
+        },
+        {
+          "year": 2024,
+          "summary": "KISA 권고: 임의 DLL 인젝션 악용 취약점, 1.0.0.87 이하 전 버전 취약, 1.0.0.88에서 수정",
+          "source": "https://www.boannews.com/news/articleView.html?idxno=132018"
+        }
+      ],
+      "compatibility": [
+        {
+          "year": null,
+          "summary": "드라이버 크래시 시 OS 재부팅, 디버거 감지 메시지, 안전 모드에서 실행 거부",
+          "source": "https://palant.info/2023/01/09/touchen-nxkey-the-keylogging-anti-keylogger-solution/"
+        },
+        {
+          "year": null,
+          "summary": "크래시 후 은행 로그인 폼이 비밀번호를 평문으로 보낼 수 있음",
+          "source": "https://palant.info/2023/01/09/touchen-nxkey-the-keylogging-anti-keylogger-solution/"
+        },
+        {
+          "year": null,
+          "summary": "TENXWGuard64_127.dll이 Windows 사진 앱에 주입되어 c0000005로 21회 크래시, 삭제 후 해소",
+          "source": "pitstop 현장 사례 (2026-11)"
+        }
+      ],
+      "uninstallNotes": "라온시큐어는 '키보드 보안 삭제 프로그램'으로 완전히 지운 뒤 새 버전 설치를 권장. 함께 설치되는 CrossEXService(iniLINE CrossEX)도 같이 갱신됨. 은행 접속 시 다시 설치 요구됨. TouchEn nxKey를 다시 설치하면 CrossEX도 함께 설치, 갱신되므로 둘을 함께 정리하는 편이 좋음.",
+      "reinstallOnDemand": {
+        "value": true,
+        "source": "https://www.boannews.com/news/articleView.html?idxno=132018 (IBK, 하나, 신한은행 설치 안내 화면); https://www.boannews.com/news/articleView.html?idxno=113908 (삭제 후 금융 사이트에서 재설치 안내)"
+      },
+      "unverified": [
+        "publisherPatterns (DisplayName/Publisher 실제 값 미확인)",
+        "dllPatterns ^TKFW* 계열 (출처 없음, 제외)",
+        "serviceNames",
+        "^TENX 는 현장 DLL명 기준, TKAppm.dll/TKMain.dll 은 설치 파일로만 확인되고 타 프로세스 주입 여부 미확인"
+      ]
+    },
+    {
+      "id": "ahnlab-safe-transaction",
+      "name": "AhnLab Safe Transaction (ASTx)",
+      "vendor": "AhnLab (안랩)",
+      "purpose": "온라인 뱅킹용 보안 프로그램 (악성코드 탐지, 거래 보호)",
+      "displayNamePatterns": [
+        "AhnLab\\s*Safe\\s*Transaction"
+      ],
+      "publisherPatterns": [
+        "AhnLab|안랩"
+      ],
+      "pathPatterns": [
+        "\\AhnLab\\Safe Transaction\\"
+      ],
+      "processNames": [
+        "stsess.exe"
+      ],
+      "serviceNames": [],
+      "dllPatterns": [],
+      "knownIssues": [],
+      "compatibility": [
+        {
+          "year": null,
+          "summary": "TouchEn nxKey 테스트 페이로드(C:\\Temp\\test.exe)를 악성으로 탐지한 사례 언급 (호환성 문제라기보다 동작 예시)",
+          "source": "https://palant.info/2023/01/09/touchen-nxkey-the-keylogging-anti-keylogger-solution/"
+        }
+      ],
+      "uninstallNotes": "은행 사이트가 Veraport로 다시 설치함. 삭제해도 다음 접속 때 재설치 요구.",
+      "reinstallOnDemand": {
+        "value": true,
+        "source": "https://palant.info/2023/03/06/veraport-inside-koreas-dysfunctional-application-management/ (Veraport가 은행 사이트용으로 설치 관리하는 목록에 ASTx 포함)"
+      },
+      "unverified": [
+        "knownIssues: ASTx 전용 CVE/KISA 권고를 찾지 못함",
+        "purpose 세부",
+        "DisplayName/Publisher 실제 값",
+        "serviceNames",
+        "dllPatterns"
+      ]
+    },
+    {
+      "id": "veraport",
+      "name": "Veraport",
+      "vendor": "Wizvera (위즈베라)",
+      "purpose": "은행 사이트가 요구하는 보안 프로그램을 일괄 설치하고 관리하는 통합 설치 프로그램",
+      "displayNamePatterns": [
+        "Veraport"
+      ],
+      "publisherPatterns": [
+        "Wizvera|위즈베라"
+      ],
+      "pathPatterns": [
+        "\\Wizvera\\Veraport",
+        "\\Wizvera\\Veraport20\\"
+      ],
+      "processNames": [
+        "veraport-x64.exe"
+      ],
+      "serviceNames": [],
+      "dllPatterns": [],
+      "knownIssues": [
+        {
+          "year": 2020,
+          "summary": "Lazarus가 Veraport를 사용하는 웹사이트를 장악해 훔친 인증서로 서명한 악성코드를 Veraport로 배포 (ESET)",
+          "source": "https://www.welivesecurity.com/2020/11/16/lazarus-supply-chain-attack-south-korea"
+        },
+        {
+          "year": 2023,
+          "summary": "Palant 분석: 서명 검증 우회, 약한 루트 CA(1024bit/MD5), 과도한 allowedDomains, 설치 앱 정보 노출, JSONP/리다이렉트 XSS 등. 3.8.6.5에서 일부만 수정",
+          "source": "https://palant.info/2023/03/06/veraport-inside-koreas-dysfunctional-application-management/"
+        },
+        {
+          "year": 2023,
+          "summary": "KISA 권고: Veraport V3 정보 노출 등 취약점, v3702~v3863 취약, v3864로 업데이트",
+          "source": "https://www.boannews.com/news/articleView.html?idxno=113908"
+        }
+      ],
+      "compatibility": [
+        {
+          "year": null,
+          "summary": "사이트마다 구버전 Veraport와 구버전 보안 모듈을 배포 (2023-03 기준 10곳 중 3곳만 최신)",
+          "source": "https://palant.info/2023/03/06/veraport-inside-koreas-dysfunctional-application-management/"
+        }
+      ],
+      "uninstallNotes": "관리자 권한으로 상주하며 127.0.0.1:16106(TLS), 16116 포트에서 대기. 은행 사이트 접속 시 다시 설치 요구.",
+      "reinstallOnDemand": {
+        "value": true,
+        "source": "https://palant.info/2023/01/02/south-koreas-online-security-dead-end/ (은행이 통합 설치로 보안 프로그램 설치 요구); https://www.boannews.com/news/articleView.html?idxno=113908"
+      },
+      "unverified": [
+        "2020 ESET 항목은 검색 요약 기반, 원문 미열람",
+        "DisplayName/Publisher 실제 값",
+        "serviceNames"
+      ]
+    },
+    {
+      "id": "delfino-g3",
+      "name": "Delfino G3",
+      "vendor": "Wizvera (위즈베라)",
+      "purpose": "공동인증서 로그인과 전자서명 처리 모듈",
+      "displayNamePatterns": [
+        "Delfino"
+      ],
+      "publisherPatterns": [
+        "Wizvera|위즈베라"
+      ],
+      "pathPatterns": [
+        "\\Wizvera\\Delfino",
+        "\\Wizvera\\Delfino-G3\\"
+      ],
+      "processNames": [
+        "delfino.exe",
+        "delfino-g3.exe"
+      ],
+      "serviceNames": [],
+      "dllPatterns": [],
+      "knownIssues": [],
+      "compatibility": [],
+      "uninstallNotes": "인증서 로그인 사이트에서 다시 설치 요구.",
+      "reinstallOnDemand": {
+        "value": true,
+        "source": "https://palant.info/2023/03/06/veraport-inside-koreas-dysfunctional-application-management/ (Veraport 관리 대상 목록에 DelfinoG3 포함)"
+      },
+      "unverified": [
+        "purpose (출처에서 기능 설명을 확인하지 못함)",
+        "knownIssues: Delfino 전용 CVE/KISA 권고를 찾지 못함",
+        "delfino-g3.exe 는 Palant PoC에서 언급된 프로세스명",
+        "DisplayName/Publisher 실제 값",
+        "serviceNames"
+      ]
+    },
+    {
+      "id": "ipinside-lws",
+      "name": "IPinside LWS Agent",
+      "vendor": "Interezen (인터리젠)",
+      "purpose": "이용자의 실제 IP와 PC 정보(MAC, 디스크 시리얼, 실행 프로세스 등)를 은행 사이트에 제공하는 로컬 서버",
+      "displayNamePatterns": [
+        "IPinside"
+      ],
+      "publisherPatterns": [
+        "Interezen|인터리젠"
+      ],
+      "pathPatterns": [
+        "\\IPinside",
+        "\\IPinside_LWS\\"
+      ],
+      "processNames": [
+        "I3GProc.exe",
+        "I3GMainSvc.exe"
+      ],
+      "serviceNames": [],
+      "dllPatterns": [
+        "^I3GManager\\.dll$"
+      ],
+      "knownIssues": [
+        {
+          "year": 2023,
+          "summary": "Palant 분석: 스택 버퍼 오버플로, 단일 스레드 DoS, 구버전 OpenSSL 1.0.1j, 320bit RSA 키, 고정 AES 키, 리플레이 가능, 아무 사이트에나 PC 정보 노출",
+          "source": "https://palant.info/2023/01/25/ipinside-koreas-mandatory-spyware/"
+        }
+      ],
+      "compatibility": [
+        {
+          "year": null,
+          "summary": "비한국어 Windows에서 EUC-KR 인코딩 문제로 데이터 손상. 자동 업데이트 없음",
+          "source": "https://palant.info/2023/01/25/ipinside-koreas-mandatory-spyware/"
+        }
+      ],
+      "uninstallNotes": "localhost:21300 에서 대기. 자동 업데이트가 없어 구버전이 오래 남음. 은행 접속 시 다시 설치 요구.",
+      "reinstallOnDemand": {
+        "value": true,
+        "source": "https://palant.info/2023/01/25/ipinside-koreas-mandatory-spyware/ (로컬 서버 응답이 없으면 은행 사이트가 접속을 막고 설치 요구)"
+      },
+      "unverified": [
+        "DisplayName/Publisher 실제 값",
+        "serviceNames (I3GMainSvc 는 이름상 서비스로 보이나 출처 미확인)",
+        "I3GManager.dll 은 독자 댓글 출처"
+      ]
+    },
+    {
+      "id": "magicline4nx",
+      "name": "MagicLine4NX",
+      "vendor": "DreamSecurity (드림시큐리티)",
+      "purpose": "공동인증서 인증과 전자서명 처리 프로그램",
+      "displayNamePatterns": [
+        "MagicLine4NX"
+      ],
+      "publisherPatterns": [
+        "Dream\\s*Security|드림시큐리티"
+      ],
+      "pathPatterns": [
+        "\\DreamSecurity\\",
+        "\\DreamSecurity\\MagicLine4NX\\"
+      ],
+      "processNames": [
+        "MagicLine4NX.exe"
+      ],
+      "serviceNames": [],
+      "dllPatterns": [],
+      "knownIssues": [
+        {
+          "year": 2023,
+          "summary": "CVE-2023-45797: 버퍼 오버플로로 원격 코드 실행, 1.0.0.1~1.0.0.26 영향. Lazarus가 워터링홀 공격에 악용, 영국 NCSC와 국정원 공동 권고",
+          "source": "https://securityaffairs.com/154765/apt/lazarus-magicline4nx-supply-chain-attack.html"
+        },
+        {
+          "year": 2023,
+          "summary": "안랩 ASEC: MagicLine4NX 취약점 주의와 업데이트 권고 (1.0.0.26 이하)",
+          "source": "https://asec.ahnlab.com/en/50606/"
+        }
+      ],
+      "compatibility": [],
+      "uninstallNotes": "취약 버전(1.0.0.26 이하)이면 삭제 또는 업데이트 권장. 필요한 사이트에서 다시 설치.",
+      "reinstallOnDemand": {
+        "value": null,
+        "source": "unverified"
+      },
+      "unverified": [
+        "CVE 번호/연도는 검색 요약 기반, 원문 페이지 미확인 (securityaffairs, ASEC 50606 원문 미열람)",
+        "purpose 세부",
+        "reinstallOnDemand",
+        "DisplayName/Publisher 실제 값",
+        "serviceNames",
+        "CVE-2023-46509 / CVE-2021-26606 관련 여부 (2차 출처만 있음, 미포함)"
+      ]
+    },
+    {
+      "id": "crosscert-unicrs",
+      "name": "CrossCert UniSignCRS (UniCRSLocalServer)",
+      "vendor": "CrossCert (한국전자인증)",
+      "purpose": "한국전자인증 인증서 관련 로컬 서버 프로그램",
+      "displayNamePatterns": [
+        "UniSign\\s*CRS|UniCRS"
+      ],
+      "publisherPatterns": [
+        "CrossCert|한국전자인증"
+      ],
+      "pathPatterns": [
+        "\\Crosscert\\",
+        "\\Crosscert\\UniSignCRSV3\\"
+      ],
+      "processNames": [
+        "UniCRSLocalServer.exe",
+        "CCDaemon.exe"
+      ],
+      "serviceNames": [],
+      "dllPatterns": [],
+      "knownIssues": [],
+      "compatibility": [],
+      "uninstallNotes": "용도 확인 전 삭제 시 한국전자인증 인증서 사용 사이트에서 다시 설치 요구될 수 있음 (unverified).",
+      "reinstallOnDemand": {
+        "value": null,
+        "source": "unverified"
+      },
+      "unverified": [
+        "UniSignCRS 외 한국전자인증 다른 제품은 publisherPatterns 로만 걸림",
+        "purpose (UniSignCRS 기능 설명 출처 없음, 회사가 인증기관이라는 점만 확인)",
+        "knownIssues: CVE/KISA 권고 찾지 못함",
+        "reinstallOnDemand",
+        "DisplayName/Publisher 실제 값",
+        "serviceNames"
+      ]
+    },
+    {
+      "id": "anysign4pc",
+      "name": "AnySign4PC (XecureWeb)",
+      "vendor": "Hancom WITH (한컴위드, 구 소프트포럼)",
+      "purpose": "Non-ActiveX 공동인증서 인증과 웹 구간 암호화 프로그램",
+      "displayNamePatterns": [
+        "AnySign|XecureWeb"
+      ],
+      "publisherPatterns": [
+        "Hancom\\s*WITH|한컴위드|SoftForum|소프트포럼"
+      ],
+      "pathPatterns": [
+        "\\SoftForum\\",
+        "\\SoftForum\\XecureWeb\\AnySign\\"
+      ],
+      "processNames": [
+        "AnySign4PC.exe",
+        "AnySign4PCLauncher.exe"
+      ],
+      "serviceNames": [],
+      "dllPatterns": [],
+      "knownIssues": [
+        {
+          "year": 2025,
+          "summary": "KISA 보안공지(2025-03-24): 1.1.4.3 이하 취약, 1.1.4.4 이상으로 업데이트 권고",
+          "source": "https://namu.moe/w/anysign"
+        }
+      ],
+      "compatibility": [
+        {
+          "year": null,
+          "summary": "불규칙한 CPU 급증으로 끊김, 절전 진입 방해(wake timer), 일부 Intel 그래픽 노트북에서 화면 멈춤 (커뮤니티 위키 서술)",
+          "source": "https://namu.moe/w/anysign"
+        }
+      ],
+      "uninstallNotes": "부팅 시 자동 실행 상주, AnySign4PCLauncher가 본체를 재시작. 저장매체 인증서를 쓰지 않으면 불필요. 사용 중이면 1.1.4.4 이상으로 업데이트.",
+      "reinstallOnDemand": {
+        "value": true,
+        "source": "https://namu.moe/w/anysign (공동인증서 로그인 사이트 다수가 필수 설치로 안내)"
+      },
+      "unverified": [
+        "knownIssues 출처가 위키(KISA 원문 미확인), 공지 날짜가 출처마다 다름(2025-03-24 나무위키 vs 2025-07-08 yellowit.co.kr)",
+        "compatibility 는 커뮤니티 위키 서술",
+        "DisplayName/Publisher 실제 값",
+        "serviceNames"
+      ]
+    },
+    {
+      "id": "crossex",
+      "name": "CrossEX (CrossEXService)",
+      "vendor": "iniLINE (이니라인)",
+      "purpose": "TouchEn nxKey 등 보안 모듈과 브라우저를 연결하는 확장 연동 서비스",
+      "displayNamePatterns": [
+        "CrossEX"
+      ],
+      "publisherPatterns": [
+        "iniLINE|이니라인"
+      ],
+      "pathPatterns": [
+        "\\iniLINE\\",
+        "\\iniLINE\\CrossEX\\"
+      ],
+      "processNames": [
+        "CrossEXService.exe",
+        "CrossEXChrome.exe"
+      ],
+      "serviceNames": [],
+      "dllPatterns": [],
+      "knownIssues": [
+        {
+          "year": 2023,
+          "summary": "KISA 권고: CrossEXService 1.0.2.9 이하 취약, TouchEn nxKey 재설치 시 1.0.2.10으로 갱신",
+          "source": "https://www.boannews.com/news/articleView.html?idxno=113908"
+        },
+        {
+          "year": 2025,
+          "summary": "Kaspersky Operation SyncHole: Lazarus가 Cross EX 취약점을 악용, Cross EX 하위 SyncHost.exe 에 악성코드 주입 (2024-11~2025-02)",
+          "source": "https://securityaffairs.com/176964/apt/operation-synchole-lazarus-apt-targets-supply-chains-in-south-korea.html"
+        }
+      ],
+      "compatibility": [],
+      "uninstallNotes": "TouchEn nxKey와 함께 설치되는 경우가 많음. 단독 삭제 전 TouchEn nxKey 의존 여부 확인. TouchEn nxKey를 다시 설치하면 CrossEX도 함께 설치, 갱신되므로 둘을 함께 정리하는 편이 좋음.",
+      "reinstallOnDemand": {
+        "value": true,
+        "source": "https://www.boannews.com/news/articleView.html?idxno=113908 (TouchEn nxKey 재설치 때 함께 설치)"
+      },
+      "unverified": [
+        "SyncHole 출처는 Cross EX 제조사를 명시하지 않음 (iniLINE 제품과 동일 제품으로 판단)",
+        "CrossEXChrome.exe 는 Palant 기사에 'CrossEXChrome' 으로만 언급",
+        "DisplayName/Publisher 실제 값",
+        "serviceNames (이름상 서비스로 보이나 미확인)"
+      ]
+    },
+    {
+      "id": "markany-eps",
+      "name": "MarkAny EPS (MaEPSBroker)",
+      "vendor": "MarkAny (마크애니)",
+      "purpose": "마크애니 문서 보안 제품용 로컬 브로커 프로그램",
+      "displayNamePatterns": [
+        "EPS\\s*Broker|MaEPS"
+      ],
+      "publisherPatterns": [
+        "MarkAny|마크애니"
+      ],
+      "pathPatterns": [
+        "\\MarkAny\\",
+        "\\MarkAny\\EPSBroker\\"
+      ],
+      "processNames": [
+        "MaEPSBroker.exe"
+      ],
+      "serviceNames": [],
+      "dllPatterns": [],
+      "knownIssues": [
+        {
+          "year": 2020,
+          "summary": "CVE-2020-7839: MaEPSBroker 2.5.0.31 이하 brokerCommand 파라미터 명령어 주입 (KrCERT 보고)",
+          "source": "https://nvd.nist.gov/vuln/detail/CVE-2020-7839"
+        }
+      ],
+      "compatibility": [],
+      "uninstallNotes": "2.5.0.31 이하이면 삭제 또는 업데이트 권장. 필요한 사이트에서 다시 설치.",
+      "reinstallOnDemand": {
+        "value": null,
+        "source": "unverified"
+      },
+      "unverified": [
+        "CVE 번호/연도는 검색 요약 기반, 원문 페이지 미확인 (NVD 원문 미열람)",
+        "purpose (EPS 기능 설명 출처 없음, 마크애니가 문서 보안 회사라는 점만 일반 지식)",
+        "reinstallOnDemand",
+        "DisplayName/Publisher 실제 값",
+        "serviceNames"
+      ]
+    },
+    {
+      "id": "nprotect-online-security",
+      "name": "nProtect Online Security",
+      "vendor": "INCA Internet (잉카인터넷)",
+      "purpose": "온라인 뱅킹 접속 시 쓰는 PC 보안 프로그램",
+      "displayNamePatterns": [
+        "nProtect\\s*Online\\s*Security"
+      ],
+      "publisherPatterns": [
+        "INCA\\s*Internet|잉카인터넷"
+      ],
+      "pathPatterns": [
+        "\\nProtect",
+        "\\INCA Internet\\"
+      ],
+      "processNames": [],
+      "serviceNames": [],
+      "dllPatterns": [],
+      "knownIssues": [],
+      "compatibility": [],
+      "uninstallNotes": "은행 접속 시 다시 설치 요구될 수 있음 (unverified).",
+      "reinstallOnDemand": {
+        "value": null,
+        "source": "unverified"
+      },
+      "unverified": [
+        "purpose 세부",
+        "knownIssues: Online Security 전용 CVE/권고 찾지 못함 (nProtect AVS의 CVE-2018-6522~6525 는 다른 제품이라 제외)",
+        "pathPatterns",
+        "processNames",
+        "serviceNames",
+        "dllPatterns",
+        "reinstallOnDemand",
+        "DisplayName/Publisher 실제 값"
+      ]
+    },
+    {
+      "id": "inisafe",
+      "name": "INISAFE CrossWeb EX",
+      "vendor": "Initech (이니텍, KT 그룹)",
+      "purpose": "공동인증서 전자서명과 금융 서비스 접속에 쓰는 인증 보안 프로그램",
+      "displayNamePatterns": [
+        "INISAFE\\s*CrossWeb|CrossWeb\\s*EX"
+      ],
+      "publisherPatterns": [
+        "Initech|이니텍"
+      ],
+      "pathPatterns": [
+        "\\Initech\\"
+      ],
+      "processNames": [
+        "INISAFECrossWebEXSvc.exe"
+      ],
+      "serviceNames": [],
+      "dllPatterns": [],
+      "knownIssues": [
+        {
+          "year": 2022,
+          "summary": "안랩 ASEC: Lazarus가 INITECH 프로세스(INISAFE CrossWeb EX) 취약점을 악용해 악성코드 실행",
+          "source": "https://asec.ahnlab.com/en/33801/"
+        },
+        {
+          "year": 2023,
+          "summary": "국정원 등 공동 대응: 북한 해커가 구버전 INISAFE CrossWeb EX 취약점으로 약 60개 기관 PC 210여 대 감염, 최신 버전 업데이트 권고 (설치 PC 1천만 대 이상 추정)",
+          "source": "https://www.asiae.co.kr/en/article/2023033016553063082"
+        },
+        {
+          "year": 2023,
+          "summary": "안랩 ASEC: Lazarus가 CrossWeb EX V6 구버전 취약점(INISAFECrossWebEXSvc.exe)으로 SCSKAppLink.dll 설치",
+          "source": "https://asec.ahnlab.com/en/54195"
+        }
+      ],
+      "compatibility": [],
+      "uninstallNotes": "구버전이면 삭제하거나 최신 버전으로 업데이트. 필요한 사이트에서 다시 설치됨.",
+      "reinstallOnDemand": {
+        "value": true,
+        "source": "https://www.asiae.co.kr/en/article/2023033016553063082 (전자서명, 금융 사이트 접속 시 자동 설치되어 이용자가 모르는 경우가 많다고 서술)"
+      },
+      "unverified": [
+        "ASEC 33801(2022), 54195(2023) 항목의 연도와 내용은 검색 요약 기반, 원문 미열람",
+        "pathPatterns (설치 폴더 출처 없음, \\Initech\\ 는 추정)",
+        "DisplayName/Publisher 실제 값",
+        "serviceNames (INISAFECrossWebEXSvc 는 이름상 서비스로 보이나 미확인)"
+      ]
+    }
+  ]
+}

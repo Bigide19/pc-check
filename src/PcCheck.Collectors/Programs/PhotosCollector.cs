@@ -85,25 +85,8 @@ public sealed partial class PhotosCollector(IPowerShell ps) : ICollector
             findings.Add(F.Make("APP-PHOTOS", Categories.Program, Severity.High, $"사진 앱 패키지 이상 ({s.Status})",
                 "사진 앱 패키지가 손상되었거나 라이선스, 구성 요소에 문제가 있습니다.", "ADV-PHOTOS", baseEv));
 
-        if (s.Crashes.Count > 0)
-        {
-            var modules = s.Crashes.GroupBy(x => x.Module, StringComparer.OrdinalIgnoreCase)
-                .OrderByDescending(g => g.Count()).Select(g => (Module: g.Key, Count: g.Count())).ToList();
-            var cause = modules.Select(m => CauseOf(m.Module)).FirstOrDefault(x => x is not null);
-            var detail = cause switch
-            {
-                "그래픽 드라이버" => "그래픽 드라이버 모듈에서 오류가 나며 종료되고 있습니다. 그래픽 드라이버를 다시 설치하세요.",
-                "백신" => "백신 모듈에서 오류가 나며 종료되고 있습니다. 백신 충돌일 가능성이 큽니다.",
-                _ => $"사진 앱이 {modules[0].Module} 모듈에서 오류가 나며 종료되고 있습니다.",
-            };
-            var ev = new List<(string, object?)> { ("crashes7d", s.Crashes.Count), ("likelyCause", cause ?? "알 수 없음") };
-            ev.AddRange(modules.Take(5).Select((m, i) => ($"module{i + 1}", (object?)$"{m.Module} x{m.Count}")));
-            ev.Add(("lastException", s.Crashes.OrderByDescending(x => x.Time).First().ExceptionCode));
-            ev.Add(("last", s.Crashes.Max(x => x.Time)?.ToString("yyyy-MM-dd HH:mm")));
-            findings.Add(F.Make("APP-PHOTOS", Categories.Program, Severity.High, $"사진 앱 비정상 종료 {s.Crashes.Count}회",
-                detail, cause == "그래픽 드라이버" ? "ADV-GPU-DRIVER" : "ADV-PHOTOS", ev.ToArray()));
-        }
-        else if (s.ActivationFailures > 0)
+        // Crashes are reported by APP-CRASHES, which can name the program that caused them.
+        if (s.Crashes.Count == 0 && s.ActivationFailures > 0)
             findings.Add(F.Make("APP-PHOTOS", Categories.Program, Severity.Medium, $"사진 앱 실행 실패 {s.ActivationFailures}회",
                 "사진 앱이 시작 단계에서 실패하고 있습니다 (오류로 꺼진 기록은 없음). 앱 복구나 초기화, 새 사용자 계정에서 열어 보기로 원인을 가르세요.",
                 "ADV-PHOTOS", [.. baseEv, ("activationFailures7d", s.ActivationFailures)]));

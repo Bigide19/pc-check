@@ -74,14 +74,15 @@ public sealed class ServiceSuspectCollector(IWmi wmi, ISignatureVerifier signatu
                 PathRules.ExtractTarget(r["PathName"] as string), r["State"] as string ?? ""))
             .ToList();
         var sigs = await signatures.VerifyAsync(services.Select(s => s.TargetPath!).Where(p => p is not null), ct);
-        return CollectorResult.Ok(Id, Evaluate(services, sigs, ctx.Config.Protect));
+        return CollectorResult.Ok(Id, Evaluate(services, sigs, ctx.Config.Protect, ctx.Config.KrModules));
     }
 
+    // Korean security modules are reported by SEC-KR-MODULES as clean-up candidates, not as suspects.
     public static IReadOnlyList<Finding> Evaluate(IReadOnlyList<ServiceEntry> services,
-        IReadOnlyDictionary<string, SignatureInfo> sigs, ProtectConfig protect) =>
+        IReadOnlyDictionary<string, SignatureInfo> sigs, ProtectConfig protect, KrModulesConfig? kr = null) =>
         services
             .Where(s => s.TargetPath is not null && !protect.IsProtectedService(s.Name) && !protect.IsProtectedPath(s.TargetPath)
-                        && !protect.IsProtectedProgram(s.DisplayName))
+                        && !protect.IsProtectedProgram(s.DisplayName) && kr?.MatchPath(s.TargetPath) is null)
             .Select(s => (s, sig: sigs.TryGetValue(s.TargetPath!, out var v) ? v : null))
             // A missing binary is a broken service, not a running threat; an unreadable one is not known to be unsigned.
             .Where(x => x.sig is { IsUnsigned: true })
@@ -116,7 +117,7 @@ public sealed class TaskSuspectCollector(IPowerShell ps) : ICollector
         var tasks = rows.EnumerateArray()
             .Select(r => new TaskEntry(r.Str("TaskPath") ?? "", r.Str("TaskName") ?? "", r.Str("Execute") ?? "", r.Str("Arguments") ?? "", r.Str("State") ?? ""))
             .ToList();
-        return CollectorResult.Ok(Id, Evaluate(tasks, ctx.Config.Protect));
+        return CollectorResult.Ok(Id, Evaluate(tasks, ctx.Config.Protect, ctx.Config.KrModules));
     }
 
     // PowerShell accepts any prefix of -EncodedCommand (and -ec); -ExecutionPolicy shares only "-e" and is excluded by the "x".
@@ -125,14 +126,14 @@ public sealed class TaskSuspectCollector(IPowerShell ps) : ICollector
         System.Text.RegularExpressions.RegexOptions.IgnoreCase);
     private static readonly string[] Hosts = ["mshta.exe", "wscript.exe", "cscript.exe", "mshta", "wscript", "cscript"];
 
-    public static IReadOnlyList<Finding> Evaluate(IReadOnlyList<TaskEntry> tasks, ProtectConfig protect)
+    public static IReadOnlyList<Finding> Evaluate(IReadOnlyList<TaskEntry> tasks, ProtectConfig protect, KrModulesConfig? kr = null)
     {
         var findings = new List<Finding>();
         foreach (var t in tasks)
         {
             if (protect.IsProtectedTask(t.FullName)) continue;
             var exe = Environment.ExpandEnvironmentVariables(t.Execute.Trim('"'));
-            if (protect.IsProtectedPath(exe)) continue;
+            if (protect.IsProtectedPath(exe) || kr?.MatchPath(exe) is not null) continue;
             var builtIn = t.TaskPath.StartsWith(@"\Microsoft\", StringComparison.OrdinalIgnoreCase);
 
             var reasons = new List<string>();

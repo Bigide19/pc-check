@@ -32,6 +32,9 @@ public static class RemediationCatalog
         new("ADV-AV-UPDATE", RiskLevel.AdviceOnly, "백신 업데이트", false, "백신 프로그램을 열어 업데이트하세요."),
         new("ADV-PHOTOS", RiskLevel.AdviceOnly, "사진 앱 복구", false, "설정 > 앱 > 설치된 앱 > 사진 > 고급 옵션에서 복구, 초기화 순서로 해 보세요. 그래도 안 되면 사진 앱을 지우고 Microsoft Store에서 다시 설치하세요. 원인이 그래픽 드라이버나 백신으로 나오면 그쪽을 먼저 고치세요."),
         new("ADV-GPU-DRIVER", RiskLevel.AdviceOnly, "그래픽 드라이버 재설치", false, "그래픽카드 제조사(Intel, NVIDIA, AMD) 사이트에서 최신 드라이버를 받아 설치하세요. 화면 깜빡임이 함께 있다면 케이블 재연결, 고정 주사율(60Hz), 가변 주사율 끄기도 확인하세요."),
+        new("ADV-PERFCOUNTER", RiskLevel.AdviceOnly, "성능 카운터 복구", false, "관리자 명령 프롬프트에서 lodctr /R 을 실행하고 재부팅하세요. 최적화 프로그램이 꺼 둔 경우라면 그 프로그램의 설정도 되돌리세요."),
+        new("ADV-CRASH-MODULE", RiskLevel.AdviceOnly, "충돌 프로그램 정리", false, "앱을 종료시키는 모듈의 프로그램을 설정 > 앱에서 지우거나 최신 버전으로 업데이트하세요."),
+        new("ADV-KR-MODULES", RiskLevel.AdviceOnly, "보안 모듈 정리", false, "설정 > 앱에서 은행, 공공기관 보안 프로그램을 지우세요. 사이트를 이용할 때 필요한 것만 다시 설치하고, 다 쓰면 지우는 편이 좋습니다."),
         new("ADV-AV-DUP", RiskLevel.AdviceOnly, "백신 하나만 사용", false, "백신은 하나만 쓰세요. 쓰지 않는 백신을 제거하면 속도가 좋아집니다."),
     ];
 

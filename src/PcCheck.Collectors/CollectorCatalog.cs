@@ -41,6 +41,8 @@ public static class CollectorCatalog
             new KnownBadProgramCollector(uninstall),
             new RecentProgramCollector(uninstall),
             new PhotosCollector(ps),
+            new CrashCollector(ps, uninstall),
+            new KrModulesCollector(uninstall, startup),
             new BrowserPolicyCollector(),
             new BrowserExtensionCollector(),
             new HostsCollector(),

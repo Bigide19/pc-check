@@ -60,6 +60,7 @@ public sealed class ThresholdsConfig
     public Level LastUpdateAgeDays { get; set; } = new() { Medium = 60 };
     public Level UnexpectedShutdowns7d { get; set; } = new() { Medium = 3 };
     public Level DisplayDriverResets7d { get; set; } = new() { Medium = 1 };
+    public Level AppCrashes7d { get; set; } = new() { Medium = 2, High = 5 };
     public Level TempSizeGb { get; set; } = new() { Low = 2 };
     public Level UptimeDays { get; set; } = new() { Low = 14 };
     public int RecentInstallDays { get; set; } = 30;

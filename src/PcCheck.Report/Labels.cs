@@ -76,6 +76,8 @@ public static class Labels
         "APP-KNOWN-BAD" => "알려진 불필요 프로그램",
         "APP-RECENT" => "최근 설치 프로그램",
         "APP-PHOTOS" => "사진 앱",
+        "APP-CRASHES" => "앱을 종료시키는 프로그램",
+        "SEC-KR-MODULES" => "은행, 공공기관 보안 모듈",
         "BR-POLICY" => "브라우저 정책 변조",
         "BR-EXT" => "브라우저 확장 프로그램",
         "NET-HOSTS" => "hosts 변조",

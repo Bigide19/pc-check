@@ -10,6 +10,7 @@ public static class ConfigLoader
     public const string RulesFile = "rules.json";
     public const string KnownBadFile = "known-bad.json";
     public const string ProtectFile = "protect.json";
+    public const string KrModulesFile = "kr-modules.json";
 
     public static ConfigLoadResult Load(string configDir)
     {
@@ -17,6 +18,7 @@ public static class ConfigLoader
         var rules = Read<RulesConfig>(configDir, RulesFile, warnings);
         var knownBad = Read<KnownBadConfig>(configDir, KnownBadFile, warnings);
         var protect = Read<ProtectConfig>(configDir, ProtectFile, warnings);
+        var krModules = Read<KrModulesConfig>(configDir, KrModulesFile, warnings);
 
         foreach (var p in knownBad.Programs)
             p.Regex = Compile(p.Match, $"{KnownBadFile} programs '{p.Match}'", warnings);
@@ -29,7 +31,7 @@ public static class ConfigLoader
         foreach (var p in protect.Programs.Where(p => p.Regex is null && p.DisplayNameMatch.Length > 0))
             p.Regex = new Regex(Regex.Escape(p.DisplayNameMatch), RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
-        return new ConfigLoadResult(new PcCheckConfig(rules, knownBad, protect), warnings);
+        return new ConfigLoadResult(new PcCheckConfig(rules, knownBad, protect) { KrModules = krModules }, warnings);
     }
 
     // Missing file: built-in defaults. Broken file: defaults plus a warning surfaced in the report.

@@ -16,6 +16,7 @@
     "lastUpdateAgeDays": { "medium": 60 },
     "unexpectedShutdowns7d": { "medium": 3 },
     "displayDriverResets7d": { "medium": 1 },
+    "appCrashes7d": { "medium": 2, "high": 5 },
     "tempSizeGb": { "low": 2 },
     "uptimeDays": { "low": 14 },
     "recentInstallDays": 30

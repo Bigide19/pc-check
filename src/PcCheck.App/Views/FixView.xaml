@@ -132,6 +132,8 @@
                 </TextBlock>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
                     <Button Content="나머지 모두 건너뛰기" Style="{StaticResource SecondaryButton}" Command="{Binding SkipAllCommand}" AutomationProperties.AutomationId="SkipAllButton"/>
+                    <Button Content="{Binding ApproveKindText}" Style="{StaticResource SecondaryButton}" Command="{Binding ApproveKindCommand}"
+                            Visibility="{Binding HasSameKind, Converter={StaticResource BoolToVisibility}}" AutomationProperties.AutomationId="ApproveKindButton"/>
                     <Button Content="건너뛰기" Style="{StaticResource SecondaryButton}" Command="{Binding SkipCommand}" AutomationProperties.AutomationId="SkipButton"/>
                     <Button Content="승인" Style="{StaticResource PrimaryButton}" Margin="8,0,0,0" Command="{Binding ApproveCommand}" AutomationProperties.AutomationId="ApproveButton"/>
                 </StackPanel>
