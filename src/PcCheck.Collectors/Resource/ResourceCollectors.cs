@@ -14,29 +14,52 @@ public abstract class ResourceCollectorBase(IResourceSampler sampler) : ICollect
     public async Task<CollectorResult> CollectAsync(CollectContext ctx, CancellationToken ct)
     {
         var snap = await sampler.GetAsync(ctx, ct);
-        // Top processes ride on RES-CPU only, so the report gets them once.
-        return CollectorResult.Ok(Id, Evaluate(snap, ctx.Config.Rules), Id == "RES-CPU" ? snap.Top : null);
+        if (!HasData(snap))
+            return CollectorResult.Fail(Id, "성능 카운터를 읽지 못해 측정하지 못했습니다. " + string.Join(" / ", snap.CounterProblems.Take(2)));
+        var findings = Evaluate(snap, ctx.Config.Rules).ToList();
+        // Counter health and top processes ride on RES-CPU only, so the report gets them once.
+        if (Id == "RES-CPU") findings.AddRange(PerfCounterHealth.Check(snap));
+        return CollectorResult.Ok(Id, findings, Id == "RES-CPU" ? snap.Top : null);
     }
 
+    protected abstract bool HasData(ResourceSnapshot s);
     protected abstract IReadOnlyList<Finding> Evaluate(ResourceSnapshot s, RulesConfig rules);
 
     protected static string Pct(double v) => v.ToString("0.#");
+}
+
+public static class PerfCounterHealth
+{
+    public static IReadOnlyList<Finding> Check(ResourceSnapshot s)
+    {
+        if (s.CounterProblems.Count == 0 && s.DisabledCounterSets.Count == 0) return [];
+        var ev = new List<(string, object?)>();
+        if (s.DisabledCounterSets.Count > 0) ev.Add(("disabled", string.Join(", ", s.DisabledCounterSets)));
+        ev.AddRange(s.CounterProblems.Take(8).Select((p, i) => ($"problem{i + 1}", (object?)p)));
+        return [F.Make("SYS-PERF", Categories.System, Severity.Low, "성능 카운터 손상",
+            s.DisabledCounterSets.Count > 0
+                ? "성능 카운터가 꺼져 있습니다. 최적화 프로그램이 끄는 경우가 많습니다. 일부 측정은 다른 방법으로 대신했습니다."
+                : "일부 성능 카운터를 읽지 못했습니다. 가능한 측정은 다른 방법으로 대신했습니다.",
+            "ADV-PERFCOUNTER", ev.ToArray())];
+    }
 }
 
 public sealed class CpuCollector(IResourceSampler sampler) : ResourceCollectorBase(sampler)
 {
     public override string Id => "RES-CPU";
 
+    protected override bool HasData(ResourceSnapshot s) => s.Cpu is not null;
     protected override IReadOnlyList<Finding> Evaluate(ResourceSnapshot s, RulesConfig rules) => Check(s, rules);
 
     public static IReadOnlyList<Finding> Check(ResourceSnapshot s, RulesConfig rules)
     {
-        var sev = F.Above(s.Cpu.Avg, rules.Thresholds.CpuAvgPercent);
+        if (s.Cpu is not { } cpu) return [];
+        var sev = F.Above(cpu.Avg, rules.Thresholds.CpuAvgPercent);
         if (sev is null) return [];
         var top = string.Join(", ", s.Top.Cpu.Take(3).Select(p => $"{p.Name} {p.Value}%"));
-        return [F.Make("RES-CPU", Categories.Resource, sev.Value, $"CPU 사용률 평균 {Pct(s.Cpu.Avg)}%",
+        return [F.Make("RES-CPU", Categories.Resource, sev.Value, $"CPU 사용률 평균 {Pct(cpu.Avg)}%",
             $"{s.DurationSec}초 동안 CPU가 계속 바빴습니다. 상위: {top}", "ADV-CPU",
-            ("avgPercent", Pct(s.Cpu.Avg)), ("p95Percent", Pct(s.Cpu.P95)), ("samples", s.Cpu.Count))];
+            ("avgPercent", Pct(cpu.Avg)), ("p95Percent", Pct(cpu.P95)), ("samples", cpu.Count))];
     }
 }
 
@@ -44,18 +67,20 @@ public sealed class MemoryCollector(IResourceSampler sampler) : ResourceCollecto
 {
     public override string Id => "RES-MEM";
 
+    protected override bool HasData(ResourceSnapshot s) => s.MemAvailableMb is not null || s.MemCommittedPercent is not null;
     protected override IReadOnlyList<Finding> Evaluate(ResourceSnapshot s, RulesConfig rules) => Check(s, rules);
 
     public static IReadOnlyList<Finding> Check(ResourceSnapshot s, RulesConfig rules)
     {
         var t = rules.Thresholds;
-        var lowAvail = t.MemAvailableMb.High is { } a && s.MemAvailableMb.Avg < a;
-        var highCommit = t.MemCommittedPercent.High is { } c && s.MemCommittedPercent.Avg > c;
+        var lowAvail = t.MemAvailableMb.High is { } a && s.MemAvailableMb is { } av && av.Avg < a;
+        var highCommit = t.MemCommittedPercent.High is { } c && s.MemCommittedPercent is { } cm && cm.Avg > c;
         if (!lowAvail && !highCommit) return [];
         return [F.Make("RES-MEM", Categories.Resource, Severity.High, "메모리 압박",
-            $"가용 메모리 평균 {s.MemAvailableMb.Avg:0}MB, 커밋 {Pct(s.MemCommittedPercent.Avg)}%입니다. 디스크로 페이지 교체가 자주 일어납니다.", "ADV-MEM",
-            ("availableAvgMb", s.MemAvailableMb.Avg.ToString("0")), ("availableP95Mb", s.MemAvailableMb.P95.ToString("0")),
-            ("committedAvgPercent", Pct(s.MemCommittedPercent.Avg)), ("committedP95Percent", Pct(s.MemCommittedPercent.P95)))];
+            $"가용 메모리 평균 {s.MemAvailableMb?.Avg:0}MB, 커밋 {Pct(s.MemCommittedPercent?.Avg ?? 0)}%입니다. 디스크로 페이지 교체가 자주 일어납니다.", "ADV-MEM",
+            ("availableAvgMb", s.MemAvailableMb?.Avg.ToString("0")), ("availableP95Mb", s.MemAvailableMb?.P95.ToString("0")),
+            ("committedAvgPercent", s.MemCommittedPercent is { } x ? Pct(x.Avg) : null),
+            ("committedP95Percent", s.MemCommittedPercent is { } y ? Pct(y.P95) : null))];
     }
 }
 
@@ -63,17 +88,18 @@ public sealed class DiskIoCollector(IResourceSampler sampler) : ResourceCollecto
 {
     public override string Id => "RES-DISK";
 
+    protected override bool HasData(ResourceSnapshot s) => s.DiskIdlePercent is not null || s.DiskQueue is not null;
     protected override IReadOnlyList<Finding> Evaluate(ResourceSnapshot s, RulesConfig rules) => Check(s, rules);
 
     public static IReadOnlyList<Finding> Check(ResourceSnapshot s, RulesConfig rules)
     {
         var t = rules.Thresholds;
-        var lowIdle = t.DiskIdlePercent.High is { } i && s.DiskIdlePercent.Avg < i;
-        var longQueue = t.DiskQueueLength.High is { } q && s.DiskQueue.Avg > q;
+        var lowIdle = t.DiskIdlePercent.High is { } i && s.DiskIdlePercent is { } id && id.Avg < i;
+        var longQueue = t.DiskQueueLength.High is { } q && s.DiskQueue is { } dq && dq.Avg > q;
         if (!lowIdle && !longQueue) return [];
         return [F.Make("RES-DISK", Categories.Resource, Severity.High, "디스크 병목",
-            $"샘플링 중 디스크 Idle 평균 {Pct(s.DiskIdlePercent.Avg)}%, 큐 길이 평균 {s.DiskQueue.Avg:0.0}입니다.", "ADV-DISK-IO",
-            ("idleAvgPercent", Pct(s.DiskIdlePercent.Avg)), ("idleP95Percent", Pct(s.DiskIdlePercent.P95)),
-            ("queueAvg", s.DiskQueue.Avg.ToString("0.0")), ("queueP95", s.DiskQueue.P95.ToString("0.0")))];
+            $"샘플링 중 디스크 Idle 평균 {Pct(s.DiskIdlePercent?.Avg ?? 100)}%, 큐 길이 평균 {s.DiskQueue?.Avg ?? 0:0.0}입니다.", "ADV-DISK-IO",
+            ("idleAvgPercent", s.DiskIdlePercent is { } a ? Pct(a.Avg) : null), ("idleP95Percent", s.DiskIdlePercent is { } b ? Pct(b.P95) : null),
+            ("queueAvg", s.DiskQueue?.Avg.ToString("0.0")), ("queueP95", s.DiskQueue?.P95.ToString("0.0")))];
     }
 }
