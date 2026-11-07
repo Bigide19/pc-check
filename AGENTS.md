@@ -2,7 +2,7 @@
 
 Windows PC check tool: diagnoses a slow PC and decides between cleanup, format, or hardware replacement.
 Design source: `docs/spec.md` (Korean; the change log table at its top overrides the body).
-Current state and the next tasks: `docs/handoff.md`. Read it before starting work.
+Current state and the next tasks: `docs/handoff.md`. Real-PC cases and their lessons: `docs/field-notes.md`. Read both before starting work.
 
 This file is shared by Claude Code (via `CLAUDE.md`) and Codex. Keep rules here, not in `CLAUDE.md`.
 
@@ -12,7 +12,7 @@ This file is shared by Claude Code (via `CLAUDE.md`) and Codex. Keep rules here,
 - Only `PcCheck.App` targets `net10.0-windows`. Other libraries stay `net10.0` (Windows-only assemblies carry `[assembly: SupportedOSPlatform("windows")]`) so unit tests run on macOS too.
 - Scan mode is read-only. Code that writes to the registry, files, or services lives only in `PcCheck.Remediation`, and goes through `ISystemOps` so tests can use a fake.
 - Every remediation records the original value in an `ActionRecord` before acting; irreversible ones set `Reversible = false`. `actions.json` is saved after each action.
-- Entries in `protect.json` are excluded from findings and remediation candidates.
+- Entries in `protect.json` are excluded from findings and remediation candidates. Korean security modules are data in `config/kr-modules.json` (researched notes with sources), not code; they are clean-up candidates, never suspects.
 - Collectors never throw outward; `ScanRunner` turns faults and timeouts into `CollectorResult` errors. Timeout is per collector (`ICollector.GetTimeout`).
 - Collectors keep collection (Windows APIs) separate from a static `Evaluate(...)` that takes plain input; unit tests target `Evaluate`.
 - PowerShell is called through `PowerShellRunner` (`-NoProfile -NonInteractive -ExecutionPolicy Bypass -EncodedCommand`); results come back as JSON. Emit dates with `.ToString('o')`, since PowerShell 5.1 serializes DateTime as `/Date(...)/`.
