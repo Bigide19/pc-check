@@ -1,6 +1,6 @@
 # Handoff
 
-Last updated 2026-11-09 by Claude Code. **v0.2.0 is released (2026-11-09)**: renamed from pitstop to PC Check (repo `Bigide19/pc-check`) with the water-drop brand. Scan, verdict, and remediation logic are unchanged from v0.1.3. Since then (branch `feature/i18n`, not released): Korean and English UI, see "Localization" below. Next: stage 2 of the three-leak plan below.
+Last updated 2026-11-09 by Claude Code. **v0.2.1 is released (2026-11-09)**: Korean and English UI (see "Localization" below). v0.2.0 (same day) renamed pitstop to PC Check (repo `Bigide19/pc-check`) with the water-drop brand. Scan, verdict, and remediation logic are unchanged from v0.1.3. Next: stage 2 of the three-leak plan below.
 
 ## Rename and scope (2026-11-09, user decision)
 
