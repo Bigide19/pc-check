@@ -3,6 +3,7 @@ using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PcCheck.App.Services;
+using PcCheck.App.Views;
 using PcCheck.Core;
 using PcCheck.Report;
 
@@ -64,6 +65,10 @@ public sealed partial class ResultViewModel : ObservableObject
     public IReadOnlyList<ErrorItem> Errors { get; }
 
     public string FindingsHeader => $"발견 항목 ({Findings.Count})";
+    // Follows the verdict so the drop never says "leaking" next to a "healthy" verdict.
+    public int LeakCount => Report.Verdict.Primary == Verdict.Healthy ? 0 : Report.Findings.Count(f => f.Severity != Severity.Info);
+    public LeakDropMode LeakMode => LeakCount == 0 ? LeakDropMode.Clean : LeakDropMode.Leaking;
+    public string LeakText => LeakCount == 0 ? "새는 곳 없음" : $"새는 곳 {LeakCount}곳";
     public string ErrorsHeader => $"수집 오류 ({Report.CollectorErrors.Count})";
     public bool HasErrors => Report.CollectorErrors.Count > 0;
     public string ReportPath => Path.Combine(OutputDir, "report.html");

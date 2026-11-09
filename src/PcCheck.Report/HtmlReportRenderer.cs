@@ -36,7 +36,7 @@ public static class HtmlReportRenderer
             <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
             <title>PC 점검 결과 - {{H(m.Name)}}</title>
             <style>
-            :root{--bg:#f4f5f7;--surface:#fff;--border:#e1e4e8;--text:#1f2328;--muted:#656d76;--accent:#b9430d;--cleanup:#1f6feb;--brand:#ff742f;--brand-surface:#24282b;--ok:#1a7f37;--critical:#c4231c;--high:#d4600a;--medium:#b88700;--low:#57606a;--info:#8c959f;--code:#f6f8fa}
+            :root{--bg:#f4f5f7;--surface:#fff;--border:#e1e4e8;--text:#1f2328;--muted:#656d76;--accent:#0e6e7a;--cleanup:#1f6feb;--brand:#2bb3c0;--brand-surface:#123238;--ok:#1a7f37;--critical:#c4231c;--high:#d4600a;--medium:#b88700;--low:#57606a;--info:#8c959f;--code:#f6f8fa}
             *{box-sizing:border-box}
             body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 "Malgun Gothic","Apple SD Gothic Neo","Segoe UI",sans-serif;word-break:keep-all;overflow-wrap:break-word}
             main{max-width:1040px;margin:0 auto;padding:24px 16px 48px}
@@ -66,7 +66,7 @@ public static class HtmlReportRenderer
             .brand b{font:700 22px "Segoe UI",sans-serif}.brand span{margin-left:auto;font-size:12px;color:#cdd0d1}
             @media print{body{background:#fff}.card{break-inside:avoid} }
             </style></head><body>
-            <header class="brand"><div><svg width="24" height="22" viewBox="0 0 28 26" aria-hidden="true"><path fill="#ff742f" d="M9 0h8L8 26H0z"/><path fill="#fff" d="M20 0h8l-9 26h-8z"/></svg><b>PC Check</b><span>PC 진단 및 정비</span></div></header>
+            <header class="brand"><div><svg width="20" height="24" viewBox="0 0 80 98" aria-hidden="true"><path fill="#2bb3c0" d="M40 4C40 4 8 44 8 62a32 32 0 0 0 64 0C72 44 40 4 40 4Z"/><path d="M24 62l11 11 21-22" fill="none" stroke="#123238" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg><b>PC Check</b><span>PC 점검과 정리</span></div></header>
             <main>
             """);
 

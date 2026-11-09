@@ -8,6 +8,9 @@
         FontFamily="{StaticResource UiFont}" FontSize="14"
         Background="{StaticResource BgBrush}" Foreground="{StaticResource TextBrush}"
         UseLayoutRounding="True" TextOptions.TextFormattingMode="Display">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="52" ResizeBorderThickness="6" GlassFrameThickness="0" CornerRadius="0" UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
     <Window.Resources>
         <DataTemplate DataType="{x:Type vm:StartViewModel}"><views:StartView/></DataTemplate>
         <DataTemplate DataType="{x:Type vm:ProgressViewModel}"><views:ProgressView/></DataTemplate>
@@ -15,21 +18,37 @@
         <DataTemplate DataType="{x:Type vm:FixViewModel}"><views:FixView/></DataTemplate>
         <DataTemplate DataType="{x:Type vm:UndoViewModel}"><views:UndoView/></DataTemplate>
     </Window.Resources>
-    <DockPanel>
-        <Border DockPanel.Dock="Top" Background="{StaticResource BrandSurfaceBrush}" Padding="32,12"
+    <DockPanel x:Name="Root">
+        <Border DockPanel.Dock="Top" Background="{StaticResource BrandSurfaceBrush}" Height="55"
                 BorderBrush="{StaticResource BrandBrush}" BorderThickness="0,0,0,3">
             <Grid>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <Viewbox Width="27" Height="25" Margin="0,0,12,0" AutomationProperties.Name="PC Check 심볼">
-                        <Canvas Width="28" Height="26">
-                            <Path Fill="{StaticResource BrandBrush}" Data="M 9,0 L 17,0 L 8,26 L 0,26 Z"/>
-                            <Path Fill="White" Data="M 20,0 L 28,0 L 19,26 L 11,26 Z"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="24,0,0,0">
+                    <Viewbox Width="20" Height="25" Margin="0,0,11,0" AutomationProperties.Name="PC Check 심볼">
+                        <Canvas Width="80" Height="98">
+                            <Path Fill="{StaticResource BrandBrush}" Data="{StaticResource DropGeometry}"/>
+                            <Path Data="M 24,62 L 35,73 L 56,51" Stroke="{StaticResource BrandSurfaceBrush}" StrokeThickness="9"
+                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"/>
                         </Canvas>
                     </Viewbox>
-                    <TextBlock Text="PC Check" FontFamily="Segoe UI" FontSize="26" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Text="PC Check" FontFamily="Segoe UI" FontSize="21" FontWeight="Bold" Foreground="White" VerticalAlignment="Center"/>
+                    <Border Background="#1F4A52" CornerRadius="99" Padding="8,1" Margin="10,2,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding VersionText}" FontFamily="Segoe UI" FontSize="11" Foreground="#BFE6EA"/>
+                    </Border>
                 </StackPanel>
-                <TextBlock Text="PC 진단 및 정비" Foreground="#CDD0D1" FontSize="12"
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="1" Text="PC 점검과 정리" Foreground="#9FB9BD" FontSize="12" VerticalAlignment="Center" Margin="0,0,18,0"/>
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button Style="{StaticResource CaptionButton}" Content="&#xE921;" Click="OnMinimize" ToolTip="최소화"
+                            AutomationProperties.AutomationId="MinimizeButton" AutomationProperties.Name="최소화"/>
+                    <Button x:Name="MaxButton" Style="{StaticResource CaptionButton}" Content="&#xE922;" Click="OnMaximize" ToolTip="최대화"
+                            AutomationProperties.AutomationId="MaximizeButton" AutomationProperties.Name="최대화"/>
+                    <Button Style="{StaticResource CloseCaptionButton}" Content="&#xE8BB;" Click="OnClose" ToolTip="닫기"
+                            AutomationProperties.AutomationId="CloseButton" AutomationProperties.Name="닫기"/>
+                </StackPanel>
             </Grid>
         </Border>
         <ContentControl Content="{Binding Page}" Focusable="False"/>

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PcCheck.App.Services;
+using PcCheck.App.Views;
 using PcCheck.Core;
 using PcCheck.Remediation;
 using PcCheck.Report;
@@ -18,6 +19,7 @@ public sealed partial class ActionRowViewModel(string title, string target) : Ob
     [ObservableProperty] private string _status = "";
     [ObservableProperty] private string? _error;
     [ObservableProperty] private bool _isFailed;
+    [ObservableProperty] private bool _isApplied;
 }
 
 public sealed record PlanRow(string Title, string Target, string Kind, string ReversibleText);
@@ -46,6 +48,20 @@ public sealed partial class FixViewModel : ObservableObject
     public bool IsAskRestore => State == FixState.AskRestore;
     public bool IsConfirm => State == FixState.Confirm;
     public bool IsDone => State == FixState.Done;
+    public int FailedCount => Results.Count(r => r.IsFailed);
+    public LeakDropMode DoneMode => FailedCount > 0 ? LeakDropMode.Leaking : Results.Any(r => r.IsApplied) ? LeakDropMode.Fixed : LeakDropMode.Clean;
+    public string DoneSummary
+    {
+        get
+        {
+            var applied = Results.Count(r => r.IsApplied);
+            var skipped = Results.Count - applied - FailedCount;
+            if (applied + FailedCount == 0) return "실행한 조치가 없습니다.";
+            return $"{applied}건을 마쳤습니다."
+                + (FailedCount > 0 ? $" {FailedCount}건은 실패했습니다." : "")
+                + (skipped > 0 ? $" {skipped}건은 건너뛰었습니다." : "");
+        }
+    }
 
     public IReadOnlyList<PlanRow> AutoRows { get; }
     public IReadOnlyList<PlanRow> ConfirmRows { get; }
@@ -136,6 +152,7 @@ public sealed partial class FixViewModel : ObservableObject
         var rec = await _session!.ApplyAsync(a, CancellationToken.None);
         row.Status = rec.Status == ActionStatus.Applied ? "완료" : "실패";
         row.IsFailed = rec.Status != ActionStatus.Applied;
+        row.IsApplied = rec.Status == ActionStatus.Applied;
         row.Error = rec.Error;
     }
 
@@ -145,6 +162,9 @@ public sealed partial class FixViewModel : ObservableObject
         {
             Current = null;
             State = FixState.Done;
+            OnPropertyChanged(nameof(DoneMode));
+            OnPropertyChanged(nameof(FailedCount));
+            OnPropertyChanged(nameof(DoneSummary));
             return;
         }
         var total = _plan.Confirm.Count();

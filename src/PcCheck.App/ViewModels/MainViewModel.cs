@@ -8,7 +8,8 @@ public sealed partial class MainViewModel : ObservableObject
 {
     [ObservableProperty] private object? _page;
 
-    public string Title { get; } = $"PC Check {typeof(MainViewModel).Assembly.GetName().Version?.ToString(3)}";
+    public string VersionText { get; } = typeof(MainViewModel).Assembly.GetName().Version?.ToString(3) ?? "";
+    public string Title => $"PC Check {VersionText}";
 
     public MainViewModel(ScanReport? mock = null)
     {

@@ -67,9 +67,10 @@ public sealed partial class ProgressViewModel : ObservableObject
     }
 
     public string CompletedText => $"{Completed} / {Total}";
+    public double OverallFraction => Total == 0 ? 0 : (double)Completed / Total;
 
-    partial void OnCompletedChanged(int value) => OnPropertyChanged(nameof(CompletedText));
-    partial void OnTotalChanged(int value) => OnPropertyChanged(nameof(CompletedText));
+    partial void OnCompletedChanged(int value) { OnPropertyChanged(nameof(CompletedText)); OnPropertyChanged(nameof(OverallFraction)); }
+    partial void OnTotalChanged(int value) { OnPropertyChanged(nameof(CompletedText)); OnPropertyChanged(nameof(OverallFraction)); }
 
     private void SetStage(ScanStage stage)
     {
