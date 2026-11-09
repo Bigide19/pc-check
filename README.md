@@ -8,8 +8,8 @@
   <p>느려진 Windows PC를 포맷하기 전에, 정리로 충분한지부터 진단하는 도구</p>
 
   <p>
-    <a href="https://github.com/Bigide19/pc-check/releases/latest/download/pccheck-win-x64.zip"><img src="https://img.shields.io/badge/다운로드-pccheck--win--x64.zip-B9430D?style=for-the-badge&logo=windows&logoColor=white" alt="다운로드 (zip)" /></a>
-    <a href="https://github.com/Bigide19/pc-check/releases/latest/download/PcCheck.exe"><img src="https://img.shields.io/badge/exe만-PcCheck.exe-24282B?style=for-the-badge&logo=windows&logoColor=white" alt="다운로드 (exe)" /></a>
+    <a href="https://github.com/Bigide19/pc-check/releases/latest/download/pccheck-win-x64.zip"><img src="https://img.shields.io/badge/다운로드-pccheck--win--x64.zip-0E6E7A?style=for-the-badge&logo=windows&logoColor=white" alt="다운로드 (zip)" /></a>
+    <a href="https://github.com/Bigide19/pc-check/releases/latest/download/PcCheck.exe"><img src="https://img.shields.io/badge/exe만-PcCheck.exe-123238?style=for-the-badge&logo=windows&logoColor=white" alt="다운로드 (exe)" /></a>
   </p>
 
   <p>
