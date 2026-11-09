@@ -23,7 +23,8 @@ This file is shared by Claude Code (via `CLAUDE.md`) and Codex. Keep rules here,
 ## Build and test
 - macOS: `dotnet build PcCheck.slnx`, `dotnet test PcCheck.slnx` (WPF compiles thanks to `EnableWindowsTargeting`; it cannot run on macOS).
 - Windows VM: Parallels "Windows 11 Pro" (ARM64, ko-KR; the x64 build runs under emulation). Drive it with `tools/vm/vm.sh`:
-  `deploy | scan [--quick] | gui [--mock] | invoke <AutomationId> | tab N | max | front | capture FILE | run-ps NAME`.
+  `deploy | scan [--quick] | gui [--mock] | invoke <AutomationId> | tab N | max | front | shot FILE [MAXWIDTH] | capture FILE | run-ps NAME`.
+  - Screenshots: use `shot` (taken inside the guest session). `prlctl capture` (`capture`) can return an empty file.
   - `prlctl exec` runs as SYSTEM in session 0 (no visible windows). GUI runs go through an elevated interactive scheduled task. Do not change the VM UAC policy.
   - Click GUI elements by `AutomationProperties.AutomationId`, not by Korean labels (non-ASCII arguments do not survive `prlctl`).
   - VM disk and sensor values are virtual hardware; verify verdict logic with mocked data, not VM readings.
