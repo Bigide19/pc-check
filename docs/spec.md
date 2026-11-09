@@ -30,6 +30,7 @@
 | 2026-11-07 | 리소스 측정 | 카운터 하나가 없으면 셋 다 실패 | 카운터를 따로 읽고 CPU와 메모리는 Windows API로 대신 측정. 카운터 손상은 `SYS-PERF`(Low)로 표시 |
 | 2026-11-07 | 판정과 백신 | | 사용자 결정: 판정 규칙은 바꾸지 않음. 백신은 문제를 일으킬 때만 다룸(Defender 검사 거부 이유만 표시) |
 | 2026-11-06 | 리포트 전송 | 원격 수집 서버는 비범위 | Slack 수신 웹훅으로 요약과 발견 항목을 나눠 전송. 주소는 화면 입력이나 환경 변수 `PCCHECK_SLACK_WEBHOOK`로만 받고 저장하지 않으며, `hooks.slack.com`만 허용 |
+| 2026-11-09 | 이름과 범위 | pitstop, 성능 진단 | 이름을 PC Check로 변경(레포 `pc-check`, 릴리스 zip `pccheck-win-x64.zip`). 범위를 "PC에서 새는 곳" 세 가지로 넓힘: 성능 누수(지금 진단 26개), 공간 누수(안 쓰는 파일 정리), 정보 누수(개인정보 정리, `windows-pc-privacy-cleaner`에서 이식). 유출 여부는 확인하지 않으므로 "유출됨"이 아니라 "남아 있음, 샐 수 있음"으로 표현 |
 
 ## 개요
 
@@ -103,7 +104,7 @@ self-contained 단일 exe로 배포합니다. 대상 PC에 런타임을 설치�
 ### 프로젝트 구조
 
 ```
-pitstop/
+pc-check/
   PcCheck.slnx
   src/
     PcCheck.App/            WPF 진입점, headless scan, 화면 (net10.0-windows)

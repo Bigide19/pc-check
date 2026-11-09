@@ -58,7 +58,7 @@
         {
           "year": null,
           "summary": "TENXWGuard64_127.dll이 Windows 사진 앱에 주입되어 c0000005로 21회 크래시, 삭제 후 해소",
-          "source": "pitstop 현장 사례 (2026-11)"
+          "source": "PC Check 현장 사례 (2026-11)"
         }
       ],
       "uninstallNotes": "라온시큐어는 '키보드 보안 삭제 프로그램'으로 완전히 지운 뒤 새 버전 설치를 권장. 함께 설치되는 CrossEXService(iniLINE CrossEX)도 같이 갱신됨. 은행 접속 시 다시 설치 요구됨. TouchEn nxKey를 다시 설치하면 CrossEX도 함께 설치, 갱신되므로 둘을 함께 정리하는 편이 좋음.",

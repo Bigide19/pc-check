@@ -66,7 +66,7 @@ public static class HtmlReportRenderer
             .brand b{font:700 22px "Segoe UI",sans-serif}.brand span{margin-left:auto;font-size:12px;color:#cdd0d1}
             @media print{body{background:#fff}.card{break-inside:avoid} }
             </style></head><body>
-            <header class="brand"><div><svg width="24" height="22" viewBox="0 0 28 26" aria-hidden="true"><path fill="#ff742f" d="M9 0h8L8 26H0z"/><path fill="#fff" d="M20 0h8l-9 26h-8z"/></svg><b>pitstop</b><span>PC 진단 및 정비</span></div></header>
+            <header class="brand"><div><svg width="24" height="22" viewBox="0 0 28 26" aria-hidden="true"><path fill="#ff742f" d="M9 0h8L8 26H0z"/><path fill="#fff" d="M20 0h8l-9 26h-8z"/></svg><b>PC Check</b><span>PC 진단 및 정비</span></div></header>
             <main>
             """);
 
@@ -82,7 +82,7 @@ public static class HtmlReportRenderer
             <span class="muted">실행 계정</span><span>{H(m.User)}{(m.IsAdmin ? "" : " (관리자 아님)")}</span>
             <span class="muted">실행 일시</span><span>{r.ScannedAt:yyyy-MM-dd HH:mm}</span>
             <span class="muted">샘플링</span><span>{(r.SamplingSec > 0 ? $"{r.SamplingSec}초" : "측정 안 함")}</span>
-            <span class="muted">툴 버전</span><span>pitstop {H(r.ToolVersion)}</span>
+            <span class="muted">툴 버전</span><span>PC Check {H(r.ToolVersion)}</span>
             </div></div>
             """);
 

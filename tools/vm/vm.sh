@@ -9,7 +9,8 @@ VM="${PCCHECK_VM:-Windows 11 Pro}"
 VM_USER="${PCCHECK_VM_USER:-$(prlctl exec "$VM" --current-user cmd /c whoami 2>/dev/null | tr -d '\r')}"
 APP_DIR='C:\work\pccheck'
 TOOLS_DIR='C:\work\tools'
-REPO_SHARE='Y:\pitstop'   # Parallels share of ~/Projects, visible to the logged-in user only
+# Parallels share of ~/Projects, visible to the logged-in user only; follows the local repo folder name.
+REPO_SHARE="Y:\\$(basename "$(cd "$(dirname "$0")/../.." && pwd)")"
 
 # Non-zero exits are expected (e.g. Stop-Process with nothing running) and must not abort the helper.
 ps() { prlctl exec "$VM" powershell -NoProfile -Command "$1" 2>&1 | iconv -f cp949 -t utf-8 || true; }

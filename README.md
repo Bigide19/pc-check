@@ -1,19 +1,19 @@
 <a id="readme-top"></a>
 
 <div align="center">
-  <img src="docs/pitstop-icon.png" alt="pitstop" width="96" />
+  <img src="docs/pccheck-icon.png" alt="PC Check" width="96" />
 
-  <h1>pitstop</h1>
+  <h1>PC Check</h1>
 
   <p>느려진 Windows PC를 포맷하기 전에, 정리로 충분한지부터 진단하는 도구</p>
 
   <p>
-    <a href="https://github.com/Bigide19/pitstop/releases/latest/download/pitstop-win-x64.zip"><img src="https://img.shields.io/badge/다운로드-pitstop--win--x64.zip-B9430D?style=for-the-badge&logo=windows&logoColor=white" alt="다운로드 (zip)" /></a>
-    <a href="https://github.com/Bigide19/pitstop/releases/latest/download/PcCheck.exe"><img src="https://img.shields.io/badge/exe만-PcCheck.exe-24282B?style=for-the-badge&logo=windows&logoColor=white" alt="다운로드 (exe)" /></a>
+    <a href="https://github.com/Bigide19/pc-check/releases/latest/download/pccheck-win-x64.zip"><img src="https://img.shields.io/badge/다운로드-pccheck--win--x64.zip-B9430D?style=for-the-badge&logo=windows&logoColor=white" alt="다운로드 (zip)" /></a>
+    <a href="https://github.com/Bigide19/pc-check/releases/latest/download/PcCheck.exe"><img src="https://img.shields.io/badge/exe만-PcCheck.exe-24282B?style=for-the-badge&logo=windows&logoColor=white" alt="다운로드 (exe)" /></a>
   </p>
 
   <p>
-    <img src="https://img.shields.io/github/v/release/Bigide19/pitstop?style=flat" alt="Release" />
+    <img src="https://img.shields.io/github/v/release/Bigide19/pc-check?style=flat" alt="Release" />
     <img src="https://img.shields.io/badge/Windows-10%2022H2%20%7C%2011%20(x64)-0078D4?style=flat" alt="Windows" />
     <img src="https://img.shields.io/badge/.NET-10-512BD4?style=flat&logo=dotnet&logoColor=white" alt=".NET 10" />
   </p>
@@ -37,7 +37,7 @@
 
 <img src="docs/images/progress.png" alt="점검 중 화면" width="720" />
 
-PC가 느려지면 흔히 포맷부터 떠올립니다. 그런데 원인이 HDD나 메모리 부족이라면 포맷해도 금방 다시 느려지고, 시작 프로그램 몇 개가 원인이라면 포맷까지 할 필요가 없습니다. pitstop은 하드웨어, 리소스 사용량, 시작 항목, 브라우저 변조, 보안 상태를 한 번에 살펴보고 판정을 내립니다. 판정 결과는 "정리로 충분", "포맷 권장", "하드웨어 교체 권장" 중 하나입니다.
+PC가 느려지면 흔히 포맷부터 떠올립니다. 그런데 원인이 HDD나 메모리 부족이라면 포맷해도 금방 다시 느려지고, 시작 프로그램 몇 개가 원인이라면 포맷까지 할 필요가 없습니다. PC Check는 하드웨어, 리소스 사용량, 시작 항목, 브라우저 변조, 보안 상태를 한 번에 살펴보고 판정을 내립니다. 판정 결과는 "정리로 충분", "포맷 권장", "하드웨어 교체 권장" 중 하나입니다.
 
 설치하지 않고 실행하는 단일 exe라서, USB나 원격 전송으로 옮겨 바로 실행할 수 있습니다. 진단은 읽기 전용이고, 시스템을 바꾸는 조치는 항목별로 승인을 받은 뒤에만 실행합니다.
 
@@ -61,7 +61,7 @@ PC가 느려지면 흔히 포맷부터 떠올립니다. 그런데 원인이 HDD�
 
 ## 다운로드와 실행
 
-1. [Releases](https://github.com/Bigide19/pitstop/releases/latest)에서 `pitstop-win-x64.zip`을 받아 압축을 풉니다. zip에는 `PcCheck.exe`와, 임계값과 보호 목록을 바꿀 수 있는 `config/` 폴더가 들어 있습니다. `PcCheck.exe`만 받아도 실행할 수 있고, 이때는 내장된 기본값을 사용합니다.
+1. [Releases](https://github.com/Bigide19/pc-check/releases/latest)에서 `pccheck-win-x64.zip`을 받아 압축을 풉니다. zip에는 `PcCheck.exe`와, 임계값과 보호 목록을 바꿀 수 있는 `config/` 폴더가 들어 있습니다. `PcCheck.exe`만 받아도 실행할 수 있고, 이때는 내장된 기본값을 사용합니다.
 2. 받은 파일이 릴리스에 적힌 SHA-256과 같은지 확인합니다.
 
    ```powershell

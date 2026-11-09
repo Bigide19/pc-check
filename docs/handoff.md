@@ -1,6 +1,14 @@
 # Handoff
 
-Last updated 2026-11-07 by Claude Code. v0.1.3 is implemented, tested on macOS and in the Windows VM, pushed to `main`, and released (2026-11-07).
+Last updated 2026-11-09 by Claude Code. v0.1.3 is released (2026-11-07). The project is being renamed from pitstop to **PC Check** (v0.2.0, branch `feature/rename-pc-check`) and widened to three kinds of "leaks"; see Rename and scope below.
+
+## Rename and scope (2026-11-09, user decision)
+
+- Name: **PC Check**. Code already used `PcCheck` everywhere, so only the pitstop strings, icon file names, README, and docs changed. Namespaces, `PcCheck.exe`, and `PCCHECK_*` env vars stay.
+- GitHub repo `Bigide19/pitstop` -> `Bigide19/pc-check`: the README already points at the new name, so rename the repo (`gh repo rename pc-check`) together with merging this branch. Only on the user's order. GitHub redirects old repo URLs.
+- Local folder `~/Projects/pitstop` can be renamed after the session ends; `tools/vm/vm.sh` takes the VM share path from the folder name.
+- Scope: "PC에서 새는 곳을 찾습니다". Performance leaks (the 26 current checks), space leaks (unused-file cleanup, new), information leaks (personal-data cleanup ported from `Bigide19/windows-pc-privacy-cleaner`, net462 WPF, 46 files). Never claim data *was* leaked; say it remains or could leak.
+- Stages: 1 rename (this branch) -> 2 three-leak layout with mock data -> 3 port the privacy cleaner (deletes go through `ISystemOps`) -> 4 unused-file cleanup. Show a plan before each stage.
 
 ## Stage status
 
@@ -60,7 +68,7 @@ Held for the user's confirmation (were bundled with the rejected verdict change)
 
 ## Next tasks, in order
 
-1. **Releases** are built locally: `dotnet publish src/PcCheck.App -c Release -o publish`, zip `PcCheck.exe` + `config/`, `gh release create` with SHA-256 sums. Release only on the user's order.
+1. **Releases** are built locally: `dotnet publish src/PcCheck.App -c Release -o publish`, zip `PcCheck.exe` + `config/` as `pccheck-win-x64.zip`, `gh release create` with SHA-256 sums. Until a few releases after v0.2.0, also upload the same zip as `pitstop-win-x64.zip` so old `releases/latest/download/pitstop-win-x64.zip` links keep working. Release only on the user's order.
 2. **Ask: should `RM-TEMP-CLEAN` stay Auto?** In the VM it deleted 14 GB without a prompt and surprised the user. Proposal: Confirm, with size and file count on the card.
 3. **Held items** (see above): TASK-SUSPECT signature check, PUA severity. Ask first.
 4. **Not covered end to end**: `RM-DEFENDER` (Tamper Protection blocks turning real-time protection off for a test) and `RM-UNINSTALL` (interactive vendor uninstallers; exercised only in the `--mock` preview). Say so rather than force it.

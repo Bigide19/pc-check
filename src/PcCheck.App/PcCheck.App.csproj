@@ -7,8 +7,8 @@
     <AssemblyName>PcCheck</AssemblyName>
     <RootNamespace>PcCheck.App</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>Assets\pitstop.ico</ApplicationIcon>
-    <Version>0.1.3</Version>
+    <ApplicationIcon>Assets\pccheck.ico</ApplicationIcon>
+    <Version>0.2.0</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\pitstop.ico" />
+    <Resource Include="Assets\pccheck.ico" />
   </ItemGroup>
 
   <ItemGroup>
