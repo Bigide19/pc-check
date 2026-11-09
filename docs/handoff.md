@@ -1,6 +1,6 @@
 # Handoff
 
-Last updated 2026-11-09 by Claude Code. **v0.2.1 is released (2026-11-09)**: Korean and English UI (see "Localization" below). v0.2.0 (same day) renamed pitstop to PC Check (repo `Bigide19/pc-check`) with the water-drop brand. Scan, verdict, and remediation logic are unchanged from v0.1.3. Since then on main (not released): stage 2 of the three-leak plan, the result-screen layout with mock data. Next: stage 3 (port the privacy cleaner).
+Last updated 2026-11-09 by Claude Code. **v0.2.1 is released (2026-11-09)**: Korean and English UI (see "Localization" below). v0.2.0 (same day) renamed pitstop to PC Check (repo `Bigide19/pc-check`) with the water-drop brand. Scan, verdict, and remediation logic are unchanged from v0.1.3. Since then on main (not released): stage 2 of the three-leak plan, the result-screen layout with mock data. Next: stage 3 (port the privacy cleaner), deferred by the user to a later session; Claude Code or Codex may take it. Start from the brief `docs/stage3-privacy-port.md`.
 
 ## Rename and scope (2026-11-09, user decision)
 
