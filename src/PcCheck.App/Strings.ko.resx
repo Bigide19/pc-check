@@ -137,4 +137,14 @@
   <data name="Drop_NoLeak" xml:space="preserve"><value>새는 곳 없음</value></data>
   <data name="Result_LeakOne" xml:space="preserve"><value>새는 곳 1곳</value></data>
   <data name="Drop_LeakOne" xml:space="preserve"><value>새는 곳 1곳</value></data>
+  <data name="Leak_Performance" xml:space="preserve"><value>성능</value></data>
+  <data name="Leak_PerformanceTip" xml:space="preserve"><value>PC를 느리게 만드는 원인: 하드웨어, 시작 항목, 프로그램, 보안, 설정</value></data>
+  <data name="Leak_Space" xml:space="preserve"><value>공간</value></data>
+  <data name="Leak_SpaceTip" xml:space="preserve"><value>디스크를 차지하는 안 쓰는 파일</value></data>
+  <data name="Leak_Information" xml:space="preserve"><value>개인정보</value></data>
+  <data name="Leak_InformationTip" xml:space="preserve"><value>다른 사람이 이 PC를 쓸 때 샐 수 있는 개인정보</value></data>
+  <data name="Leak_NotChecked" xml:space="preserve"><value>아직 점검하지 않음</value></data>
+  <data name="Leak_SpaceSummary" xml:space="preserve"><value>정리할 수 있는 공간 {0:0.#}GB</value></data>
+  <data name="Leak_InformationSummary" xml:space="preserve"><value>개인정보가 남은 곳 {0}곳</value></data>
+  <data name="Leak_FilterTip" xml:space="preserve"><value>이 종류의 발견 항목만 봅니다. 한 번 더 누르면 전체를 봅니다.</value></data>
 </root>

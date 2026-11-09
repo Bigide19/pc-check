@@ -42,6 +42,44 @@ public sealed record ProcessColumn(string Title, string Unit, IReadOnlyList<Proc
         new(title, unit, samples.Select(p => new ProcessRow(p.Name, p.Pid, p.Value.ToString(format))).ToList());
 }
 
+public sealed partial class LeakCard : ObservableObject
+{
+    public required LeakKind Kind { get; init; }
+    public required string Title { get; init; }
+    public required string Tip { get; init; }
+    public required string Summary { get; init; }
+    public required int Count { get; init; }
+    public required bool Checked { get; init; }
+    public string AutomationId => $"Leak{Kind}";
+
+    // Unchecked leaks show an empty drop; checked ones show the count without drips (only the verdict's drop moves).
+    public LeakDropMode Mode => !Checked ? LeakDropMode.Progress : Count == 0 ? LeakDropMode.Clean : LeakDropMode.Leaking;
+
+    [ObservableProperty] private bool _isSelected;
+
+    public static LeakCard From(LeakSummary s)
+    {
+        var (title, tip) = s.Kind switch
+        {
+            LeakKind.Space => (Strings.Leak_Space, Strings.Leak_SpaceTip),
+            LeakKind.Information => (Strings.Leak_Information, Strings.Leak_InformationTip),
+            _ => (Strings.Leak_Performance, Strings.Leak_PerformanceTip),
+        };
+        var summary = !s.Checked ? Strings.Leak_NotChecked
+            : s.Count == 0 ? Strings.Result_NoLeak
+            : s.Kind switch
+            {
+                LeakKind.Space => string.Format(Strings.Leak_SpaceSummary, s.Findings.Sum(f => SizeGb(f))),
+                LeakKind.Information => string.Format(Strings.Leak_InformationSummary, s.Count),
+                _ => s.Count == 1 ? Strings.Result_LeakOne : string.Format(Strings.Result_Leaks, s.Count),
+            };
+        return new LeakCard { Kind = s.Kind, Title = title, Tip = tip, Summary = summary, Count = s.Count, Checked = s.Checked };
+    }
+
+    private static double SizeGb(Finding f) =>
+        f.Evidence.TryGetValue("sizeGb", out var v) && double.TryParse(v, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var gb) ? gb : 0;
+}
+
 public sealed partial class ResultViewModel : ObservableObject
 {
     private readonly MainViewModel _main;
@@ -64,9 +102,16 @@ public sealed partial class ResultViewModel : ObservableObject
     public IReadOnlyList<ProcessColumn> ProcessColumns { get; }
     public IReadOnlyList<ErrorItem> Errors { get; }
 
-    public string FindingsHeader => string.Format(Strings.Result_Findings, Findings.Count);
-    // Follows the verdict so the drop never says "leaking" next to a "healthy" verdict.
-    public int LeakCount => Report.Verdict.Primary == Verdict.Healthy ? 0 : Report.Findings.Count(f => f.Severity != Severity.Info);
+    public IReadOnlyList<LeakCard> LeakCards { get; }
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(FindingsHeader))] private IReadOnlyList<FindingItem> _visibleFindings;
+
+    // The score tiles are performance scores; hide them while another leak is shown.
+    [ObservableProperty] private bool _showScores = true;
+
+    public string FindingsHeader => string.Format(Strings.Result_Findings, VisibleFindings.Count);
+    // Performance leaks only, since the drop sits next to the performance verdict; it also follows the verdict
+    // so the drop never says "leaking" next to a "healthy" verdict.
+    public int LeakCount => Report.Verdict.Primary == Verdict.Healthy ? 0 : LeakCards[0].Count;
     public LeakDropMode LeakMode => LeakCount == 0 ? LeakDropMode.Clean : LeakDropMode.Leaking;
     public string LeakText => LeakCount switch { 0 => Strings.Result_NoLeak, 1 => Strings.Result_LeakOne, var n => string.Format(Strings.Result_Leaks, n) };
     public string ErrorsHeader => string.Format(Strings.Result_Errors, Report.CollectorErrors.Count);
@@ -81,6 +126,8 @@ public sealed partial class ResultViewModel : ObservableObject
         Report = outcome.Report;
         OutputDir = outcome.OutputDir;
         Findings = Report.Findings.Select(f => new FindingItem(f)).ToList();
+        _visibleFindings = Findings;
+        LeakCards = Leaks.Summarize(Report.Findings).Select(LeakCard.From).ToList();
         Errors = Report.CollectorErrors.Select(e => new ErrorItem(e)).ToList();
 
         CategoryScores = Labels.CategoryOrder
@@ -122,6 +169,16 @@ public sealed partial class ResultViewModel : ObservableObject
 
     [RelayCommand]
     private void NewScan() => _main.ShowStart();
+
+    // Clicking the selected card again clears the filter.
+    [RelayCommand]
+    private void SelectLeak(LeakCard card)
+    {
+        var show = card.IsSelected ? (LeakKind?)null : card.Kind;
+        foreach (var c in LeakCards) c.IsSelected = c.Kind == show;
+        VisibleFindings = show is { } k ? Findings.Where(f => Leaks.Of(f.Finding) == k).ToList() : Findings;
+        ShowScores = show is null or LeakKind.Performance;
+    }
 
     public bool CanFix => RemediationGroups.Any(g => g.Items.Any(i => i.Risk != RiskLevel.AdviceOnly)) && Directory.Exists(OutputDir);
     public bool IsPreview => _outcome.IsPreview;

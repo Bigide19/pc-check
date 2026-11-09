@@ -1,6 +1,6 @@
 # Handoff
 
-Last updated 2026-11-09 by Claude Code. **v0.2.1 is released (2026-11-09)**: Korean and English UI (see "Localization" below). v0.2.0 (same day) renamed pitstop to PC Check (repo `Bigide19/pc-check`) with the water-drop brand. Scan, verdict, and remediation logic are unchanged from v0.1.3. Next: stage 2 of the three-leak plan below.
+Last updated 2026-11-09 by Claude Code. **v0.2.1 is released (2026-11-09)**: Korean and English UI (see "Localization" below). v0.2.0 (same day) renamed pitstop to PC Check (repo `Bigide19/pc-check`) with the water-drop brand. Scan, verdict, and remediation logic are unchanged from v0.1.3. Since then on main (not released): stage 2 of the three-leak plan, the result-screen layout with mock data. Next: stage 3 (port the privacy cleaner).
 
 ## Rename and scope (2026-11-09, user decision)
 
@@ -9,7 +9,16 @@ Last updated 2026-11-09 by Claude Code. **v0.2.1 is released (2026-11-09)**: Kor
 - Local folder moved from `~/Projects/pitstop` to `~/Projects/pc-check` on 2026-11-09, together with the Claude Code and Codex sessions. `tools/vm/vm.sh` takes the VM share path from the folder name (`Y:\pc-check`).
 - Scope: "PC에서 새는 곳을 찾습니다". Performance leaks (the 26 current checks), space leaks (unused-file cleanup, new), information leaks (personal-data cleanup ported from `Bigide19/windows-pc-privacy-cleaner`, net462 WPF, 46 files). Never claim data *was* leaked; say it remains or could leak.
 - Brand (2026-11-09, user picked option A of three): a teal water drop with a check (`DropGeometry` in `App.xaml`, `Views/LeakDrop.xaml`). The drop also shows state in three places only: it fills up while scanning (progress screen), shows the leak count with falling drips next to the verdict (healthy verdict = check), and turns into a plugged check after fixes. Severity stays color + text. The window uses `WindowChrome`, so the brand header is the title bar (caption buttons in `MainWindow.xaml`), and ScrollBar, TextBox, CheckBox, RadioButton, ProgressBar, ToolTip have implicit styles in `App.xaml`.
-- Stages: 1 rename (this branch) -> 2 three-leak layout with mock data -> 3 port the privacy cleaner (deletes go through `ISystemOps`) -> 4 unused-file cleanup. Show a plan before each stage.
+- Stages: 1 rename (done, v0.2.0) -> i18n (done, v0.2.1) -> 2 three-leak layout with mock data (done, not released) -> 3 port the privacy cleaner (deletes go through `ISystemOps`) -> 4 unused-file cleanup. Show a plan before each stage. Design and completion criteria: `docs/spec.md`, section "세 가지 누수".
+
+## Three-leak layout (stage 2, 2026-11-09)
+
+- Model in Core: `Categories.Space`, `Categories.Privacy`, `LeakKind`, `Leaks.Of`, `Leaks.Summarize`. A leak counts as checked when `Leaks.Implemented` has it or the report has findings of that kind, so `findings.json` did not change. Add a kind to `Leaks.Implemented` when its first collector lands.
+- Result screen: three cards under the verdict banner (`LeakCard` in `ResultViewModel`, AutomationIds `LeakPerformance`, `LeakSpace`, `LeakInformation`). A card filters the findings list; clicking it again shows all; the score row hides for space and information. The banner drop counts performance leaks only. Small drops have `Drips="False"`.
+- `--mock` has 4 space and 5 personal-data findings (score 0, no remediation), modeled on the privacy cleaner's groups and on what stage 4 should find.
+- Open item for stage 3: `ScanAnalyzer` still adds every finding into the scores; exclude space and privacy findings there (the spec says they never feed the verdict) together with the first such collector, with a test.
+- Not released on purpose: a real scan shows two "not checked yet" cards. Release with stage 3 or 4, or earlier if the user asks.
+- VM check (2026-11-09): `--mock` ko and en, space and personal-data filters, fix overview unchanged; real quick scan shows the two unchecked cards. At the default window size (1120x780) the findings list is about 170 px tall; maximize or filter for more.
 
 ## Localization (2026-11-09, user asked for an English UI)
 
@@ -29,7 +38,7 @@ Last updated 2026-11-09 by Claude Code. **v0.2.1 is released (2026-11-09)**: Kor
 | 4 Remediation, restore point, fix/undo | Done | 2026-11-07 VM end-to-end: 7 planted artifacts detected, all 7 fixes applied, all 7 undone back to the planted state, VM cleaned afterwards (`tools/vm/fixtest/cleanup.ps1`) |
 | 5 VirusTotal, UI polish | UI polish done; VirusTotal not started | |
 
-Tests: 113 pass on macOS (`dotnet test PcCheck.slnx`, 2026-11-09), including a resx key and placeholder parity check.
+Tests: 115 pass on macOS (`dotnet test PcCheck.slnx`, 2026-11-09), including a resx key and placeholder parity check.
 
 ## Release warning
 

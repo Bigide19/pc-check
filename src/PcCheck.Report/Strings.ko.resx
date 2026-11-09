@@ -115,4 +115,6 @@
   <data name="Slack_Truncated" xml:space="preserve"><value>… (잘림)</value></data>
   <data name="Slack_BadUrl" xml:space="preserve"><value>Slack 웹훅 주소(https://hooks.slack.com/services/...)가 아닙니다.</value></data>
   <data name="Slack_SendFailed" xml:space="preserve"><value>Slack 전송 실패 ({0}): {1}</value></data>
+  <data name="Cat_Space" xml:space="preserve"><value>공간</value></data>
+  <data name="Cat_Privacy" xml:space="preserve"><value>개인정보</value></data>
 </root>

@@ -115,4 +115,6 @@ This report keeps paths that contain user names, so be careful when you share it
   <data name="Slack_Truncated" xml:space="preserve"><value>… (truncated)</value></data>
   <data name="Slack_BadUrl" xml:space="preserve"><value>Not a Slack webhook URL (https://hooks.slack.com/services/...).</value></data>
   <data name="Slack_SendFailed" xml:space="preserve"><value>Sending to Slack failed ({0}): {1}</value></data>
+  <data name="Cat_Space" xml:space="preserve"><value>Space</value></data>
+  <data name="Cat_Privacy" xml:space="preserve"><value>Personal data</value></data>
 </root>

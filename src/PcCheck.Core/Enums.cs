@@ -19,4 +19,7 @@ public static class Categories
     public const string BrowserNetwork = "BrowserNetwork";
     public const string Security = "Security";
     public const string System = "System";
+    // Space and information leaks (stages 3 and 4); they never feed the cleanup/format/hardware verdict.
+    public const string Space = "Space";
+    public const string Privacy = "Privacy";
 }

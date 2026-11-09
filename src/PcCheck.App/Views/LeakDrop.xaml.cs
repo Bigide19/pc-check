@@ -21,7 +21,12 @@ public partial class LeakDrop : UserControl
     public static readonly DependencyProperty CountProperty = DependencyProperty.Register(
         nameof(Count), typeof(int), typeof(LeakDrop), new PropertyMetadata(0, (d, _) => ((LeakDrop)d).Render()));
 
+    // Off for small status drops shown side by side, so only the verdict's drop moves.
+    public static readonly DependencyProperty DripsProperty = DependencyProperty.Register(
+        nameof(Drips), typeof(bool), typeof(LeakDrop), new PropertyMetadata(true, (d, _) => ((LeakDrop)d).Render()));
+
     public LeakDropMode Mode { get => (LeakDropMode)GetValue(ModeProperty); set => SetValue(ModeProperty, value); }
+    public bool Drips { get => (bool)GetValue(DripsProperty); set => SetValue(DripsProperty, value); }
     public double Value { get => (double)GetValue(ValueProperty); set => SetValue(ValueProperty, value); }
     public int Count { get => (int)GetValue(CountProperty); set => SetValue(CountProperty, value); }
 
@@ -50,7 +55,7 @@ public partial class LeakDrop : UserControl
             var target = 96 * (1 - Math.Clamp(Value, 0, 1));
             LevelShift.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation(target, TimeSpan.FromMilliseconds(300)));
         }
-        SetDripping(mode == LeakDropMode.Leaking);
+        SetDripping(mode == LeakDropMode.Leaking && Drips);
 
         AutomationProperties.SetName(this, mode switch
         {

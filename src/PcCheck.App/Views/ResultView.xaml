@@ -7,6 +7,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -50,8 +51,61 @@
             </Grid>
         </Border>
 
-        <!-- Scores -->
-        <Grid Grid.Row="1" Margin="0,0,0,14">
+        <!-- Three leaks: each card filters the findings list -->
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding LeakCards}" Margin="0,0,-10,10" Focusable="False">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate><UniformGrid Rows="1"/></ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Command="{Binding DataContext.SelectLeakCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                            CommandParameter="{Binding}" IsEnabled="{Binding Checked}" Margin="0,0,10,0" Cursor="Hand"
+                            AutomationProperties.AutomationId="{Binding AutomationId}" AutomationProperties.Name="{Binding Title}">
+                        <Button.ToolTip>
+                            <StackPanel MaxWidth="320">
+                                <TextBlock Text="{Binding Tip}" TextWrapping="Wrap"/>
+                                <TextBlock Text="{x:Static r:Strings.Leak_FilterTip}" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Button.ToolTip>
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="Bd" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}"
+                                        BorderThickness="1" CornerRadius="10" Padding="14,10">
+                                    <ContentPresenter/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource FieldHoverBrush}"/>
+                                    </Trigger>
+                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                        <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                                        <Setter TargetName="Bd" Property="Background" Value="{StaticResource AccentSoftBrush}"/>
+                                    </DataTrigger>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter TargetName="Bd" Property="Opacity" Value="0.7"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <views:LeakDrop Mode="{Binding Mode, Mode=OneWay}" Count="{Binding Count, Mode=OneWay}" Drips="False"
+                                            Width="24" Height="34" VerticalAlignment="Center"/>
+                            <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="15"/>
+                                <TextBlock Text="{Binding Summary}" Style="{StaticResource Muted}" FontSize="12" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Scores (performance) -->
+        <Grid Grid.Row="2" Margin="0,0,0,14" Visibility="{Binding ShowScores, Converter={StaticResource BoolToVisibility}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" MinWidth="145"/>
                 <ColumnDefinition Width="Auto" MinWidth="145"/>
@@ -87,13 +141,13 @@
         </Grid>
 
         <!-- Details -->
-        <TabControl Grid.Row="2" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" Padding="0">
+        <TabControl Grid.Row="3" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" Padding="0">
             <TabItem Header="{Binding FindingsHeader}">
                 <Grid>
                     <TextBlock Text="{x:Static r:Strings.Result_NoFindings}" Style="{StaticResource Muted}" Margin="20"
-                               Visibility="{Binding Findings.Count, Converter={StaticResource CountToVisibility}, ConverterParameter=empty}"/>
+                               Visibility="{Binding VisibleFindings.Count, Converter={StaticResource CountToVisibility}, ConverterParameter=empty}"/>
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <ItemsControl ItemsSource="{Binding Findings}">
+                        <ItemsControl ItemsSource="{Binding VisibleFindings}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="20,14">
@@ -231,7 +285,7 @@
             </TabItem>
         </TabControl>
 
-        <Grid Grid.Row="3" Margin="0,14,0,0">
+        <Grid Grid.Row="4" Margin="0,14,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="220"/>
                 <ColumnDefinition Width="Auto"/>

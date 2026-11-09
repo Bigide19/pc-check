@@ -137,4 +137,14 @@
   <data name="Drop_NoLeak" xml:space="preserve"><value>No leaks</value></data>
   <data name="Result_LeakOne" xml:space="preserve"><value>1 leak</value></data>
   <data name="Drop_LeakOne" xml:space="preserve"><value>1 leak</value></data>
+  <data name="Leak_Performance" xml:space="preserve"><value>Performance</value></data>
+  <data name="Leak_PerformanceTip" xml:space="preserve"><value>What slows the PC down: hardware, startup items, programs, security, and settings</value></data>
+  <data name="Leak_Space" xml:space="preserve"><value>Space</value></data>
+  <data name="Leak_SpaceTip" xml:space="preserve"><value>Files you no longer use that take up disk space</value></data>
+  <data name="Leak_Information" xml:space="preserve"><value>Personal data</value></data>
+  <data name="Leak_InformationTip" xml:space="preserve"><value>Personal data left on the PC that could leak when someone else uses it</value></data>
+  <data name="Leak_NotChecked" xml:space="preserve"><value>Not checked yet</value></data>
+  <data name="Leak_SpaceSummary" xml:space="preserve"><value>{0:0.#} GB can be freed</value></data>
+  <data name="Leak_InformationSummary" xml:space="preserve"><value>Places where personal data remains: {0}</value></data>
+  <data name="Leak_FilterTip" xml:space="preserve"><value>Show only this kind of finding. Click again to show all.</value></data>
 </root>
