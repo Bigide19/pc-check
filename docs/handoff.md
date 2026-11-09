@@ -1,6 +1,6 @@
 # Handoff
 
-Last updated 2026-11-09 by Claude Code. v0.1.3 is released (2026-11-07). The project is being renamed from pitstop to **PC Check** (v0.2.0, branch `feature/rename-pc-check`) and widened to three kinds of "leaks"; see Rename and scope below.
+Last updated 2026-11-09 by Claude Code. **v0.2.0 is released (2026-11-09)**: renamed from pitstop to PC Check (repo `Bigide19/pc-check`) with the water-drop brand. Scan, verdict, and remediation logic are unchanged from v0.1.3. Next: stage 2 of the three-leak plan below.
 
 ## Rename and scope (2026-11-09, user decision)
 
