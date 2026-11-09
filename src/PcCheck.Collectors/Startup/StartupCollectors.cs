@@ -18,8 +18,8 @@ public sealed class StartupCountCollector(StartupSource source) : ICollector
         if (sev is null) return [];
         var ev = new List<(string, object?)> { ("enabled", enabled.Count), ("total", entries.Count) };
         ev.AddRange(enabled.Select((e, i) => ($"{i + 1:00}", (object?)$"{e.Name} = {e.Command}")));
-        return [F.Make("ST-COUNT", Categories.Startup, sev.Value, $"시작 항목 {enabled.Count}개",
-            $"부팅할 때 함께 켜지는 프로그램이 {enabled.Count}개입니다 (기준 {rules.Thresholds.StartupCount.Medium}개).",
+        return [F.Make("ST-COUNT", Categories.Startup, sev.Value, string.Format(Strings.StCount_Title, enabled.Count),
+            string.Format(Strings.StCount_Detail, enabled.Count, rules.Thresholds.StartupCount.Medium),
             "RM-STARTUP-DISABLE", ev.ToArray())];
     }
 }
@@ -45,8 +45,8 @@ public sealed class StartupSuspectCollector(StartupSource source, ISignatureVeri
             .ToList();
 
         var findings = candidates.Where(x => x.sig.IsUnsigned)
-            .Select(x => F.Make("ST-SUSPECT", Categories.Startup, Severity.High, $"의심 시작 항목: {x.e.Name}",
-                "서명이 없는 파일이 사용자가 쓸 수 있는 경로에서 부팅 때마다 실행됩니다.", "RM-STARTUP-DISABLE",
+            .Select(x => F.Make("ST-SUSPECT", Categories.Startup, Severity.High, string.Format(Strings.StSuspect_Title, x.e.Name),
+                Strings.StSuspect_Detail, "RM-STARTUP-DISABLE",
                 ("target", x.e.DisplayTarget), ("name", x.e.Name), ("command", x.e.Command), ("path", x.e.TargetPath),
                 ("signature", x.sig.Status), ("approvedKey", x.e.ApprovedKey), ("approvedValue", x.e.ApprovedValue)))
             .ToList();
@@ -54,8 +54,8 @@ public sealed class StartupSuspectCollector(StartupSource source, ISignatureVeri
         // Counting these as unsigned would inflate the suspect count that drives a "Format" verdict.
         var unknown = candidates.Where(x => x.sig.IsUnknown).ToList();
         if (unknown.Count > 0)
-            findings.Add(F.Make("ST-SUSPECT", Categories.Startup, Severity.Info, $"서명을 확인하지 못한 시작 항목 {unknown.Count}개",
-                "사용자 폴더에서 실행되는 시작 항목이지만 파일을 읽지 못해 서명 여부를 판단하지 못했습니다. 아는 프로그램인지 직접 확인하세요.", null,
+            findings.Add(F.Make("ST-SUSPECT", Categories.Startup, Severity.Info, string.Format(Strings.StSuspect_UnknownTitle, unknown.Count),
+                Strings.StSuspect_UnknownDetail, null,
                 unknown.Take(20).Select((x, i) => ($"{i + 1:00}", (object?)$"{x.e.Name} = {x.e.TargetPath}{(x.sig.Error is null ? "" : $" ({x.sig.Error})")}")).ToArray()));
         return findings;
     }
@@ -86,8 +86,8 @@ public sealed class ServiceSuspectCollector(IWmi wmi, ISignatureVerifier signatu
             .Select(s => (s, sig: sigs.TryGetValue(s.TargetPath!, out var v) ? v : null))
             // A missing binary is a broken service, not a running threat; an unreadable one is not known to be unsigned.
             .Where(x => x.sig is { IsUnsigned: true })
-            .Select(x => F.Make("SVC-SUSPECT", Categories.Startup, Severity.High, $"서명 없는 자동 시작 서비스: {x.s.DisplayName}",
-                "디지털 서명이 없는 서비스가 부팅 때 자동으로 시작됩니다.", "RM-SERVICE-DISABLE",
+            .Select(x => F.Make("SVC-SUSPECT", Categories.Startup, Severity.High, string.Format(Strings.Svc_Title, x.s.DisplayName),
+                Strings.Svc_Detail, "RM-SERVICE-DISABLE",
                 ("service", x.s.Name), ("displayName", x.s.DisplayName), ("path", x.s.PathName),
                 ("state", x.s.State), ("signature", x.sig!.Status)))
             .ToList();
@@ -138,20 +138,23 @@ public sealed class TaskSuspectCollector(IPowerShell ps) : ICollector
 
             var reasons = new List<string>();
             if (PathRules.IsUserWritable(exe) || PathRules.IsUserWritable(PathRules.ExtractTarget($"\"{exe}\" {t.Arguments}")))
-                reasons.Add("사용자 쓰기 가능 경로 실행");
+                reasons.Add(Strings.Task_UserWritable);
             var isPowerShell = Path.GetFileName(exe).ToLowerInvariant() is "powershell.exe" or "pwsh.exe" or "powershell" or "pwsh";
             if (isPowerShell && EncodedFlag.IsMatch(t.Arguments))
-                reasons.Add("인코딩된 PowerShell 명령");
+                reasons.Add(Strings.Task_EncodedPs);
             // Built-in Microsoft tasks are trusted for script hosts; the writable-path rule still applies to them.
             if (!builtIn && Hosts.Contains(Path.GetFileName(exe), StringComparer.OrdinalIgnoreCase))
-                reasons.Add($"{Path.GetFileName(exe)} 호출");
+                reasons.Add(string.Format(Strings.Task_Calls, Path.GetFileName(exe)));
             if (reasons.Count == 0) continue;
 
-            findings.Add(F.Make("TASK-SUSPECT", Categories.Startup, Severity.High, $"의심 예약 작업: {t.TaskName}",
-                string.Join(", ", reasons) + ".", "RM-TASK-DISABLE",
+            findings.Add(F.Make("TASK-SUSPECT", Categories.Startup, Severity.High, string.Format(Strings.Task_Title, t.TaskName),
+                Sentence(string.Join(", ", reasons)), "RM-TASK-DISABLE",
                 ("task", t.FullName), ("taskPath", t.TaskPath), ("taskName", t.TaskName),
                 ("execute", t.Execute), ("arguments", t.Arguments), ("state", t.State)));
         }
         return findings;
     }
+
+    // English reasons start lower-case so they can be joined; the sentence still needs a capital.
+    private static string Sentence(string s) => s.Length == 0 ? s : char.ToUpperInvariant(s[0]) + s[1..] + ".";
 }

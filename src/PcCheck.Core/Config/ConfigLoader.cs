@@ -45,12 +45,12 @@ public static class ConfigLoader
         {
             var json = File.ReadAllText(path);
             var parsed = JsonSerializer.Deserialize<T>(json, PcCheckJson.ConfigOptions);
-            if (parsed is null) warnings.Add($"{file}: 내용이 비어 있어 기본값을 사용했습니다.");
+            if (parsed is null) warnings.Add(string.Format(Strings.Config_Empty, file));
             return parsed ?? target;
         }
         catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException or NotSupportedException)
         {
-            warnings.Add($"{file}: 읽지 못해 기본값을 사용했습니다. ({ex.Message})");
+            warnings.Add(string.Format(Strings.Config_Unreadable, file, ex.Message));
             return target;
         }
     }
@@ -63,7 +63,7 @@ public static class ConfigLoader
         }
         catch (ArgumentException ex)
         {
-            warnings.Add($"{label}: 정규식 오류 ({ex.Message})");
+            warnings.Add(string.Format(Strings.Config_BadRegex, label, ex.Message));
             return null;
         }
     }

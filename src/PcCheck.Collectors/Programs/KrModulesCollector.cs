@@ -28,9 +28,9 @@ public sealed class KrModulesCollector(UninstallSource uninstall, StartupSource 
 
             var sev = m.KnownIssues.Count > 0 ? Severity.Medium : Severity.Low;
             var issues = m.KnownIssues.Concat(m.Compatibility).Take(4).ToList();
-            var detail = (m.Purpose.Length > 0 ? m.Purpose + " " : "")
-                + "은행, 공공기관 사이트용 보안 프로그램입니다. 지워도 되고, 사이트가 필요할 때 다시 설치를 안내합니다."
-                + (autoStart.Count > 0 ? $" 부팅할 때마다 {autoStart.Count}개가 함께 실행됩니다." : "");
+            var detail = (m.DisplayPurpose.Length > 0 ? m.DisplayPurpose + " " : "")
+                + Strings.Kr_Detail
+                + (autoStart.Count > 0 ? string.Format(Strings.Kr_AutoStart, autoStart.Count) : "");
 
             if (installed.Count == 0)
             {
@@ -55,8 +55,8 @@ public sealed class KrModulesCollector(UninstallSource uninstall, StartupSource 
             ("autoStart", autoStart.Count > 0 ? string.Join(", ", autoStart.Select(e => e.Name)) : null),
             ("uninstallNotes", m.UninstallNotes.Length > 0 ? m.UninstallNotes : null),
         };
-        ev.AddRange(issues.Select((x, i) => ($"issue{i + 1}", (object?)$"{(x.Year is { } y ? $"{y}년 " : "")}{x.Summary}{(x.Source.Length > 0 ? $" ({x.Source})" : "")}")));
-        return F.Make("SEC-KR-MODULES", Categories.Program, sev, $"보안 모듈: {p?.DisplayName ?? m.Name}", detail,
+        ev.AddRange(issues.Select((x, i) => ($"issue{i + 1}", (object?)$"{(x.Year is { } y ? string.Format(Strings.Kr_Year, y) : "")}{x.Summary}{(x.Source.Length > 0 ? $" ({x.Source})" : "")}")));
+        return F.Make("SEC-KR-MODULES", Categories.Program, sev, string.Format(Strings.Kr_Title, p?.DisplayName ?? m.Name), detail,
             p?.UninstallString is null ? "ADV-KR-MODULES" : "RM-UNINSTALL", ev.ToArray());
     }
 }

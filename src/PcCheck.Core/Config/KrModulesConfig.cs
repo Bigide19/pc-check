@@ -39,6 +39,8 @@ public sealed class KrModule
     public string Name { get; set; } = "";
     public string Vendor { get; set; } = "";
     public string Purpose { get; set; } = "";
+    public string PurposeEn { get; set; } = "";
+    [JsonIgnore] public string DisplayPurpose => Lang.Pick(Purpose, PurposeEn);
     public List<string> DisplayNamePatterns { get; set; } = [];
     public List<string> PublisherPatterns { get; set; } = [];
     public List<string> PathPatterns { get; set; } = [];

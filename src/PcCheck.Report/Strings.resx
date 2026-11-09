@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Verdict_HardwareReplace" xml:space="preserve"><value>Replace hardware</value></data>
+  <data name="Verdict_Format" xml:space="preserve"><value>Reformat recommended</value></data>
+  <data name="Verdict_Cleanup" xml:space="preserve"><value>Cleanup is enough</value></data>
+  <data name="Verdict_Healthy" xml:space="preserve"><value>No problems</value></data>
+  <data name="VerdictDesc_HardwareReplace" xml:space="preserve"><value>There is a hardware problem that a reformat will not fix. Consider replacing the disk or memory first.</value></data>
+  <data name="VerdictDesc_Format" xml:space="preserve"><value>There are so many signs of tampering or threats that a cleanup may not be enough. Back up, then consider a reformat.</value></data>
+  <data name="VerdictDesc_Cleanup" xml:space="preserve"><value>Cleaning up startup items and unneeded programs is likely to help.</value></data>
+  <data name="VerdictDesc_Healthy" xml:space="preserve"><value>No problem matched the verdict rules.</value></data>
+  <data name="Severity_Critical" xml:space="preserve"><value>Critical</value></data>
+  <data name="Severity_High" xml:space="preserve"><value>High</value></data>
+  <data name="Severity_Medium" xml:space="preserve"><value>Medium</value></data>
+  <data name="Severity_Low" xml:space="preserve"><value>Low</value></data>
+  <data name="Severity_Info" xml:space="preserve"><value>Info</value></data>
+  <data name="Risk_Auto" xml:space="preserve"><value>Automatic (runs without approval)</value></data>
+  <data name="Risk_Confirm" xml:space="preserve"><value>Confirm (approve each item)</value></data>
+  <data name="Risk_AdviceOnly" xml:space="preserve"><value>Advice only</value></data>
+  <data name="Status_Ok" xml:space="preserve"><value>Done</value></data>
+  <data name="Status_Failed" xml:space="preserve"><value>Failed</value></data>
+  <data name="Status_TimedOut" xml:space="preserve"><value>Timed out</value></data>
+  <data name="Status_Canceled" xml:space="preserve"><value>Canceled</value></data>
+  <data name="Cat_Hardware" xml:space="preserve"><value>Hardware</value></data>
+  <data name="Cat_Resource" xml:space="preserve"><value>Resources</value></data>
+  <data name="Cat_Startup" xml:space="preserve"><value>Startup</value></data>
+  <data name="Cat_Program" xml:space="preserve"><value>Programs</value></data>
+  <data name="Cat_BrowserNetwork" xml:space="preserve"><value>Browser and network</value></data>
+  <data name="Cat_BrowserNetworkShort" xml:space="preserve"><value>Browser, network</value></data>
+  <data name="Cat_Security" xml:space="preserve"><value>Security</value></data>
+  <data name="Cat_System" xml:space="preserve"><value>System</value></data>
+  <data name="Col_SYS_INFO" xml:space="preserve"><value>PC information</value></data>
+  <data name="Col_HW_DISK_TYPE" xml:space="preserve"><value>Disk type</value></data>
+  <data name="Col_HW_DISK_HEALTH" xml:space="preserve"><value>Disk health</value></data>
+  <data name="Col_HW_DISK_FREE" xml:space="preserve"><value>Free space</value></data>
+  <data name="Col_HW_RAM" xml:space="preserve"><value>Memory size</value></data>
+  <data name="Col_SYS_DISPLAY" xml:space="preserve"><value>Graphics driver</value></data>
+  <data name="Col_RES_CPU" xml:space="preserve"><value>CPU usage</value></data>
+  <data name="Col_RES_MEM" xml:space="preserve"><value>Memory pressure</value></data>
+  <data name="Col_RES_DISK" xml:space="preserve"><value>Disk bottleneck</value></data>
+  <data name="Col_ST_COUNT" xml:space="preserve"><value>Startup item count</value></data>
+  <data name="Col_ST_SUSPECT" xml:space="preserve"><value>Suspicious startup items</value></data>
+  <data name="Col_SVC_SUSPECT" xml:space="preserve"><value>Suspicious services</value></data>
+  <data name="Col_TASK_SUSPECT" xml:space="preserve"><value>Suspicious scheduled tasks</value></data>
+  <data name="Col_APP_KNOWN_BAD" xml:space="preserve"><value>Known unwanted programs</value></data>
+  <data name="Col_APP_RECENT" xml:space="preserve"><value>Recently installed programs</value></data>
+  <data name="Col_APP_PHOTOS" xml:space="preserve"><value>Photos app</value></data>
+  <data name="Col_APP_CRASHES" xml:space="preserve"><value>Programs that crash apps</value></data>
+  <data name="Col_SEC_KR_MODULES" xml:space="preserve"><value>Korean banking security plugins</value></data>
+  <data name="Col_BR_POLICY" xml:space="preserve"><value>Browser policy tampering</value></data>
+  <data name="Col_BR_EXT" xml:space="preserve"><value>Browser extensions</value></data>
+  <data name="Col_NET_HOSTS" xml:space="preserve"><value>hosts tampering</value></data>
+  <data name="Col_NET_PROXY" xml:space="preserve"><value>Proxy tampering</value></data>
+  <data name="Col_SEC_AV" xml:space="preserve"><value>Antivirus status</value></data>
+  <data name="Col_SEC_THREAT" xml:space="preserve"><value>Threat history, Defender scan</value></data>
+  <data name="Col_SYS_UPDATE" xml:space="preserve"><value>Updates, pending restart</value></data>
+  <data name="Col_SYS_EVENTS" xml:space="preserve"><value>System log errors</value></data>
+  <data name="Col_SYS_MISC" xml:space="preserve"><value>Power plan, temp files, uptime</value></data>
+  <data name="Tagline" xml:space="preserve"><value>PC check and cleanup</value></data>
+  <data name="Html_Title" xml:space="preserve"><value>PC check result - {0}</value></data>
+  <data name="Html_Heading" xml:space="preserve"><value>PC check result</value></data>
+  <data name="Html_PcName" xml:space="preserve"><value>PC name</value></data>
+  <data name="Html_Os" xml:space="preserve"><value>OS</value></data>
+  <data name="Html_Memory" xml:space="preserve"><value>Memory</value></data>
+  <data name="Html_Disk" xml:space="preserve"><value>Disk</value></data>
+  <data name="Html_Account" xml:space="preserve"><value>Account</value></data>
+  <data name="Html_NotAdmin" xml:space="preserve"><value> (not administrator)</value></data>
+  <data name="Html_ScannedAt" xml:space="preserve"><value>Scanned at</value></data>
+  <data name="Html_Sampling" xml:space="preserve"><value>Sampling</value></data>
+  <data name="Html_Seconds" xml:space="preserve"><value>{0} s</value></data>
+  <data name="Html_NotMeasured" xml:space="preserve"><value>Not measured</value></data>
+  <data name="Html_ToolVersion" xml:space="preserve"><value>Tool version</value></data>
+  <data name="Html_Secondary" xml:space="preserve"><value>Secondary verdict: {0}</value></data>
+  <data name="Html_Basis" xml:space="preserve"><value>Basis: {0}</value></data>
+  <data name="Html_None" xml:space="preserve"><value>none</value></data>
+  <data name="Html_SecondaryBasis" xml:space="preserve"><value> / Secondary basis: {0}</value></data>
+  <data name="Html_Scores" xml:space="preserve"><value>Score summary</value></data>
+  <data name="Html_HardwareSubtotal" xml:space="preserve"><value>Hardware subtotal</value></data>
+  <data name="Html_SoftwareSubtotal" xml:space="preserve"><value>Software subtotal</value></data>
+  <data name="Html_Findings" xml:space="preserve"><value>Findings ({0})</value></data>
+  <data name="Html_NoFindings" xml:space="preserve"><value>No findings.</value></data>
+  <data name="Html_Points" xml:space="preserve"><value>{0} pt</value></data>
+  <data name="Html_Action" xml:space="preserve"><value>Recommended action: {0}</value></data>
+  <data name="Html_TopProcesses" xml:space="preserve"><value>Top processes</value></data>
+  <data name="Html_DiskIo" xml:space="preserve"><value>Disk I/O</value></data>
+  <data name="Html_NoSampling" xml:space="preserve"><value>No resource sampling results.</value></data>
+  <data name="Html_Candidates" xml:space="preserve"><value>Fix candidates</value></data>
+  <data name="Html_NoCandidates" xml:space="preserve"><value>No fix candidates.</value></data>
+  <data name="Html_ColAction" xml:space="preserve"><value>Action</value></data>
+  <data name="Html_ColTarget" xml:space="preserve"><value>Target</value></data>
+  <data name="Html_ColUndo" xml:space="preserve"><value>Undo</value></data>
+  <data name="Html_Yes" xml:space="preserve"><value>Yes</value></data>
+  <data name="Html_No" xml:space="preserve"><value>No</value></data>
+  <data name="Html_Errors" xml:space="preserve"><value>Collector errors ({0})</value></data>
+  <data name="Html_NoErrors" xml:space="preserve"><value>No collector errors.</value></data>
+  <data name="Html_ColItem" xml:space="preserve"><value>Check</value></data>
+  <data name="Html_ColStatus" xml:space="preserve"><value>Status</value></data>
+  <data name="Html_ColMessage" xml:space="preserve"><value>Details</value></data>
+  <data name="Html_Footer" xml:space="preserve"><value>The verdict is advice. Even with "Reformat recommended", check that you can back up and reinstall your work programs before you go ahead.
+This report keeps paths that contain user names, so be careful when you share it.</value></data>
+  <data name="Slack_Heading" xml:space="preserve"><value>*PC Check {0} scan result*</value></data>
+  <data name="Slack_Secondary" xml:space="preserve"><value>  (secondary verdict: {0})</value></data>
+  <data name="Slack_Basis" xml:space="preserve"><value>Basis: `{0}`</value></data>
+  <data name="Slack_SecondaryBasis" xml:space="preserve"><value>  Secondary basis: `{0}`</value></data>
+  <data name="Slack_Scores" xml:space="preserve"><value>Scores: hardware {0}, software {1}</value></data>
+  <data name="Slack_Account" xml:space="preserve"><value>Account: {0} · scanned {1:yyyy-MM-dd HH:mm} · </value></data>
+  <data name="Slack_Measured" xml:space="preserve"><value>measured {0} s</value></data>
+  <data name="Slack_Counts" xml:space="preserve"><value>{0} findings, {1} collector errors</value></data>
+  <data name="Slack_Findings" xml:space="preserve"><value>*Findings*</value></data>
+  <data name="Slack_TopProcesses" xml:space="preserve"><value>*Top processes*</value></data>
+  <data name="Slack_Errors" xml:space="preserve"><value>*Collector errors*</value></data>
+  <data name="Slack_Truncated" xml:space="preserve"><value>… (truncated)</value></data>
+  <data name="Slack_BadUrl" xml:space="preserve"><value>Not a Slack webhook URL (https://hooks.slack.com/services/...).</value></data>
+  <data name="Slack_SendFailed" xml:space="preserve"><value>Sending to Slack failed ({0}): {1}</value></data>
+</root>

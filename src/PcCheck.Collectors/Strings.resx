@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DiskType_HddTitle" xml:space="preserve"><value>System drive is an HDD</value></data>
+  <data name="DiskType_HddDetail" xml:space="preserve"><value>Drive C: is an HDD ({0}). Replacing it with an SSD makes the PC feel much faster.</value></data>
+  <data name="DiskType_UnknownTitle" xml:space="preserve"><value>Could not tell the system drive type</value></data>
+  <data name="DiskType_UnknownDetail" xml:space="preserve"><value>The disk does not report its media type (virtual disk, RAID, and similar).</value></data>
+  <data name="DiskHealth_Unavailable" xml:space="preserve"><value>Could not query disk health (Storage cmdlets, SMART).</value></data>
+  <data name="DiskHealth_FailTitle" xml:space="preserve"><value>Disk failure predicted</value></data>
+  <data name="DiskHealth_FailDetail" xml:space="preserve"><value>The disk reports that it is about to fail. Back up your files now and replace the disk.</value></data>
+  <data name="DiskHealth_ReadErrTitle" xml:space="preserve"><value>Disk read errors are piling up</value></data>
+  <data name="DiskHealth_ReadErrDetail" xml:space="preserve"><value>Read errors have been logged on the disk. Back up first, then consider replacing it.</value></data>
+  <data name="DiskFree_NoDrive" xml:space="preserve"><value>Could not read drive C:.</value></data>
+  <data name="DiskFree_Title" xml:space="preserve"><value>C: free space {0:0}%</value></data>
+  <data name="DiskFree_Detail" xml:space="preserve"><value>{1:0.0} GB left of {0:0} GB.</value></data>
+  <data name="Ram_Unreadable" xml:space="preserve"><value>Could not read the memory size.</value></data>
+  <data name="Ram_Title" xml:space="preserve"><value>Memory {0:0.#} GB</value></data>
+  <data name="Ram_HighDetail" xml:space="preserve"><value>Not enough memory. Running a modern browser together with work programs will be hard.</value></data>
+  <data name="Ram_MediumDetail" xml:space="preserve"><value>Memory is on the low side.</value></data>
+  <data name="Display_Adapter" xml:space="preserve"><value>{0} (driver {1}, {2}{3})</value></data>
+  <data name="Display_ErrorCode" xml:space="preserve"><value>, error code {0}</value></data>
+  <data name="Display_NoDriverTitle" xml:space="preserve"><value>No graphics driver installed</value></data>
+  <data name="Display_NoDriverDetail" xml:space="preserve"><value>Windows is running on the Microsoft Basic Display Adapter. This can cause screen flicker and app errors.</value></data>
+  <data name="Display_ErrorTitle" xml:space="preserve"><value>Graphics device error (code {0})</value></data>
+  <data name="Display_ErrorDetail" xml:space="preserve"><value>{0} is in an error state in Device Manager.</value></data>
+  <data name="Display_ResetsTitle" xml:space="preserve"><value>Graphics driver restarts in the last 7 days: {0}</value></data>
+  <data name="Display_ResetsDetail" xml:space="preserve"><value>The graphics driver stopped responding and was restarted. The screen flickers or goes black for a moment when this happens.</value></data>
+  <data name="Res_CountersFailed" xml:space="preserve"><value>Could not read performance counters, so nothing was measured. </value></data>
+  <data name="Perf_Title" xml:space="preserve"><value>Performance counters damaged</value></data>
+  <data name="Perf_DisabledDetail" xml:space="preserve"><value>Performance counters are turned off. Optimizer programs often do this. Some measurements were taken another way.</value></data>
+  <data name="Perf_PartialDetail" xml:space="preserve"><value>Some performance counters could not be read. Where possible, measurements were taken another way.</value></data>
+  <data name="Cpu_Title" xml:space="preserve"><value>Average CPU usage {0}%</value></data>
+  <data name="Cpu_Detail" xml:space="preserve"><value>The CPU stayed busy for {0} s. Top: {1}</value></data>
+  <data name="Mem_Title" xml:space="preserve"><value>Memory pressure</value></data>
+  <data name="Mem_Detail" xml:space="preserve"><value>Average available memory {0:0} MB, commit {1}%. Pages are often swapped to disk.</value></data>
+  <data name="DiskIo_Title" xml:space="preserve"><value>Disk bottleneck</value></data>
+  <data name="DiskIo_Detail" xml:space="preserve"><value>During sampling the disk was idle {0}% of the time on average, with an average queue length of {1:0.0}.</value></data>
+  <data name="Sampling_Progress" xml:space="preserve"><value>Sampling, {0:0} s left</value></data>
+  <data name="StCount_Title" xml:space="preserve"><value>Startup items: {0}</value></data>
+  <data name="StCount_Detail" xml:space="preserve"><value>{0} programs start with Windows (threshold {1}).</value></data>
+  <data name="StSuspect_Title" xml:space="preserve"><value>Suspicious startup item: {0}</value></data>
+  <data name="StSuspect_Detail" xml:space="preserve"><value>An unsigned file in a user-writable path runs at every boot.</value></data>
+  <data name="StSuspect_UnknownTitle" xml:space="preserve"><value>Startup items with unverified signatures: {0}</value></data>
+  <data name="StSuspect_UnknownDetail" xml:space="preserve"><value>These startup items run from user folders, but their files could not be read, so their signatures could not be checked. Check whether you know these programs.</value></data>
+  <data name="Svc_Title" xml:space="preserve"><value>Unsigned auto-start service: {0}</value></data>
+  <data name="Svc_Detail" xml:space="preserve"><value>A service without a digital signature starts automatically at boot.</value></data>
+  <data name="Task_UserWritable" xml:space="preserve"><value>runs from a user-writable path</value></data>
+  <data name="Task_EncodedPs" xml:space="preserve"><value>encoded PowerShell command</value></data>
+  <data name="Task_Calls" xml:space="preserve"><value>calls {0}</value></data>
+  <data name="Task_Title" xml:space="preserve"><value>Suspicious scheduled task: {0}</value></data>
+  <data name="Update_RebootTitle" xml:space="preserve"><value>Restart pending</value></data>
+  <data name="Update_RebootDetail" xml:space="preserve"><value>A restart is needed to finish updates or installs.</value></data>
+  <data name="Update_NoneTitle" xml:space="preserve"><value>No update install history</value></data>
+  <data name="Update_AgeTitle" xml:space="preserve"><value>Last update {0:0} days ago</value></data>
+  <data name="Update_AgeDetail" xml:space="preserve"><value>Windows updates have not been installed for a long time.</value></data>
+  <data name="Events_DiskTitle" xml:space="preserve"><value>Disk errors in the last 7 days: {0}</value></data>
+  <data name="Events_DiskDetail" xml:space="preserve"><value>The system log records disk errors (bad sectors, paging errors, retries).</value></data>
+  <data name="Events_ShutdownTitle" xml:space="preserve"><value>Unexpected shutdowns in the last 7 days: {0}</value></data>
+  <data name="Events_ShutdownDetail" xml:space="preserve"><value>The power cut out suddenly, or the PC froze and was forced off. This can be a power, overheating, or driver problem.</value></data>
+  <data name="Misc_PowerSaverTitle" xml:space="preserve"><value>Power saver plan in use</value></data>
+  <data name="Misc_PowerSaverDetail" xml:space="preserve"><value>The power saver plan lowers CPU performance.</value></data>
+  <data name="Misc_TempTitle" xml:space="preserve"><value>Temp files {0:0.0} GB</value></data>
+  <data name="Misc_TempDetail" xml:space="preserve"><value>Temp files have piled up in %TEMP% and C:\Windows\Temp.</value></data>
+  <data name="Misc_UptimeTitle" xml:space="preserve"><value>Not restarted for {0:0} days</value></data>
+  <data name="Misc_UptimeDetail" xml:space="preserve"><value>With Fast Startup on, shutting down does not reset uptime. Use Restart instead.</value></data>
+  <data name="Av_RealtimeOffTitle" xml:space="preserve"><value>Real-time protection is off</value></data>
+  <data name="Av_RealtimeOffDetail" xml:space="preserve"><value>The antivirus real-time protection is not running.</value></data>
+  <data name="Av_DefsAgeTitle" xml:space="preserve"><value>Antivirus definitions {0:0} days old</value></data>
+  <data name="Av_DefsAgeDetail" xml:space="preserve"><value>Defender definitions are out of date.</value></data>
+  <data name="Av_OutdatedTitle" xml:space="preserve"><value>{0} needs a definition update</value></data>
+  <data name="Av_OutdatedDetail" xml:space="preserve"><value>The antivirus reports that it is not up to date.</value></data>
+  <data name="Av_DupTitle" xml:space="preserve"><value>{0} antivirus programs active at once</value></data>
+  <data name="Av_DupDetail" xml:space="preserve"><value>{0} are all on at the same time. They can scan each other and slow the PC down.</value></data>
+  <data name="Threat_NoDefender" xml:space="preserve"><value>Windows Defender is not available (another antivirus may be the primary one).</value></data>
+  <data name="Threat_FullScanning" xml:space="preserve"><value>Defender full scan running (takes a long time)</value></data>
+  <data name="Threat_QuickScanning" xml:space="preserve"><value>Defender quick scan running</value></data>
+  <data name="Threat_AfterQuick" xml:space="preserve"><value>after a quick scan</value></data>
+  <data name="Threat_AfterFull" xml:space="preserve"><value>after a full scan</value></data>
+  <data name="Threat_HistoryOnly" xml:space="preserve"><value>history only, no scan</value></data>
+  <data name="Threat_UnresolvedTitle" xml:space="preserve"><value>Unresolved threat: {0}</value></data>
+  <data name="Threat_UnresolvedDetail" xml:space="preserve"><value>Defender found a threat it could not remove ({0}).</value></data>
+  <data name="Threat_RecentTitle" xml:space="preserve"><value>Threats handled in the last 30 days: {0}</value></data>
+  <data name="Threat_RecentDetail" xml:space="preserve"><value>Defender recently found and handled threats. Check that they do not come back the same way.</value></data>
+  <data name="Threat_OtherAv" xml:space="preserve"><value>Defender refused the scan because another antivirus ({0}) is the primary one. This is normal. Run virus scans in {0}.</value></data>
+  <data name="Threat_Passive" xml:space="preserve"><value>Defender refused the scan because it is in passive mode. Another antivirus may be set as the primary one.</value></data>
+  <data name="Threat_ScanFailed" xml:space="preserve"><value>Defender could not start the scan. Try scanning from the Windows Security app. ({0})</value></data>
+  <data name="Threat_ScanFailedTitle" xml:space="preserve"><value>Could not run a Defender scan</value></data>
+  <data name="Policy_Title" xml:space="preserve"><value>{0} forced policies set</value></data>
+  <data name="Policy_Detail" xml:space="preserve"><value>{0}'s start page, search engine, extensions, or other settings are locked by policy. You cannot change them.</value></data>
+  <data name="Ext_SuspectTitle" xml:space="preserve"><value>Suspicious extension: {0}</value></data>
+  <data name="Ext_OffStore" xml:space="preserve"><value>An extension installed from outside the web store.</value></data>
+  <data name="Ext_ListTitle" xml:space="preserve"><value>Installed extensions: {0}</value></data>
+  <data name="Ext_ListDetail" xml:space="preserve"><value>Extensions installed from the web store. Remove the ones you do not use from the browser.</value></data>
+  <data name="Ext_Off" xml:space="preserve"><value> off</value></data>
+  <data name="Hosts_CriticalDetail" xml:space="preserve"><value>Portal, bank, or security site addresses are redirected elsewhere: {0}</value></data>
+  <data name="Hosts_CustomDetail" xml:space="preserve"><value>Non-default entries in the hosts file: {0}.</value></data>
+  <data name="Hosts_CriticalTitle" xml:space="preserve"><value>hosts file tampered (important sites redirected)</value></data>
+  <data name="Hosts_CustomTitle" xml:space="preserve"><value>Extra entries in the hosts file</value></data>
+  <data name="Proxy_Title" xml:space="preserve"><value>Proxy is set</value></data>
+  <data name="Proxy_Detail" xml:space="preserve"><value>Internet traffic is set to go through another server. If you did not set this up yourself, it has been tampered with.</value></data>
+  <data name="KnownBad_Title" xml:space="preserve"><value>Known unwanted program: {0}</value></data>
+  <data name="Recent_Title" xml:space="preserve"><value>Programs installed in the last {0} days: {1}</value></data>
+  <data name="Recent_Detail" xml:space="preserve"><value>Check whether any of them line up with when the PC started to slow down.</value></data>
+  <data name="Photos_CauseGraphics" xml:space="preserve"><value>graphics driver</value></data>
+  <data name="Photos_CauseAntivirus" xml:space="preserve"><value>antivirus</value></data>
+  <data name="Photos_MissingTitle" xml:space="preserve"><value>Photos app is not installed</value></data>
+  <data name="Photos_MissingDetail" xml:space="preserve"><value>This account does not have the Microsoft Photos app. Reinstall it from the Microsoft Store.</value></data>
+  <data name="Photos_BadTitle" xml:space="preserve"><value>Photos app package problem ({0})</value></data>
+  <data name="Photos_BadDetail" xml:space="preserve"><value>The Photos app package is damaged, or there is a problem with its license or components.</value></data>
+  <data name="Photos_FailTitle" xml:space="preserve"><value>Photos app start failures: {0}</value></data>
+  <data name="Photos_FailDetail" xml:space="preserve"><value>The Photos app fails while starting (no crash has been logged). Narrow down the cause by repairing or resetting the app, or by opening it from a new user account.</value></data>
+  <data name="Crash_More" xml:space="preserve"><value> and {0} more</value></data>
+  <data name="Crash_Graphics" xml:space="preserve"><value>The graphics driver module ({0}) crashed {1} with an error. Reinstall the driver.</value></data>
+  <data name="Crash_KoreanSecurity" xml:space="preserve"><value>A module of a Korean banking security program ({0}) got into {1} and crashed it. Uninstalling the program fixes this. Sites will ask you to install it again when they need it.</value></data>
+  <data name="Crash_Antivirus" xml:space="preserve"><value>A module of the antivirus ({0}) crashed {1} with an error. Update the antivirus or switch to another one.</value></data>
+  <data name="Crash_Other" xml:space="preserve"><value>A module of {0} ({1}) got into {2} and crashed it. Uninstall or update this program.</value></data>
+  <data name="Crash_Title" xml:space="preserve"><value>{0} crashed apps (times: {1})</value></data>
+  <data name="Kr_Detail" xml:space="preserve"><value>This is a security program for Korean bank and government sites. You can remove it; sites will ask you to install it again when they need it.</value></data>
+  <data name="Kr_AutoStart" xml:space="preserve"><value> Programs that start with it at every boot: {0}.</value></data>
+  <data name="Kr_Year" xml:space="preserve"><value>{0} </value></data>
+  <data name="Kr_Title" xml:space="preserve"><value>Security plugin: {0}</value></data>
+  <data name="Sig_NoPaths" xml:space="preserve"><value>No paths were found in the signature check result ({0} requested).</value></data>
+  <data name="Ps_StartFailed" xml:space="preserve"><value>Could not start powershell.exe.</value></data>
+</root>

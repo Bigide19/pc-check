@@ -35,7 +35,7 @@ public sealed class PowerShellRunner : IPowerShell
             StandardErrorEncoding = Encoding.UTF8,
         };
 
-        using var p = Process.Start(psi) ?? throw new PowerShellException("powershell.exe를 시작하지 못했습니다.");
+        using var p = Process.Start(psi) ?? throw new PowerShellException(Strings.Ps_StartFailed);
         var stdout = p.StandardOutput.ReadToEndAsync(ct);
         var stderr = p.StandardError.ReadToEndAsync(ct);
         try

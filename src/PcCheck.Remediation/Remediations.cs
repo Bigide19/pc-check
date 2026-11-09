@@ -21,7 +21,7 @@ public abstract class RemediationBase(ISystemOps sys) : IRemediation
     public abstract Task<ActionRecord> ApplyAsync(RemediationTarget t, CancellationToken ct);
 
     public virtual Task UndoAsync(ActionRecord record, CancellationToken ct) =>
-        throw new InvalidOperationException("되돌릴 수 없는 조치입니다. 복원 지점을 사용하세요.");
+        throw new InvalidOperationException(Strings.Err_Irreversible);
 
     protected ActionRecord Record(RemediationTarget t, Dictionary<string, string> before, Dictionary<string, string> after) => new()
     {
@@ -32,7 +32,7 @@ public abstract class RemediationBase(ISystemOps sys) : IRemediation
     protected static async Task Check(Task<CommandResult> run, string what)
     {
         var r = await run;
-        if (!r.Ok) throw new InvalidOperationException($"{what} 실패 (exit {r.ExitCode}): {(r.Error + r.Output).Trim()}");
+        if (!r.Ok) throw new InvalidOperationException(string.Format(Strings.Err_CommandFailed, what, r.ExitCode, (r.Error + r.Output).Trim()));
     }
 }
 
@@ -43,7 +43,7 @@ public sealed class TempCleanRemediation(ISystemOps sys) : RemediationBase(sys)
     public override bool Reversible => false;
 
     public override IReadOnlyList<RemediationTarget> Plan(Finding f) =>
-        f.Title.StartsWith("임시 파일", StringComparison.Ordinal) ? [new(Id, f.Id, "TEMP", "임시 파일 정리 (1일 지난 파일)", f.Evidence)] : [];
+        f.Evidence.ContainsKey("tempGb") ? [new(Id, f.Id, "TEMP", Strings.T_TempClean, f.Evidence)] : [];
 
     public override Task<ActionRecord> ApplyAsync(RemediationTarget t, CancellationToken ct)
     {
@@ -72,7 +72,7 @@ public sealed class PowerPlanRemediation(ISystemOps sys) : RemediationBase(sys)
     public override bool Reversible => true;
 
     public override IReadOnlyList<RemediationTarget> Plan(Finding f) =>
-        f.Evidence.TryGetValue("guid", out var g) ? [new(Id, f.Id, "PowerScheme", "전원 계획을 균형 조정으로 변경", f.Evidence)] : [];
+        f.Evidence.TryGetValue("guid", out var g) ? [new(Id, f.Id, "PowerScheme", Strings.T_PowerPlan, f.Evidence)] : [];
 
     public override async Task<ActionRecord> ApplyAsync(RemediationTarget t, CancellationToken ct)
     {
@@ -110,7 +110,7 @@ public sealed class StartupDisableRemediation(ISystemOps sys, StartupSource star
     }
 
     private RemediationTarget Target(string findingId, string approvedKey, string name, string command) =>
-        new(Id, findingId, $@"{approvedKey}\{name}", $"시작 항목 끄기: {name}",
+        new(Id, findingId, $@"{approvedKey}\{name}", string.Format(Strings.T_Startup, name),
             new Dictionary<string, string> { ["approvedKey"] = approvedKey, ["name"] = name, ["command"] = command });
 
     public override Task<ActionRecord> ApplyAsync(RemediationTarget t, CancellationToken ct)
@@ -153,7 +153,7 @@ public sealed class ServiceDisableRemediation(ISystemOps sys) : RemediationBase(
     private static string Key(string service) => $@"HKLM\SYSTEM\CurrentControlSet\Services\{service}";
 
     public override IReadOnlyList<RemediationTarget> Plan(Finding f) =>
-        f.Evidence.TryGetValue("service", out var s) ? [new(Id, f.Id, s, $"서비스 끄기: {f.Evidence.GetValueOrDefault("displayName") ?? s}", f.Evidence)] : [];
+        f.Evidence.TryGetValue("service", out var s) ? [new(Id, f.Id, s, string.Format(Strings.T_Service, f.Evidence.GetValueOrDefault("displayName") ?? s), f.Evidence)] : [];
 
     public static string ScStartArg(int start, int delayed) => start switch
     {
@@ -190,7 +190,7 @@ public sealed class TaskDisableRemediation(ISystemOps sys) : RemediationBase(sys
 
     public override IReadOnlyList<RemediationTarget> Plan(Finding f) =>
         f.Evidence.TryGetValue("taskName", out var n)
-            ? [new(Id, f.Id, f.Evidence.GetValueOrDefault("task") ?? n, $"예약 작업 끄기: {n}", f.Evidence)]
+            ? [new(Id, f.Id, f.Evidence.GetValueOrDefault("task") ?? n, string.Format(Strings.T_Task, n), f.Evidence)]
             : [];
 
     private static string Script(string verb, IReadOnlyDictionary<string, string> d) =>
@@ -215,7 +215,7 @@ public sealed class UninstallRemediation(ISystemOps sys, Func<string, Cancellati
 
     public override IReadOnlyList<RemediationTarget> Plan(Finding f) =>
         f.Evidence.TryGetValue("uninstallString", out var u) && u.Length > 0
-            ? [new(Id, f.Id, f.Evidence.GetValueOrDefault("displayName") ?? u, $"프로그램 제거: {f.Evidence.GetValueOrDefault("displayName") ?? u}", f.Evidence)]
+            ? [new(Id, f.Id, f.Evidence.GetValueOrDefault("displayName") ?? u, string.Format(Strings.T_Uninstall, f.Evidence.GetValueOrDefault("displayName") ?? u), f.Evidence)]
             : [];
 
     // The vendor uninstaller runs with its own UI; no silent flags are added.
@@ -240,7 +240,7 @@ public sealed class BrowserPolicyRemediation(ISystemOps sys, string backupDir) :
     public override bool Reversible => true;
 
     public override IReadOnlyList<RemediationTarget> Plan(Finding f) =>
-        f.Evidence.TryGetValue("key", out var k) ? [new(Id, f.Id, k, $"{f.Evidence.GetValueOrDefault("browser")} 강제 정책 삭제", f.Evidence)] : [];
+        f.Evidence.TryGetValue("key", out var k) ? [new(Id, f.Id, k, string.Format(Strings.T_BrowserPolicy, f.Evidence.GetValueOrDefault("browser")), f.Evidence)] : [];
 
     public override async Task<ActionRecord> ApplyAsync(RemediationTarget t, CancellationToken ct)
     {
@@ -272,7 +272,7 @@ public sealed class HostsResetRemediation(ISystemOps sys, string backupDir) : Re
 
         """;
 
-    public override IReadOnlyList<RemediationTarget> Plan(Finding f) => [new(Id, f.Id, HostsCollector.HostsPath, "hosts 파일 초기화", f.Evidence)];
+    public override IReadOnlyList<RemediationTarget> Plan(Finding f) => [new(Id, f.Id, HostsCollector.HostsPath, Strings.T_Hosts, f.Evidence)];
 
     public override Task<ActionRecord> ApplyAsync(RemediationTarget t, CancellationToken ct)
     {
@@ -298,7 +298,7 @@ public sealed class ProxyResetRemediation(ISystemOps sys) : RemediationBase(sys)
     public override RiskLevel Risk => RiskLevel.Confirm;
     public override bool Reversible => true;
 
-    public override IReadOnlyList<RemediationTarget> Plan(Finding f) => [new(Id, f.Id, Key, "프록시 설정 해제", f.Evidence)];
+    public override IReadOnlyList<RemediationTarget> Plan(Finding f) => [new(Id, f.Id, Key, Strings.T_Proxy, f.Evidence)];
 
     public override Task<ActionRecord> ApplyAsync(RemediationTarget t, CancellationToken ct)
     {
@@ -333,7 +333,7 @@ public sealed class DefenderRemediation(ISystemOps sys) : RemediationBase(sys)
 
     // One action per scan even when SEC-AV and SEC-THREAT both point here.
     public override IReadOnlyList<RemediationTarget> Plan(Finding f) =>
-        [new(Id, f.Id, "WindowsDefender", "Defender 실시간 보호 켜기, 정의 업데이트, 위협 제거", f.Evidence)];
+        [new(Id, f.Id, "WindowsDefender", Strings.T_Defender, f.Evidence)];
 
     private const string Script = """
         $steps = @()
@@ -347,7 +347,7 @@ public sealed class DefenderRemediation(ISystemOps sys) : RemediationBase(sys)
     public override async Task<ActionRecord> ApplyAsync(RemediationTarget t, CancellationToken ct)
     {
         var r = (await Sys.PowerShellAsync(Script, ct)).EnumerateArray().First();
-        return Record(t, new() { ["note"] = "격리된 항목은 Windows 보안 > 보호 기록에서 복원할 수 있습니다." },
+        return Record(t, new() { ["note"] = Strings.Note_Quarantine },
             new() { ["steps"] = r.Str("Steps") ?? "", ["realTime"] = r.Str("RealTime") ?? "", ["signatureAge"] = r.Str("SignatureAge") ?? "" });
     }
 }

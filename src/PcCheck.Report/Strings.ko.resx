@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Verdict_HardwareReplace" xml:space="preserve"><value>하드웨어 교체 권장</value></data>
+  <data name="Verdict_Format" xml:space="preserve"><value>포맷 권장</value></data>
+  <data name="Verdict_Cleanup" xml:space="preserve"><value>정리로 충분</value></data>
+  <data name="Verdict_Healthy" xml:space="preserve"><value>이상 없음</value></data>
+  <data name="VerdictDesc_HardwareReplace" xml:space="preserve"><value>포맷으로는 해결되지 않는 하드웨어 문제가 있습니다. 디스크나 메모리 교체를 먼저 검토하세요.</value></data>
+  <data name="VerdictDesc_Format" xml:space="preserve"><value>변조나 위협 흔적이 많아 정리만으로는 복구를 장담하기 어렵습니다. 백업 후 포맷을 검토하세요.</value></data>
+  <data name="VerdictDesc_Cleanup" xml:space="preserve"><value>시작 항목, 불필요한 프로그램 등을 정리하면 개선될 가능성이 높습니다.</value></data>
+  <data name="VerdictDesc_Healthy" xml:space="preserve"><value>판정 기준에 해당하는 문제를 찾지 못했습니다.</value></data>
+  <data name="Severity_Critical" xml:space="preserve"><value>심각</value></data>
+  <data name="Severity_High" xml:space="preserve"><value>높음</value></data>
+  <data name="Severity_Medium" xml:space="preserve"><value>보통</value></data>
+  <data name="Severity_Low" xml:space="preserve"><value>낮음</value></data>
+  <data name="Severity_Info" xml:space="preserve"><value>정보</value></data>
+  <data name="Risk_Auto" xml:space="preserve"><value>자동 (승인 없이 실행)</value></data>
+  <data name="Risk_Confirm" xml:space="preserve"><value>확인 (항목별 승인)</value></data>
+  <data name="Risk_AdviceOnly" xml:space="preserve"><value>권고만</value></data>
+  <data name="Status_Ok" xml:space="preserve"><value>완료</value></data>
+  <data name="Status_Failed" xml:space="preserve"><value>실패</value></data>
+  <data name="Status_TimedOut" xml:space="preserve"><value>시간 초과</value></data>
+  <data name="Status_Canceled" xml:space="preserve"><value>취소</value></data>
+  <data name="Cat_Hardware" xml:space="preserve"><value>하드웨어</value></data>
+  <data name="Cat_Resource" xml:space="preserve"><value>리소스</value></data>
+  <data name="Cat_Startup" xml:space="preserve"><value>시작 항목</value></data>
+  <data name="Cat_Program" xml:space="preserve"><value>프로그램</value></data>
+  <data name="Cat_BrowserNetwork" xml:space="preserve"><value>브라우저와 네트워크</value></data>
+  <data name="Cat_BrowserNetworkShort" xml:space="preserve"><value>브라우저·네트워크</value></data>
+  <data name="Cat_Security" xml:space="preserve"><value>보안</value></data>
+  <data name="Cat_System" xml:space="preserve"><value>시스템</value></data>
+  <data name="Col_SYS_INFO" xml:space="preserve"><value>PC 기본 정보</value></data>
+  <data name="Col_HW_DISK_TYPE" xml:space="preserve"><value>디스크 종류</value></data>
+  <data name="Col_HW_DISK_HEALTH" xml:space="preserve"><value>디스크 상태</value></data>
+  <data name="Col_HW_DISK_FREE" xml:space="preserve"><value>여유 공간</value></data>
+  <data name="Col_HW_RAM" xml:space="preserve"><value>메모리 용량</value></data>
+  <data name="Col_SYS_DISPLAY" xml:space="preserve"><value>그래픽 드라이버</value></data>
+  <data name="Col_RES_CPU" xml:space="preserve"><value>CPU 사용률 측정</value></data>
+  <data name="Col_RES_MEM" xml:space="preserve"><value>메모리 압박 측정</value></data>
+  <data name="Col_RES_DISK" xml:space="preserve"><value>디스크 병목 측정</value></data>
+  <data name="Col_ST_COUNT" xml:space="preserve"><value>시작 항목 수</value></data>
+  <data name="Col_ST_SUSPECT" xml:space="preserve"><value>의심 시작 항목</value></data>
+  <data name="Col_SVC_SUSPECT" xml:space="preserve"><value>의심 서비스</value></data>
+  <data name="Col_TASK_SUSPECT" xml:space="preserve"><value>의심 예약 작업</value></data>
+  <data name="Col_APP_KNOWN_BAD" xml:space="preserve"><value>알려진 불필요 프로그램</value></data>
+  <data name="Col_APP_RECENT" xml:space="preserve"><value>최근 설치 프로그램</value></data>
+  <data name="Col_APP_PHOTOS" xml:space="preserve"><value>사진 앱</value></data>
+  <data name="Col_APP_CRASHES" xml:space="preserve"><value>앱을 종료시키는 프로그램</value></data>
+  <data name="Col_SEC_KR_MODULES" xml:space="preserve"><value>은행, 공공기관 보안 모듈</value></data>
+  <data name="Col_BR_POLICY" xml:space="preserve"><value>브라우저 정책 변조</value></data>
+  <data name="Col_BR_EXT" xml:space="preserve"><value>브라우저 확장 프로그램</value></data>
+  <data name="Col_NET_HOSTS" xml:space="preserve"><value>hosts 변조</value></data>
+  <data name="Col_NET_PROXY" xml:space="preserve"><value>프록시 변조</value></data>
+  <data name="Col_SEC_AV" xml:space="preserve"><value>백신 상태</value></data>
+  <data name="Col_SEC_THREAT" xml:space="preserve"><value>위협 이력, Defender 검사</value></data>
+  <data name="Col_SYS_UPDATE" xml:space="preserve"><value>업데이트, 재부팅 대기</value></data>
+  <data name="Col_SYS_EVENTS" xml:space="preserve"><value>시스템 로그 오류</value></data>
+  <data name="Col_SYS_MISC" xml:space="preserve"><value>전원 계획, 임시 파일, 가동 시간</value></data>
+  <data name="Tagline" xml:space="preserve"><value>PC 점검과 정리</value></data>
+  <data name="Html_Title" xml:space="preserve"><value>PC 점검 결과 - {0}</value></data>
+  <data name="Html_Heading" xml:space="preserve"><value>PC 점검 결과</value></data>
+  <data name="Html_PcName" xml:space="preserve"><value>PC 이름</value></data>
+  <data name="Html_Os" xml:space="preserve"><value>운영체제</value></data>
+  <data name="Html_Memory" xml:space="preserve"><value>메모리</value></data>
+  <data name="Html_Disk" xml:space="preserve"><value>디스크</value></data>
+  <data name="Html_Account" xml:space="preserve"><value>실행 계정</value></data>
+  <data name="Html_NotAdmin" xml:space="preserve"><value> (관리자 아님)</value></data>
+  <data name="Html_ScannedAt" xml:space="preserve"><value>실행 일시</value></data>
+  <data name="Html_Sampling" xml:space="preserve"><value>샘플링</value></data>
+  <data name="Html_Seconds" xml:space="preserve"><value>{0}초</value></data>
+  <data name="Html_NotMeasured" xml:space="preserve"><value>측정 안 함</value></data>
+  <data name="Html_ToolVersion" xml:space="preserve"><value>툴 버전</value></data>
+  <data name="Html_Secondary" xml:space="preserve"><value>보조 판정: {0}</value></data>
+  <data name="Html_Basis" xml:space="preserve"><value>근거: {0}</value></data>
+  <data name="Html_None" xml:space="preserve"><value>없음</value></data>
+  <data name="Html_SecondaryBasis" xml:space="preserve"><value> / 보조 근거: {0}</value></data>
+  <data name="Html_Scores" xml:space="preserve"><value>점수 요약</value></data>
+  <data name="Html_HardwareSubtotal" xml:space="preserve"><value>하드웨어 소계</value></data>
+  <data name="Html_SoftwareSubtotal" xml:space="preserve"><value>소프트웨어 소계</value></data>
+  <data name="Html_Findings" xml:space="preserve"><value>발견 항목 ({0})</value></data>
+  <data name="Html_NoFindings" xml:space="preserve"><value>발견된 항목이 없습니다.</value></data>
+  <data name="Html_Points" xml:space="preserve"><value>{0}점</value></data>
+  <data name="Html_Action" xml:space="preserve"><value>권장 조치: {0}</value></data>
+  <data name="Html_TopProcesses" xml:space="preserve"><value>상위 프로세스</value></data>
+  <data name="Html_DiskIo" xml:space="preserve"><value>디스크 I/O</value></data>
+  <data name="Html_NoSampling" xml:space="preserve"><value>리소스 샘플링 결과가 없습니다.</value></data>
+  <data name="Html_Candidates" xml:space="preserve"><value>조치 후보</value></data>
+  <data name="Html_NoCandidates" xml:space="preserve"><value>조치 후보가 없습니다.</value></data>
+  <data name="Html_ColAction" xml:space="preserve"><value>조치</value></data>
+  <data name="Html_ColTarget" xml:space="preserve"><value>대상</value></data>
+  <data name="Html_ColUndo" xml:space="preserve"><value>되돌리기</value></data>
+  <data name="Html_Yes" xml:space="preserve"><value>가능</value></data>
+  <data name="Html_No" xml:space="preserve"><value>불가</value></data>
+  <data name="Html_Errors" xml:space="preserve"><value>수집 오류 ({0})</value></data>
+  <data name="Html_NoErrors" xml:space="preserve"><value>수집 오류가 없습니다.</value></data>
+  <data name="Html_ColItem" xml:space="preserve"><value>항목</value></data>
+  <data name="Html_ColStatus" xml:space="preserve"><value>상태</value></data>
+  <data name="Html_ColMessage" xml:space="preserve"><value>내용</value></data>
+  <data name="Html_Footer" xml:space="preserve"><value>툴의 판정은 참고용입니다. "포맷 권장"이 나와도 백업과 업무 프로그램 재설치 가능 여부를 확인한 뒤 진행하세요.
+이 리포트에는 사용자 이름이 들어간 경로가 그대로 있으니 외부에 공유할 때 주의하세요.</value></data>
+  <data name="Slack_Heading" xml:space="preserve"><value>*PC Check {0} 점검 결과*</value></data>
+  <data name="Slack_Secondary" xml:space="preserve"><value>  (보조 판정: {0})</value></data>
+  <data name="Slack_Basis" xml:space="preserve"><value>근거: `{0}`</value></data>
+  <data name="Slack_SecondaryBasis" xml:space="preserve"><value>  보조 근거: `{0}`</value></data>
+  <data name="Slack_Scores" xml:space="preserve"><value>점수: 하드웨어 {0}, 소프트웨어 {1}</value></data>
+  <data name="Slack_Account" xml:space="preserve"><value>실행 계정: {0} · 점검 {1:yyyy-MM-dd HH:mm} · </value></data>
+  <data name="Slack_Measured" xml:space="preserve"><value>측정 {0}초</value></data>
+  <data name="Slack_Counts" xml:space="preserve"><value>발견 항목 {0}개, 수집 오류 {1}개</value></data>
+  <data name="Slack_Findings" xml:space="preserve"><value>*발견 항목*</value></data>
+  <data name="Slack_TopProcesses" xml:space="preserve"><value>*상위 프로세스*</value></data>
+  <data name="Slack_Errors" xml:space="preserve"><value>*수집 오류*</value></data>
+  <data name="Slack_Truncated" xml:space="preserve"><value>… (잘림)</value></data>
+  <data name="Slack_BadUrl" xml:space="preserve"><value>Slack 웹훅 주소(https://hooks.slack.com/services/...)가 아닙니다.</value></data>
+  <data name="Slack_SendFailed" xml:space="preserve"><value>Slack 전송 실패 ({0}): {1}</value></data>
+</root>

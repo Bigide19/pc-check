@@ -145,7 +145,7 @@ public sealed class ResourceSampler : IResourceSampler
             var fraction = Math.Min(1, sw.Elapsed / duration);
             var left = duration - sw.Elapsed;
             foreach (var id in CollectorIds)
-                ctx.Progress?.Report(new CollectorProgress(id, $"샘플링 중, {Math.Max(0, left.TotalSeconds):0}초 남음", fraction));
+                ctx.Progress?.Report(new CollectorProgress(id, string.Format(Strings.Sampling_Progress, Math.Max(0, left.TotalSeconds)), fraction));
         }
 
         var n = s.TopProcesses;

@@ -21,9 +21,6 @@
   </p>
 </div>
 
-> [!NOTE]
-> The app's screens and reports are in Korean only for now.
-
 <details>
 <summary>Contents</summary>
 
@@ -58,6 +55,7 @@ It is a single exe that runs without installation, so you can copy it over USB o
 - **Report files**: a human-readable `report.html` (one file, no external resources) and a machine-readable `findings.json`, bundled into one zip with the other result files.
 - **Results in Slack**: paste a Slack webhook URL on the result screen, and the summary and findings arrive as several messages.
 - **Protect list**: business programs listed in `config/protect.json` are never flagged or offered for fixes. The security plugin list lives in `config/kr-modules.json`.
+- **Korean and English**: screens and reports follow the Windows display language, and you can switch on the start screen.
 - **Works offline**: malware detection is left to Windows Defender, and nothing goes over the network unless you press "Send to Slack".
 
 <img src="docs/images/report.png" alt="report.html example (sample data)" width="720" />
@@ -83,17 +81,21 @@ The exe is not code-signed, so the first run shows a "Windows protected your PC"
 
 ### Scan from the window
 
-1. Open the programs you normally use, then press **점검 시작** (Start scan). Measuring takes 120 seconds by default, or 30 seconds in quick mode.
-2. The result screen shows the verdict, the findings behind it, and the top processes. **리포트 열기** (Open report) opens `report.html`.
-3. If a cleanup is needed, press **조치 진행** (Fix). Automatic items run first. Then each item that needs confirmation is shown one at a time, and you can approve it, skip it, or skip all the rest.
-4. If you don't like the result, use **이전 조치 되돌리기** (Undo previous fixes) on the start screen.
+1. Open the programs you normally use, then press **Start scan**. Measuring takes 120 seconds by default, or 30 seconds in quick mode.
+2. The result screen shows the verdict, the findings behind it, and the top processes. **Open report** opens `report.html`.
+3. If a cleanup is needed, press **Fix**. Automatic items run first. Then each item that needs confirmation is shown one at a time, and you can approve it, skip it, or skip all the rest.
+4. If you don't like the result, use **Undo previous fixes** on the start screen.
 
-Results are saved next to the exe in `PcCheck_{yyyyMMdd_HHmm}\`. The **결과 묶음(zip)** (Bundle results) button zips the files and shows the zip in Explorer, so you only need to send one file over a messenger or USB.
+Results are saved next to the exe in `PcCheck_{yyyyMMdd_HHmm}\`. The **Bundle results (zip)** button zips the files and shows the zip in Explorer, so you only need to send one file over a messenger or USB.
+
+### Language
+
+Screens and reports follow the Windows display language: Korean on Korean Windows, English everywhere else. Press **한국어** at the top right of the start screen to switch to Korean, and **English** to switch back. The choice is not saved, so to always use one language, start the app with `.\PcCheck.exe --lang en`. Results (`report.html`, `findings.json`) are written in the language that was active during the scan.
 
 ### Get results in Slack
 
 1. Create an [Incoming Webhook](https://api.slack.com/messaging/webhooks) URL for the Slack channel that should receive the results.
-2. Paste the URL (`https://hooks.slack.com/services/...`) into the box at the bottom of the result screen and press **Slack으로 보내기** (Send to Slack).
+2. Paste the URL (`https://hooks.slack.com/services/...`) into the box at the bottom of the result screen and press **Send to Slack**.
 
 The summary with the verdict and scores goes first, followed by the findings, top processes, and collector errors split across several messages. The URL you enter is not saved. On a PC you use often, put it in the `PCCHECK_SLACK_WEBHOOK` environment variable and the box is filled in for you. Anyone who has a webhook URL can post to that channel, so don't show it to others.
 
@@ -105,6 +107,7 @@ The summary with the verdict and scores goes first, followed by the findings, to
 .\PcCheck.exe scan --defender-scan        # include a Defender quick scan
 .\PcCheck.exe scan --defender-full-scan   # include a Defender full scan (slow)
 .\PcCheck.exe scan --slack                # send results to the PCCHECK_SLACK_WEBHOOK URL afterwards
+.\PcCheck.exe scan --lang en              # write the report in English (ko, en)
 ```
 
 This writes only `findings.json` and `report.html`, with no window, and exits. Exit code 0 means the result files were saved. Exit code 3 means they were saved but sending to Slack failed (the reason is in `slack-error.txt` in the result folder). Fixes and undo need approval, so they run only from the window.

@@ -143,7 +143,7 @@ public static class UndoRunner
             UndoResult result;
             try
             {
-                var rem = registry.Find(rec.RemediationId) ?? throw new InvalidOperationException($"{rec.RemediationId} 조치를 찾을 수 없습니다.");
+                var rem = registry.Find(rec.RemediationId) ?? throw new InvalidOperationException(string.Format(Strings.Err_UnknownRemediation, rec.RemediationId));
                 await Task.Run(() => rem.UndoAsync(rec, ct), ct);
                 result = new UndoResult(rec, true, null);
             }

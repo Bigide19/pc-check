@@ -1,0 +1,27 @@
+<Project>
+  <!-- Strongly typed accessor for each project's Strings.resx, generated at build time (no Visual Studio designer file).
+       This runs right before CoreCompile instead of through the resx item metadata, because WPF's temporary
+       markup-compile project only runs CoreCompile and would otherwise not see the class.
+       WPF projects get a public class: {x:Static} cannot reach internal members at run time. -->
+  <PropertyGroup>
+    <_StringsClassFile>$(IntermediateOutputPath)Strings.g.cs</_StringsClassFile>
+    <_StringsPublic>false</_StringsPublic>
+    <_StringsPublic Condition="'$(UseWPF)' == 'true'">true</_StringsPublic>
+  </PropertyGroup>
+
+  <Target Name="GenerateStringsClass" BeforeTargets="CoreCompile" Condition="Exists('Strings.resx')"
+          Inputs="Strings.resx;$(MSBuildThisFileFullPath)" Outputs="$(_StringsClassFile)">
+    <GenerateResource Sources="Strings.resx" OutputResources="$(IntermediateOutputPath)Strings.accessor.resources"
+                      StronglyTypedLanguage="CSharp" StronglyTypedClassName="Strings" StronglyTypedNamespace="$(RootNamespace)"
+                      StronglyTypedManifestPrefix="$(RootNamespace)" StronglyTypedFileName="$(_StringsClassFile)"
+                      PublicClass="$(_StringsPublic)" ExecuteAsTool="false" />
+  </Target>
+
+  <Target Name="IncludeStringsClass" AfterTargets="GenerateStringsClass" BeforeTargets="CoreCompile" Condition="Exists('Strings.resx')">
+    <ItemGroup>
+      <Compile Include="$(_StringsClassFile)" />
+      <!-- Otherwise IncrementalClean deletes them after every build and the next build regenerates. -->
+      <FileWrites Include="$(_StringsClassFile);$(IntermediateOutputPath)Strings.accessor.resources" />
+    </ItemGroup>
+  </Target>
+</Project>

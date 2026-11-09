@@ -33,7 +33,7 @@ public sealed partial class UndoViewModel : ObservableObject
         _log = _scanDir is null ? null : ActionLogStore.Load(_scanDir);
         if (_log is null)
         {
-            Summary = "되돌릴 조치 기록이 없습니다.";
+            Summary = Strings.Undo_NoLog;
             return;
         }
 
@@ -42,15 +42,15 @@ public sealed partial class UndoViewModel : ObservableObject
             {
                 Status = a.Status switch
                 {
-                    ActionStatus.Undone => "되돌림",
-                    ActionStatus.UndoFailed => "되돌리기 실패",
-                    _ => a.Reversible ? "되돌릴 예정" : "되돌릴 수 없음",
+                    ActionStatus.Undone => Strings.Undo_Undone,
+                    ActionStatus.UndoFailed => Strings.Undo_Failed,
+                    _ => a.Reversible ? Strings.Undo_Pending : Strings.Undo_Irreversible,
                 },
                 IsFailed = a.Status == ActionStatus.UndoFailed,
                 Error = a.Error,
             });
-        var rp = _log.RestorePoint is { Created: true } ? "조치 전에 복원 지점을 만들었습니다." : "조치 전에 복원 지점을 만들지 못했습니다.";
-        Summary = $"{_log.CreatedAt:yyyy-MM-dd HH:mm}에 실행한 조치입니다. {rp}";
+        var rp = _log.RestorePoint is { Created: true } ? Strings.Undo_RestoreMade : Strings.Undo_RestoreMissing;
+        Summary = string.Format(Strings.Undo_Summary, _log.CreatedAt, rp);
     }
 
     private bool CanRun() => HasLog && !IsRunning && !IsFinished;
@@ -67,14 +67,14 @@ public sealed partial class UndoViewModel : ObservableObject
 
         foreach (var r in results)
         {
-            var row = Rows.FirstOrDefault(x => x.Target == r.Record.Target && x.Status == "되돌릴 예정");
+            var row = Rows.FirstOrDefault(x => x.Target == r.Record.Target && x.Status == Strings.Undo_Pending);
             if (row is null) continue;
-            row.Status = r.Ok ? "되돌림" : "되돌리기 실패";
+            row.Status = r.Ok ? Strings.Undo_Undone : Strings.Undo_Failed;
             row.IsFailed = !r.Ok;
             row.Error = r.Error;
         }
         if (results.Any(r => !r.Ok) || _log!.Actions.Any(a => a.Status == ActionStatus.Applied && !a.Reversible))
-            FailureNote = "되돌리지 못한 항목이 있습니다. 시스템 복원(제어판 > 복구 > 시스템 복원 열기)에서 'PcCheck before fix' 복원 지점을 선택하세요.";
+            FailureNote = Strings.Undo_FailureNote;
         IsRunning = false;
         IsFinished = true;
     }

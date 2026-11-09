@@ -13,7 +13,7 @@ public sealed partial class CollectorRowViewModel(string id) : ObservableObject
 {
     public string Id { get; } = id;
     public string Name { get; } = Labels.Collector(id);
-    [ObservableProperty] private string _status = "실행 중";
+    [ObservableProperty] private string _status = Strings.Progress_Running;
     [ObservableProperty] private string _message = "";
     [ObservableProperty] private double _fraction;
     [ObservableProperty] private bool _isIndeterminate = true;
@@ -39,13 +39,13 @@ public sealed partial class ProgressViewModel : ObservableObject
 
     public ObservableCollection<CollectorRowViewModel> Rows { get; } = [];
     public IReadOnlyList<StepViewModel> Steps { get; } =
-        [new("설정 확인"), new("정보 수집"), new("분석"), new("저장")];
+        [new(Strings.Progress_StepConfig), new(Strings.Progress_StepCollect), new(Strings.Progress_StepAnalyze), new(Strings.Progress_StepSave)];
 
     [ObservableProperty] private int _completed;
     [ObservableProperty] private int _total;
     [ObservableProperty] private string _elapsed = "0:00";
     [ObservableProperty] private double _samplingFraction;
-    [ObservableProperty] private string _samplingText = "측정 준비 중";
+    [ObservableProperty] private string _samplingText = Strings.Progress_SamplingReady;
     [ObservableProperty] private string? _error;
     [ObservableProperty] private bool _isCanceling;
 
@@ -57,8 +57,8 @@ public sealed partial class ProgressViewModel : ObservableObject
         _main = main;
         DefenderNote = options.DefenderScan switch
         {
-            DefenderScanType.Quick => "Defender 빠른 검사가 끝날 때까지 몇 분 더 걸릴 수 있습니다.",
-            DefenderScanType.Full => "Defender 전체 검사가 끝날 때까지 수십 분 이상 걸릴 수 있습니다.",
+            DefenderScanType.Quick => Strings.Progress_DefenderQuick,
+            DefenderScanType.Full => Strings.Progress_DefenderFull,
             _ => "",
         };
         _timer = new DispatcherTimer(TimeSpan.FromSeconds(1), DispatcherPriority.Normal,
@@ -110,9 +110,9 @@ public sealed partial class ProgressViewModel : ObservableObject
             row.Fraction = 1;
             row.IsFailed = r.Status != CollectorStatus.Ok;
             row.Status = Labels.Of(r.Status);
-            row.Message = r.Error ?? (r.Findings.Count == 0 ? "문제 없음" : $"{r.Findings.Count}건 발견");
+            row.Message = r.Error ?? (r.Findings.Count == 0 ? Strings.Progress_NoProblem : string.Format(Strings.Progress_Found, r.Findings.Count));
             Completed++;
-            if (r.CollectorId == "RES-CPU") { SamplingFraction = 1; SamplingText = row.IsFailed ? "측정 실패" : "측정 완료"; }
+            if (r.CollectorId == "RES-CPU") { SamplingFraction = 1; SamplingText = row.IsFailed ? Strings.Progress_SamplingFailed : Strings.Progress_SamplingDone; }
         });
         IProgress<ScanStage> stage = new Progress<ScanStage>(SetStage);
 
@@ -132,7 +132,7 @@ public sealed partial class ProgressViewModel : ObservableObject
         catch (Exception ex)
         {
             _timer.Stop();
-            Error = $"점검을 마치지 못했습니다: {ex.Message}";
+            Error = string.Format(Strings.Progress_Failed, ex.Message);
         }
     }
 

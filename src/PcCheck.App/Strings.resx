@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Win_Symbol" xml:space="preserve"><value>PC Check symbol</value></data>
+  <data name="Win_Tagline" xml:space="preserve"><value>PC check and cleanup</value></data>
+  <data name="Win_Minimize" xml:space="preserve"><value>Minimize</value></data>
+  <data name="Win_Maximize" xml:space="preserve"><value>Maximize</value></data>
+  <data name="Win_Restore" xml:space="preserve"><value>Restore down</value></data>
+  <data name="Win_Close" xml:space="preserve"><value>Close</value></data>
+  <data name="Win_Language" xml:space="preserve"><value>Change language</value></data>
+  <data name="Start_Run" xml:space="preserve"><value>Start scan</value></data>
+  <data name="Start_Undo" xml:space="preserve"><value>Undo previous fixes</value></data>
+  <data name="Start_Title" xml:space="preserve"><value>Fresh again: check your PC</value></data>
+  <data name="Start_Intro" xml:space="preserve"><value>Finds out why the PC is slow and tells you whether a cleanup is enough or a reformat or new hardware is needed. Nothing on the system changes during the scan.</value></data>
+  <data name="Start_Pc" xml:space="preserve"><value>PC to check</value></data>
+  <data name="Start_PcName" xml:space="preserve"><value>PC name</value></data>
+  <data name="Start_Os" xml:space="preserve"><value>OS</value></data>
+  <data name="Start_Memory" xml:space="preserve"><value>Memory</value></data>
+  <data name="Start_Account" xml:space="preserve"><value>Account</value></data>
+  <data name="Start_Measure" xml:space="preserve"><value>Measurement</value></data>
+  <data name="Start_MeasureHint" xml:space="preserve"><value>Open the programs you normally use (work programs and the like) before measuring, so the real load shows up.</value></data>
+  <data name="Start_Defender" xml:space="preserve"><value>Defender scan</value></data>
+  <data name="Start_DefenderNone" xml:space="preserve"><value>No scan (check threat history only)</value></data>
+  <data name="Start_DefenderQuick" xml:space="preserve"><value>Quick scan (a few minutes)</value></data>
+  <data name="Start_DefenderFull" xml:space="preserve"><value>Full scan (tens of minutes or more)</value></data>
+  <data name="Start_DefenderHint" xml:space="preserve"><value>If a threat is found, Defender may quarantine it automatically.</value></data>
+  <data name="Start_NotAdmin" xml:space="preserve"><value>Not running as administrator. Most checks cannot collect data.</value></data>
+  <data name="Start_OldBuild" xml:space="preserve"><value>This build ({0}) is older than the supported versions (Windows 10 22H2, Windows 11).</value></data>
+  <data name="Start_Duration" xml:space="preserve"><value>Standard ({0} s)</value></data>
+  <data name="Start_Quick" xml:space="preserve"><value>Quick ({0} s)</value></data>
+  <data name="Progress_Title" xml:space="preserve"><value>Scanning</value></data>
+  <data name="Progress_Elapsed" xml:space="preserve"><value>Elapsed</value></data>
+  <data name="Progress_Sampling" xml:space="preserve"><value>Resource measurement</value></data>
+  <data name="Progress_Done" xml:space="preserve"><value>Completed checks</value></data>
+  <data name="Progress_Home" xml:space="preserve"><value>Back to start</value></data>
+  <data name="Progress_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Progress_Running" xml:space="preserve"><value>Running</value></data>
+  <data name="Progress_StepConfig" xml:space="preserve"><value>Check settings</value></data>
+  <data name="Progress_StepCollect" xml:space="preserve"><value>Collect data</value></data>
+  <data name="Progress_StepAnalyze" xml:space="preserve"><value>Analyze</value></data>
+  <data name="Progress_StepSave" xml:space="preserve"><value>Save</value></data>
+  <data name="Progress_SamplingReady" xml:space="preserve"><value>Getting ready to measure</value></data>
+  <data name="Progress_DefenderQuick" xml:space="preserve"><value>The Defender quick scan may take a few more minutes to finish.</value></data>
+  <data name="Progress_DefenderFull" xml:space="preserve"><value>The Defender full scan may take tens of minutes or more to finish.</value></data>
+  <data name="Progress_NoProblem" xml:space="preserve"><value>No problems</value></data>
+  <data name="Progress_Found" xml:space="preserve"><value>{0} found</value></data>
+  <data name="Progress_SamplingFailed" xml:space="preserve"><value>Measurement failed</value></data>
+  <data name="Progress_SamplingDone" xml:space="preserve"><value>Measurement done</value></data>
+  <data name="Progress_Failed" xml:space="preserve"><value>The scan could not finish: {0}</value></data>
+  <data name="Result_Reversible" xml:space="preserve"><value>Can be undone</value></data>
+  <data name="Result_Irreversible" xml:space="preserve"><value>Cannot be undone</value></data>
+  <data name="Result_Secondary" xml:space="preserve"><value>Secondary verdict: {0}</value></data>
+  <data name="Result_Basis" xml:space="preserve"><value>Basis: {0}</value></data>
+  <data name="Result_NoBasis" xml:space="preserve"><value>No basis items</value></data>
+  <data name="Result_SecondaryBasis" xml:space="preserve"><value>   Secondary basis: {0}</value></data>
+  <data name="Result_Sampled" xml:space="preserve"><value>Resources measured for {0} s</value></data>
+  <data name="Result_NotSampled" xml:space="preserve"><value>Resources not measured</value></data>
+  <data name="Result_Findings" xml:space="preserve"><value>Findings ({0})</value></data>
+  <data name="Result_NoLeak" xml:space="preserve"><value>No leaks</value></data>
+  <data name="Result_Leaks" xml:space="preserve"><value>{0} leaks</value></data>
+  <data name="Result_Errors" xml:space="preserve"><value>Collector errors ({0})</value></data>
+  <data name="Result_Memory" xml:space="preserve"><value>Memory</value></data>
+  <data name="Result_Disk" xml:space="preserve"><value>Disk</value></data>
+  <data name="Result_Sending" xml:space="preserve"><value>Sending ({0}/{1})</value></data>
+  <data name="Result_Sent" xml:space="preserve"><value>Sent ({0}/{0})</value></data>
+  <data name="Result_SlackTimeout" xml:space="preserve"><value>Slack is not responding. Check the internet connection.</value></data>
+  <data name="Result_HardwareSubtotal" xml:space="preserve"><value>Hardware subtotal</value></data>
+  <data name="Result_SoftwareSubtotal" xml:space="preserve"><value>Software subtotal</value></data>
+  <data name="Result_NoFindings" xml:space="preserve"><value>No findings.</value></data>
+  <data name="Result_Action" xml:space="preserve"><value>Recommended action: </value></data>
+  <data name="Result_TopProcesses" xml:space="preserve"><value>Top processes</value></data>
+  <data name="Result_NoSampling" xml:space="preserve"><value>No resource sampling results.</value></data>
+  <data name="Result_Candidates" xml:space="preserve"><value>Fix candidates</value></data>
+  <data name="Result_NoCandidates" xml:space="preserve"><value>No fix candidates.</value></data>
+  <data name="Result_NoErrors" xml:space="preserve"><value>No collector errors.</value></data>
+  <data name="Result_SlackUrl" xml:space="preserve"><value>Slack webhook URL</value></data>
+  <data name="Result_SlackHint" xml:space="preserve"><value>Paste a Slack webhook URL (not saved)</value></data>
+  <data name="Result_SendSlack" xml:space="preserve"><value>Send to Slack</value></data>
+  <data name="Result_OpenReport" xml:space="preserve"><value>Open report</value></data>
+  <data name="Result_Bundle" xml:space="preserve"><value>Bundle results (zip)</value></data>
+  <data name="Result_BundleTip" xml:space="preserve"><value>Zips the result files and shows the zip in Explorer</value></data>
+  <data name="Result_NewScan" xml:space="preserve"><value>New scan</value></data>
+  <data name="Result_Fix" xml:space="preserve"><value>Fix</value></data>
+  <data name="Fix_Title" xml:space="preserve"><value>Fix</value></data>
+  <data name="Fix_Preview" xml:space="preserve"><value>This is a preview. It shows the screen flow with sample data and does not change this PC.</value></data>
+  <data name="Fix_Intro" xml:space="preserve"><value>When you start, a restore point is created first. Automatic items run right away, and items that need confirmation are shown one at a time for your approval. Every fix records the original values in actions.json before it runs.</value></data>
+  <data name="Fix_Auto" xml:space="preserve"><value>Automatic (runs without approval)</value></data>
+  <data name="Fix_Confirm" xml:space="preserve"><value>Confirm (approve each item)</value></data>
+  <data name="Fix_Advice" xml:space="preserve"><value>Advice (things you need to do yourself)</value></data>
+  <data name="Fix_None" xml:space="preserve"><value>None</value></data>
+  <data name="Fix_Back" xml:space="preserve"><value>Back to results</value></data>
+  <data name="Fix_Start" xml:space="preserve"><value>Start fixes</value></data>
+  <data name="Fix_RestoreFailed" xml:space="preserve"><value>Could not create a restore point</value></data>
+  <data name="Fix_RestoreFailedBody" xml:space="preserve"><value>If you continue without a restore point, the fixes that cannot be undone (temp file deletion, program removal, Defender threat removal) will have no way back. Continue?</value></data>
+  <data name="Fix_Stop" xml:space="preserve"><value>Stop</value></data>
+  <data name="Fix_ContinueNoRestore" xml:space="preserve"><value>Continue without a restore point</value></data>
+  <data name="Fix_Ask" xml:space="preserve"><value>Run this fix?</value></data>
+  <data name="Fix_SkipAll" xml:space="preserve"><value>Skip all the rest</value></data>
+  <data name="Fix_Skip" xml:space="preserve"><value>Skip</value></data>
+  <data name="Fix_Approve" xml:space="preserve"><value>Approve</value></data>
+  <data name="Fix_Log" xml:space="preserve"><value>Log:</value></data>
+  <data name="Fix_GoUndo" xml:space="preserve"><value>Undo screen</value></data>
+  <data name="Fix_Home" xml:space="preserve"><value>Back to start</value></data>
+  <data name="Fix_NothingRun" xml:space="preserve"><value>No fixes were run.</value></data>
+  <data name="Fix_DoneCount" xml:space="preserve"><value>{0} done.</value></data>
+  <data name="Fix_FailedCount" xml:space="preserve"><value> {0} failed.</value></data>
+  <data name="Fix_SkippedCount" xml:space="preserve"><value> {0} skipped.</value></data>
+  <data name="Fix_CanUndo" xml:space="preserve"><value>You can undo this later.</value></data>
+  <data name="Fix_CannotUndo" xml:space="preserve"><value>This fix cannot be undone. Only the restore point can roll it back.</value></data>
+  <data name="Fix_UninstallerFailed" xml:space="preserve"><value>Could not start the uninstaller.</value></data>
+  <data name="Fix_CreatingRestore" xml:space="preserve"><value>Creating a restore point. This can take 1 to 2 minutes.</value></data>
+  <data name="Fix_UnknownError" xml:space="preserve"><value>Unknown error</value></data>
+  <data name="Fix_InProgress" xml:space="preserve"><value>{0} in progress</value></data>
+  <data name="Status_Running" xml:space="preserve"><value>In progress</value></data>
+  <data name="Status_Done" xml:space="preserve"><value>Done</value></data>
+  <data name="Status_Failed" xml:space="preserve"><value>Failed</value></data>
+  <data name="Status_Skipped" xml:space="preserve"><value>Skipped</value></data>
+  <data name="Fix_ApproveKind" xml:space="preserve"><value>Approve all of this kind ({0})</value></data>
+  <data name="Undo_Title" xml:space="preserve"><value>Undo</value></data>
+  <data name="Undo_Run" xml:space="preserve"><value>Run undo</value></data>
+  <data name="Undo_Home" xml:space="preserve"><value>Back to start</value></data>
+  <data name="Undo_NoLog" xml:space="preserve"><value>There are no fixes to undo.</value></data>
+  <data name="Undo_Undone" xml:space="preserve"><value>Undone</value></data>
+  <data name="Undo_Failed" xml:space="preserve"><value>Undo failed</value></data>
+  <data name="Undo_Pending" xml:space="preserve"><value>To be undone</value></data>
+  <data name="Undo_Irreversible" xml:space="preserve"><value>Cannot be undone</value></data>
+  <data name="Undo_RestoreMade" xml:space="preserve"><value>A restore point was created before the fixes.</value></data>
+  <data name="Undo_RestoreMissing" xml:space="preserve"><value>No restore point could be created before the fixes.</value></data>
+  <data name="Undo_Summary" xml:space="preserve"><value>Fixes run at {0:yyyy-MM-dd HH:mm}. {1}</value></data>
+  <data name="Undo_FailureNote" xml:space="preserve"><value>Some items could not be undone. In System Restore (Control Panel &gt; Recovery &gt; Open System Restore), choose the 'PcCheck before fix' restore point.</value></data>
+  <data name="Drop_Progress" xml:space="preserve"><value>Progress {0}%</value></data>
+  <data name="Drop_Leaks" xml:space="preserve"><value>{0} leaks</value></data>
+  <data name="Drop_Fixed" xml:space="preserve"><value>Plugged</value></data>
+  <data name="Drop_NoLeak" xml:space="preserve"><value>No leaks</value></data>
+  <data name="Result_LeakOne" xml:space="preserve"><value>1 leak</value></data>
+  <data name="Drop_LeakOne" xml:space="preserve"><value>1 leak</value></data>
+</root>

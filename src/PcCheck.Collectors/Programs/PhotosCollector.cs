@@ -67,8 +67,8 @@ public sealed partial class PhotosCollector(IPowerShell ps) : ICollector
     private static partial Regex AntivirusModule();
 
     public static string? CauseOf(string module) =>
-        GraphicsModule().IsMatch(module) ? "그래픽 드라이버"
-        : AntivirusModule().IsMatch(module) ? "백신"
+        GraphicsModule().IsMatch(module) ? Strings.Photos_CauseGraphics
+        : AntivirusModule().IsMatch(module) ? Strings.Photos_CauseAntivirus
         : null;
 
     public static IReadOnlyList<Finding> Evaluate(PhotosStatus s)
@@ -79,16 +79,16 @@ public sealed partial class PhotosCollector(IPowerShell ps) : ICollector
         // Headless scans run as SYSTEM, which has no Store apps of its own; only "nobody has it" counts there.
         var missing = s.RunningAsSystem ? !s.InstalledForAnyUser : !s.Installed;
         if (missing)
-            findings.Add(F.Make("APP-PHOTOS", Categories.Program, Severity.Medium, "사진 앱이 설치되어 있지 않음",
-                "이 계정에 Microsoft 사진 앱이 없습니다. Microsoft Store에서 다시 설치하세요.", "ADV-PHOTOS", baseEv));
+            findings.Add(F.Make("APP-PHOTOS", Categories.Program, Severity.Medium, Strings.Photos_MissingTitle,
+                Strings.Photos_MissingDetail, "ADV-PHOTOS", baseEv));
         else if (s.Status.Length > 0 && !s.Status.Equals("Ok", StringComparison.OrdinalIgnoreCase))
-            findings.Add(F.Make("APP-PHOTOS", Categories.Program, Severity.High, $"사진 앱 패키지 이상 ({s.Status})",
-                "사진 앱 패키지가 손상되었거나 라이선스, 구성 요소에 문제가 있습니다.", "ADV-PHOTOS", baseEv));
+            findings.Add(F.Make("APP-PHOTOS", Categories.Program, Severity.High, string.Format(Strings.Photos_BadTitle, s.Status),
+                Strings.Photos_BadDetail, "ADV-PHOTOS", baseEv));
 
         // Crashes are reported by APP-CRASHES, which can name the program that caused them.
         if (s.Crashes.Count == 0 && s.ActivationFailures > 0)
-            findings.Add(F.Make("APP-PHOTOS", Categories.Program, Severity.Medium, $"사진 앱 실행 실패 {s.ActivationFailures}회",
-                "사진 앱이 시작 단계에서 실패하고 있습니다 (오류로 꺼진 기록은 없음). 앱 복구나 초기화, 새 사용자 계정에서 열어 보기로 원인을 가르세요.",
+            findings.Add(F.Make("APP-PHOTOS", Categories.Program, Severity.Medium, string.Format(Strings.Photos_FailTitle, s.ActivationFailures),
+                Strings.Photos_FailDetail,
                 "ADV-PHOTOS", [.. baseEv, ("activationFailures7d", s.ActivationFailures)]));
         return findings;
     }

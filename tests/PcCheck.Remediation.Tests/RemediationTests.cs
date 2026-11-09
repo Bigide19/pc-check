@@ -169,11 +169,22 @@ public class RemediationTests
         sys.Files[Path.Combine(temp, "a.tmp")] = "";
         sys.Files[Path.Combine(temp, "locked.tmp")] = "";
         var rem = new TempCleanRemediation(sys);
-        var rec = await ApplyOnly(rem, F("SYS-MISC", "RM-TEMP-CLEAN") with { Title = "임시 파일 3.0GB" });
+        var rec = await ApplyOnly(rem, F("SYS-MISC", "RM-TEMP-CLEAN", ("tempGb", "3.0")));
         Assert.False(rec.Reversible);
         Assert.Equal("1", rec.After["deleted"]);
         Assert.Equal("1", rec.After["skippedLocked"]);
         await Assert.ThrowsAsync<InvalidOperationException>(() => rem.UndoAsync(rec, default));
+    }
+
+    [Fact]
+    public void Target_titles_follow_the_current_language()
+    {
+        var rem = new TempCleanRemediation(new FakeSystemOps());
+        var f = F("SYS-MISC", "RM-TEMP-CLEAN", ("tempGb", "3.0"));
+        Assert.Equal("임시 파일 정리 (1일 지난 파일)", Assert.Single(rem.Plan(f)).Title);
+        Lang.Set("en");
+        try { Assert.Equal("Clean temp files (older than 1 day)", Assert.Single(rem.Plan(f)).Title); }
+        finally { Lang.Set("ko"); }
     }
 
     [Fact]

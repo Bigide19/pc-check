@@ -41,7 +41,7 @@ public sealed class WindowsSystemOps(IPowerShell ps) : ISystemOps
         {
             "HKLM" or "HKEY_LOCAL_MACHINE" => RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64),
             "HKCU" or "HKEY_CURRENT_USER" => Registry.CurrentUser,
-            _ => throw new ArgumentException($"지원하지 않는 레지스트리 루트: {hive}"),
+            _ => throw new ArgumentException(string.Format(Strings.Err_BadHive, hive)),
         };
         return (root, sub);
     }
@@ -81,7 +81,7 @@ public sealed class WindowsSystemOps(IPowerShell ps) : ISystemOps
             RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false, CreateNoWindow = true,
             StandardOutputEncoding = Encoding.UTF8, StandardErrorEncoding = Encoding.UTF8,
         };
-        using var p = Process.Start(psi) ?? throw new InvalidOperationException($"{exe}를 시작하지 못했습니다.");
+        using var p = Process.Start(psi) ?? throw new InvalidOperationException(string.Format(Strings.Err_StartFailed, exe));
         var o = p.StandardOutput.ReadToEndAsync(ct);
         var e = p.StandardError.ReadToEndAsync(ct);
         await p.WaitForExitAsync(ct);

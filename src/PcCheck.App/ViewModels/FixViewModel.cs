@@ -56,10 +56,10 @@ public sealed partial class FixViewModel : ObservableObject
         {
             var applied = Results.Count(r => r.IsApplied);
             var skipped = Results.Count - applied - FailedCount;
-            if (applied + FailedCount == 0) return "실행한 조치가 없습니다.";
-            return $"{applied}건을 마쳤습니다."
-                + (FailedCount > 0 ? $" {FailedCount}건은 실패했습니다." : "")
-                + (skipped > 0 ? $" {skipped}건은 건너뛰었습니다." : "");
+            if (applied + FailedCount == 0) return Strings.Fix_NothingRun;
+            return string.Format(Strings.Fix_DoneCount, applied)
+                + (FailedCount > 0 ? string.Format(Strings.Fix_FailedCount, FailedCount) : "")
+                + (skipped > 0 ? string.Format(Strings.Fix_SkippedCount, skipped) : "");
         }
     }
 
@@ -74,7 +74,7 @@ public sealed partial class FixViewModel : ObservableObject
     public string CurrentTitle => Current?.Target.Title ?? "";
     public string CurrentTarget => Current?.Target.Target ?? "";
     public string CurrentKind => Current is null ? "" : RemediationCatalog.Find(Current.Target.RemediationId)?.Name ?? Current.Target.RemediationId;
-    public string CurrentReversible => Current is null ? "" : Current.Reversible ? "나중에 되돌릴 수 있습니다." : "되돌릴 수 없는 조치입니다. 복원 지점으로만 되돌릴 수 있습니다.";
+    public string CurrentReversible => Current is null ? "" : Current.Reversible ? Strings.Fix_CanUndo : Strings.Fix_CannotUndo;
     public bool CurrentIrreversible => Current is { Reversible: false };
     public bool HasSameKind => SameKindRemaining > 0;
     public string CurrentCommand => Current?.Target.Data.GetValueOrDefault("command") ?? Current?.Target.Data.GetValueOrDefault("execute") ?? "";
@@ -97,7 +97,7 @@ public sealed partial class FixViewModel : ObservableObject
         _plan = _registry.BuildPlan(outcome.Report.Findings);
 
         static PlanRow Row(PlannedAction a) => new(a.Target.Title, a.Target.Target,
-            RemediationCatalog.Find(a.Target.RemediationId)?.Name ?? a.Target.RemediationId, a.Reversible ? "되돌릴 수 있음" : "되돌릴 수 없음");
+            RemediationCatalog.Find(a.Target.RemediationId)?.Name ?? a.Target.RemediationId, a.Reversible ? Strings.Result_Reversible : Strings.Result_Irreversible);
         AutoRows = _plan.Auto.Select(Row).ToList();
         ConfirmRows = _plan.Confirm.Select(Row).ToList();
         Advice = _plan.Advice;
@@ -106,7 +106,7 @@ public sealed partial class FixViewModel : ObservableObject
     private static async Task<int> RunInteractiveAsync(string command, CancellationToken ct)
     {
         using var p = Process.Start(new ProcessStartInfo("cmd.exe", "/c " + command) { UseShellExecute = false, CreateNoWindow = true })
-            ?? throw new InvalidOperationException("제거 프로그램을 시작하지 못했습니다.");
+            ?? throw new InvalidOperationException(Strings.Fix_UninstallerFailed);
         await p.WaitForExitAsync(ct);
         return p.ExitCode;
     }
@@ -115,11 +115,11 @@ public sealed partial class FixViewModel : ObservableObject
     private async Task StartAsync()
     {
         State = FixState.Working;
-        WorkingText = "복원 지점을 만드는 중입니다. 1~2분 걸릴 수 있습니다.";
+        WorkingText = Strings.Fix_CreatingRestore;
         _restore = await new RestorePointService(_ops).CreateAsync("PcCheck before fix", CancellationToken.None);
         if (!_restore.Created)
         {
-            RestoreError = _restore.Error ?? "알 수 없는 오류";
+            RestoreError = _restore.Error ?? Strings.Fix_UnknownError;
             State = FixState.AskRestore;
             return;
         }
@@ -138,7 +138,7 @@ public sealed partial class FixViewModel : ObservableObject
         State = FixState.Working;
         foreach (var a in _plan.Auto)
         {
-            WorkingText = $"{a.Target.Title} 진행 중";
+            WorkingText = string.Format(Strings.Fix_InProgress, a.Target.Title);
             await ApplyAsync(a);
         }
         foreach (var a in _plan.Confirm) _pending.Enqueue(a);
@@ -147,10 +147,10 @@ public sealed partial class FixViewModel : ObservableObject
 
     private async Task ApplyAsync(PlannedAction a)
     {
-        var row = new ActionRowViewModel(a.Target.Title, a.Target.Target) { Status = "진행 중" };
+        var row = new ActionRowViewModel(a.Target.Title, a.Target.Target) { Status = Strings.Status_Running };
         Results.Add(row);
         var rec = await _session!.ApplyAsync(a, CancellationToken.None);
-        row.Status = rec.Status == ActionStatus.Applied ? "완료" : "실패";
+        row.Status = rec.Status == ActionStatus.Applied ? Strings.Status_Done : Strings.Status_Failed;
         row.IsFailed = rec.Status != ActionStatus.Applied;
         row.IsApplied = rec.Status == ActionStatus.Applied;
         row.Error = rec.Error;
@@ -178,13 +178,13 @@ public sealed partial class FixViewModel : ObservableObject
     {
         var a = Current!;
         State = FixState.Working;
-        WorkingText = $"{a.Target.Title} 진행 중";
+        WorkingText = string.Format(Strings.Fix_InProgress, a.Target.Title);
         await ApplyAsync(a);
         NextConfirm();
     }
 
     public int SameKindRemaining => Current is null ? 0 : _pending.Count(a => a.Target.FindingId == Current.Target.FindingId);
-    public string ApproveKindText => $"같은 종류 모두 승인 ({SameKindRemaining + 1}개)";
+    public string ApproveKindText => string.Format(Strings.Fix_ApproveKind, SameKindRemaining + 1);
 
     // Each uninstaller still opens its own window; this only saves clicking "승인" for every module.
     [RelayCommand]
@@ -202,7 +202,7 @@ public sealed partial class FixViewModel : ObservableObject
         State = FixState.Working;
         foreach (var a in batch)
         {
-            WorkingText = $"{a.Target.Title} 진행 중";
+            WorkingText = string.Format(Strings.Fix_InProgress, a.Target.Title);
             await ApplyAsync(a);
         }
         NextConfirm();
@@ -226,7 +226,7 @@ public sealed partial class FixViewModel : ObservableObject
     private async Task SkipOne(PlannedAction a)
     {
         await _session!.SkipAsync(a);
-        Results.Add(new ActionRowViewModel(a.Target.Title, a.Target.Target) { Status = "건너뜀" });
+        Results.Add(new ActionRowViewModel(a.Target.Title, a.Target.Target) { Status = Strings.Status_Skipped });
     }
 
     [RelayCommand]

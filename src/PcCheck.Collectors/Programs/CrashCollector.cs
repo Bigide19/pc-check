@@ -108,17 +108,17 @@ public sealed partial class CrashCollector(IPowerShell ps, UninstallSource unins
             var cause = Classify(module, owner, kr);
             var ownerName = kr?.Name ?? program?.DisplayName ?? owner.Product ?? owner.Company ?? module;
             var apps = injected.Select(e => e.App).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
-            var appText = string.Join(", ", apps.Take(3)) + (apps.Count > 3 ? $" 외 {apps.Count - 3}개" : "");
+            var appText = string.Join(", ", apps.Take(3)) + (apps.Count > 3 ? string.Format(Strings.Crash_More, apps.Count - 3) : "");
 
             var (detail, remediation) = cause switch
             {
-                CrashCause.Graphics => ($"그래픽 드라이버 모듈({module})이 {appText} 안에서 오류를 내며 종료시켰습니다. 드라이버를 다시 설치하세요.", "ADV-GPU-DRIVER"),
-                CrashCause.KoreanSecurity => ($"은행, 공공기관 보안 프로그램({ownerName})의 모듈이 {appText} 안에 끼어들어 종료시켰습니다. 이 프로그램을 지우면 해결됩니다. 사이트가 필요할 때 다시 설치를 안내합니다.", program?.UninstallString is null ? "ADV-CRASH-MODULE" : "RM-UNINSTALL"),
-                CrashCause.Antivirus => ($"백신({ownerName})의 모듈이 {appText} 안에서 오류를 내며 종료시켰습니다. 백신을 업데이트하거나 다른 백신으로 바꾸세요.", program?.UninstallString is null ? "ADV-CRASH-MODULE" : "RM-UNINSTALL"),
-                _ => ($"{ownerName}의 모듈({module})이 {appText} 안에 끼어들어 종료시켰습니다. 이 프로그램을 지우거나 업데이트하세요.", program?.UninstallString is null ? "ADV-CRASH-MODULE" : "RM-UNINSTALL"),
+                CrashCause.Graphics => (string.Format(Strings.Crash_Graphics, module, appText), "ADV-GPU-DRIVER"),
+                CrashCause.KoreanSecurity => (string.Format(Strings.Crash_KoreanSecurity, ownerName, appText), program?.UninstallString is null ? "ADV-CRASH-MODULE" : "RM-UNINSTALL"),
+                CrashCause.Antivirus => (string.Format(Strings.Crash_Antivirus, ownerName, appText), program?.UninstallString is null ? "ADV-CRASH-MODULE" : "RM-UNINSTALL"),
+                _ => (string.Format(Strings.Crash_Other, ownerName, module, appText), program?.UninstallString is null ? "ADV-CRASH-MODULE" : "RM-UNINSTALL"),
             };
 
-            findings.Add(F.Make("APP-CRASHES", Categories.Program, sev.Value, $"{ownerName}이(가) 앱을 {count}번 종료시킴", detail, remediation,
+            findings.Add(F.Make("APP-CRASHES", Categories.Program, sev.Value, string.Format(Strings.Crash_Title, ownerName, count), detail, remediation,
                 ("module", module), ("modulePath", path), ("company", owner.Company), ("cause", cause.ToString()),
                 ("apps", string.Join(", ", apps)), ("crashes7d", count),
                 ("lastException", injected.OrderByDescending(e => e.Time).First().ExceptionCode),

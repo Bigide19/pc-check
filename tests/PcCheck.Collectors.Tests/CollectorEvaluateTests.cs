@@ -39,6 +39,21 @@ public class CollectorEvaluateTests
     public void DiskType(string media, string bus, double? spindle, Severity? expected) =>
         Assert.Equal(expected, Sev(DiskTypeCollector.Evaluate(new StorageInfo { MediaType = media, BusType = bus, SpindleSpeed = spindle })));
 
+    [Fact]
+    public void Finding_text_follows_the_current_language()
+    {
+        var hdd = new StorageInfo { MediaType = "HDD", BusType = "SATA" };
+        Assert.Equal("시스템 드라이브가 HDD", DiskTypeCollector.Evaluate(hdd).Single().Title);
+        Lang.Set("en");
+        try
+        {
+            var f = DiskTypeCollector.Evaluate(hdd).Single();
+            Assert.Equal("System drive is an HDD", f.Title);
+            Assert.StartsWith("Drive C: is an HDD (SATA).", f.Detail);
+        }
+        finally { Lang.Set("ko"); }
+    }
+
     [Theory]
     [InlineData("Healthy", true, 0.0, Severity.Critical)]
     [InlineData("Unhealthy", null, 0.0, Severity.Critical)]

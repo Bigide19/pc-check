@@ -1,6 +1,6 @@
 # Handoff
 
-Last updated 2026-11-09 by Claude Code. **v0.2.0 is released (2026-11-09)**: renamed from pitstop to PC Check (repo `Bigide19/pc-check`) with the water-drop brand. Scan, verdict, and remediation logic are unchanged from v0.1.3. Next: stage 2 of the three-leak plan below.
+Last updated 2026-11-09 by Claude Code. **v0.2.0 is released (2026-11-09)**: renamed from pitstop to PC Check (repo `Bigide19/pc-check`) with the water-drop brand. Scan, verdict, and remediation logic are unchanged from v0.1.3. Since then (branch `feature/i18n`, not released): Korean and English UI, see "Localization" below. Next: stage 2 of the three-leak plan below.
 
 ## Rename and scope (2026-11-09, user decision)
 
@@ -10,6 +10,14 @@ Last updated 2026-11-09 by Claude Code. **v0.2.0 is released (2026-11-09)**: ren
 - Scope: "PC에서 새는 곳을 찾습니다". Performance leaks (the 26 current checks), space leaks (unused-file cleanup, new), information leaks (personal-data cleanup ported from `Bigide19/windows-pc-privacy-cleaner`, net462 WPF, 46 files). Never claim data *was* leaked; say it remains or could leak.
 - Brand (2026-11-09, user picked option A of three): a teal water drop with a check (`DropGeometry` in `App.xaml`, `Views/LeakDrop.xaml`). The drop also shows state in three places only: it fills up while scanning (progress screen), shows the leak count with falling drips next to the verdict (healthy verdict = check), and turns into a plugged check after fixes. Severity stays color + text. The window uses `WindowChrome`, so the brand header is the title bar (caption buttons in `MainWindow.xaml`), and ScrollBar, TextBox, CheckBox, RadioButton, ProgressBar, ToolTip have implicit styles in `App.xaml`.
 - Stages: 1 rename (this branch) -> 2 three-leak layout with mock data -> 3 port the privacy cleaner (deletes go through `ISystemOps`) -> 4 unused-file cleanup. Show a plan before each stage.
+
+## Localization (2026-11-09, user asked for an English UI)
+
+- Every user-facing string moved to `Strings.resx` / `Strings.ko.resx` per project (Core, Collectors, Remediation, Report, App); mock data and config data use `Lang.Pick(ko, en)` pairs. Rules are in AGENTS.md.
+- Language: Windows display language by default, `--lang ko|en` for GUI and headless, and a start-screen header button that rebuilds the window. The choice is not persisted.
+- Known behavior: `findings.json`, `report.html`, and `actions.json` titles are written in the language active at run time, so the undo screen shows titles in the language of the fix run. The toggle is offered on the start screen only.
+- VM check (2026-11-09): headless `scan --lang en` and default Korean; GUI default -> toggle -> quick scan (progress, result, fix candidates in English); `--mock --lang en` through fix overview, approval, done, undo; `--mock` in Korean unchanged. English report.html rendered.
+- Font: English UI uses `Segoe UI, Malgun Gothic`, Korean keeps `Malgun Gothic, Segoe UI` (`App.ApplyLanguageFont`).
 
 ## Stage status
 
@@ -21,7 +29,7 @@ Last updated 2026-11-09 by Claude Code. **v0.2.0 is released (2026-11-09)**: ren
 | 4 Remediation, restore point, fix/undo | Done | 2026-11-07 VM end-to-end: 7 planted artifacts detected, all 7 fixes applied, all 7 undone back to the planted state, VM cleaned afterwards (`tools/vm/fixtest/cleanup.ps1`) |
 | 5 VirusTotal, UI polish | UI polish done; VirusTotal not started | |
 
-Tests: 108 pass on macOS and in the VM (`dotnet test PcCheck.slnx`, 2026-11-07).
+Tests: 113 pass on macOS (`dotnet test PcCheck.slnx`, 2026-11-09), including a resx key and placeholder parity check.
 
 ## Release warning
 

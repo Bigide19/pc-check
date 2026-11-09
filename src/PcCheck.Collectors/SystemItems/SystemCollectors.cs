@@ -36,15 +36,15 @@ public sealed class UpdateCollector(IPowerShell ps, TimeProvider? clock = null) 
     {
         var findings = new List<Finding>();
         if (s.RebootRequired || s.RebootPending || s.PendingFileRename)
-            findings.Add(F.Make("SYS-UPDATE", Categories.System, Severity.Medium, "재부팅 대기 중",
-                "업데이트나 설치를 마무리하려면 재부팅이 필요합니다.", "ADV-REBOOT",
+            findings.Add(F.Make("SYS-UPDATE", Categories.System, Severity.Medium, Strings.Update_RebootTitle,
+                Strings.Update_RebootDetail, "ADV-REBOOT",
                 ("rebootRequired", s.RebootRequired), ("cbsRebootPending", s.RebootPending), ("pendingFileRename", s.PendingFileRename)));
 
         var days = s.LastInstalledOn is { } d ? (now - d).TotalDays : (double?)null;
         if (days is null || F.Above(days.Value, rules.Thresholds.LastUpdateAgeDays) is not null)
             findings.Add(F.Make("SYS-UPDATE", Categories.System, Severity.Medium,
-                days is null ? "업데이트 설치 기록 없음" : $"마지막 업데이트 {days:0}일 전",
-                "Windows 업데이트가 오랫동안 설치되지 않았습니다.", "ADV-UPDATE",
+                days is null ? Strings.Update_NoneTitle : string.Format(Strings.Update_AgeTitle, days),
+                Strings.Update_AgeDetail, "ADV-UPDATE",
                 ("lastHotFix", s.LastHotFix), ("lastInstalledOn", s.LastInstalledOn?.ToString("yyyy-MM-dd"))));
         return findings;
     }
@@ -77,15 +77,15 @@ public sealed partial class EventLogCollector(IPowerShell ps) : ICollector
         var findings = new List<Finding>();
         var disk = events.Where(e => e.Id is 7 or 51 or 153 && StorageProvider().IsMatch(e.Provider)).ToList();
         if (disk.Count >= 1)
-            findings.Add(F.Make("SYS-EVENTS", Categories.System, Severity.High, $"최근 7일 디스크 오류 {disk.Count}건",
-                "시스템 로그에 디스크 오류(배드 섹터, 페이징 오류, 재시도)가 기록되어 있습니다.", "ADV-DISK-CHECK",
+            findings.Add(F.Make("SYS-EVENTS", Categories.System, Severity.High, string.Format(Strings.Events_DiskTitle, disk.Count),
+                Strings.Events_DiskDetail, "ADV-DISK-CHECK",
                 ("count", disk.Count), ("byId", string.Join(", ", disk.GroupBy(e => e.Id).Select(g => $"{g.Key}:{g.Count()}"))),
                 ("last", disk.Max(e => e.Time)?.ToString("yyyy-MM-dd HH:mm"))));
 
         var shutdowns = events.Where(e => e.Id == 41 && e.Provider.Contains("Kernel-Power", StringComparison.OrdinalIgnoreCase)).ToList();
         if (rules.Thresholds.UnexpectedShutdowns7d.Medium is { } limit && shutdowns.Count >= limit)
-            findings.Add(F.Make("SYS-EVENTS", Categories.System, Severity.Medium, $"최근 7일 비정상 종료 {shutdowns.Count}회",
-                "전원이 갑자기 꺼지거나 멈춰서 강제로 껐던 기록입니다. 전원, 과열, 드라이버 문제일 수 있습니다.", "ADV-POWER",
+            findings.Add(F.Make("SYS-EVENTS", Categories.System, Severity.Medium, string.Format(Strings.Events_ShutdownTitle, shutdowns.Count),
+                Strings.Events_ShutdownDetail, "ADV-POWER",
                 ("count", shutdowns.Count), ("last", shutdowns.Max(e => e.Time)?.ToString("yyyy-MM-dd HH:mm"))));
         return findings;
     }
@@ -143,17 +143,17 @@ public sealed partial class MiscCollector : ICollector
         var t = rules.Thresholds;
         var findings = new List<Finding>();
         if (m.PowerScheme == PowerSaver)
-            findings.Add(F.Make("SYS-MISC", Categories.System, Severity.Low, "절전 전원 계획 사용 중",
-                "절전 계획은 CPU 성능을 낮춥니다.", "RM-POWER-PLAN", ("scheme", m.PowerSchemeName), ("guid", m.PowerScheme)));
+            findings.Add(F.Make("SYS-MISC", Categories.System, Severity.Low, Strings.Misc_PowerSaverTitle,
+                Strings.Misc_PowerSaverDetail, "RM-POWER-PLAN", ("scheme", m.PowerSchemeName), ("guid", m.PowerScheme)));
 
         var tempGb = m.TempBytes / 1024d / 1024 / 1024;
         if (F.Above(tempGb, t.TempSizeGb) is { } ts)
-            findings.Add(F.Make("SYS-MISC", Categories.System, ts, $"임시 파일 {tempGb:0.0}GB",
-                @"%TEMP%와 C:\Windows\Temp에 임시 파일이 쌓여 있습니다.", "RM-TEMP-CLEAN", ("tempGb", Math.Round(tempGb, 2))));
+            findings.Add(F.Make("SYS-MISC", Categories.System, ts, string.Format(Strings.Misc_TempTitle, tempGb),
+                Strings.Misc_TempDetail, "RM-TEMP-CLEAN", ("tempGb", Math.Round(tempGb, 2))));
 
         if (F.Above(m.Uptime.TotalDays, t.UptimeDays) is { } us)
-            findings.Add(F.Make("SYS-MISC", Categories.System, us, $"{m.Uptime.TotalDays:0}일째 재부팅 안 함",
-                "빠른 시작이 켜져 있으면 종료해도 가동 시간이 이어집니다. 재부팅(다시 시작)을 권장합니다.", "ADV-REBOOT",
+            findings.Add(F.Make("SYS-MISC", Categories.System, us, string.Format(Strings.Misc_UptimeTitle, m.Uptime.TotalDays),
+                Strings.Misc_UptimeDetail, "ADV-REBOOT",
                 ("uptimeDays", Math.Round(m.Uptime.TotalDays, 1))));
         return findings;
     }

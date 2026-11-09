@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Rm_RM_TEMP_CLEAN" xml:space="preserve"><value>Clean temp files (older than 1 day)</value></data>
+  <data name="Rm_RM_POWER_PLAN" xml:space="preserve"><value>Switch the power plan to Balanced</value></data>
+  <data name="Rm_RM_STARTUP_DISABLE" xml:space="preserve"><value>Disable startup item</value></data>
+  <data name="Rm_RM_SERVICE_DISABLE" xml:space="preserve"><value>Stop the service and set it to Disabled</value></data>
+  <data name="Rm_RM_TASK_DISABLE" xml:space="preserve"><value>Disable scheduled task</value></data>
+  <data name="Rm_RM_UNINSTALL" xml:space="preserve"><value>Uninstall program (opens its uninstaller)</value></data>
+  <data name="Rm_RM_BROWSER_POLICY" xml:space="preserve"><value>Delete forced browser policies (.reg backup)</value></data>
+  <data name="Rm_RM_HOSTS_RESET" xml:space="preserve"><value>Reset the hosts file (backup)</value></data>
+  <data name="Rm_RM_PROXY_RESET" xml:space="preserve"><value>Turn off proxy settings (backup)</value></data>
+  <data name="Rm_RM_DEFENDER" xml:space="preserve"><value>Turn on Defender real-time protection, update definitions, remove threats</value></data>
+  <data name="Rm_ADV_DISK_SSD" xml:space="preserve"><value>Replace with an SSD</value></data>
+  <data name="Adv_ADV_DISK_SSD" xml:space="preserve"><value>An SSD makes booting and starting programs several times faster. Back up your files before replacing the disk.</value></data>
+  <data name="Rm_ADV_DISK_HEALTH" xml:space="preserve"><value>Replace the disk now</value></data>
+  <data name="Adv_ADV_DISK_HEALTH" xml:space="preserve"><value>The disk may be about to fail. Back up now and replace the disk. A reformat will not fix this.</value></data>
+  <data name="Rm_ADV_DISK_FREE" xml:space="preserve"><value>Free up space</value></data>
+  <data name="Adv_ADV_DISK_FREE" xml:space="preserve"><value>Keep at least 15% of drive C: free. Start with Disk Cleanup, the Downloads folder, and the Recycle Bin.</value></data>
+  <data name="Rm_ADV_RAM" xml:space="preserve"><value>Add memory</value></data>
+  <data name="Adv_ADV_RAM" xml:space="preserve"><value>8 GB of memory or more is recommended.</value></data>
+  <data name="Rm_ADV_CPU" xml:space="preserve"><value>Check CPU-heavy processes</value></data>
+  <data name="Adv_ADV_CPU" xml:space="preserve"><value>Look at the top processes for programs that use a lot of CPU. If usage stays high even in normal use, the CPU itself is the limit.</value></data>
+  <data name="Rm_ADV_MEM" xml:space="preserve"><value>Reduce memory use</value></data>
+  <data name="Adv_ADV_MEM" xml:space="preserve"><value>Run fewer programs and browser tabs at once, or add memory.</value></data>
+  <data name="Rm_ADV_DISK_IO" xml:space="preserve"><value>Fix the disk bottleneck</value></data>
+  <data name="Adv_ADV_DISK_IO" xml:space="preserve"><value>The disk stays busy. If it is an HDD, replacing it with an SSD helps the most.</value></data>
+  <data name="Rm_ADV_EXT" xml:space="preserve"><value>Remove extensions yourself</value></data>
+  <data name="Adv_ADV_EXT" xml:space="preserve"><value>Remove unknown extensions from the browser's extension page (chrome://extensions, edge://extensions). Deleting them from outside the browser can damage the profile.</value></data>
+  <data name="Rm_ADV_UPDATE" xml:space="preserve"><value>Run Windows Update</value></data>
+  <data name="Adv_ADV_UPDATE" xml:space="preserve"><value>Install updates from Windows Update in Settings.</value></data>
+  <data name="Rm_ADV_REBOOT" xml:space="preserve"><value>Restart</value></data>
+  <data name="Adv_ADV_REBOOT" xml:space="preserve"><value>Choose Restart from the Start menu. Shut down does not fully restart the PC because of Fast Startup.</value></data>
+  <data name="Rm_ADV_DISK_CHECK" xml:space="preserve"><value>Check the disk</value></data>
+  <data name="Adv_ADV_DISK_CHECK" xml:space="preserve"><value>Disk errors have been logged. Back up, then consider a disk check (chkdsk) and replacing the disk.</value></data>
+  <data name="Rm_ADV_POWER" xml:space="preserve"><value>Check power and overheating</value></data>
+  <data name="Adv_ADV_POWER" xml:space="preserve"><value>Check the power cable and power strip, overheating (dust inside the case), and drivers.</value></data>
+  <data name="Rm_ADV_AV_UPDATE" xml:space="preserve"><value>Update the antivirus</value></data>
+  <data name="Adv_ADV_AV_UPDATE" xml:space="preserve"><value>Open your antivirus program and update it.</value></data>
+  <data name="Rm_ADV_PHOTOS" xml:space="preserve"><value>Repair the Photos app</value></data>
+  <data name="Adv_ADV_PHOTOS" xml:space="preserve"><value>In Settings &gt; Apps &gt; Installed apps &gt; Photos &gt; Advanced options, try Repair, then Reset. If that does not help, uninstall Photos and reinstall it from the Microsoft Store. If the cause turns out to be the graphics driver or the antivirus, fix that first.</value></data>
+  <data name="Rm_ADV_GPU_DRIVER" xml:space="preserve"><value>Reinstall the graphics driver</value></data>
+  <data name="Adv_ADV_GPU_DRIVER" xml:space="preserve"><value>Download and install the latest driver from the graphics card maker (Intel, NVIDIA, AMD). If the screen also flickers, reconnect the cable, use a fixed refresh rate (60 Hz), and turn off variable refresh rate.</value></data>
+  <data name="Rm_ADV_PERFCOUNTER" xml:space="preserve"><value>Repair performance counters</value></data>
+  <data name="Adv_ADV_PERFCOUNTER" xml:space="preserve"><value>Run lodctr /R in an administrator command prompt and restart. If an optimizer program turned them off, undo that program's setting too.</value></data>
+  <data name="Rm_ADV_CRASH_MODULE" xml:space="preserve"><value>Clean up the crashing program</value></data>
+  <data name="Adv_ADV_CRASH_MODULE" xml:space="preserve"><value>Uninstall the program that owns the crashing module in Settings &gt; Apps, or update it to the latest version.</value></data>
+  <data name="Rm_ADV_KR_MODULES" xml:space="preserve"><value>Clean up security plugins</value></data>
+  <data name="Adv_ADV_KR_MODULES" xml:space="preserve"><value>Uninstall Korean banking and government security programs in Settings &gt; Apps. Reinstall only the ones a site asks for, and remove them again when you are done.</value></data>
+  <data name="Rm_ADV_AV_DUP" xml:space="preserve"><value>Use one antivirus only</value></data>
+  <data name="Adv_ADV_AV_DUP" xml:space="preserve"><value>Use only one antivirus. Removing the ones you do not use makes the PC faster.</value></data>
+  <data name="Rm_Fallback" xml:space="preserve"><value>Recommendation</value></data>
+  <data name="Config_Empty" xml:space="preserve"><value>{0}: the file is empty, so defaults were used.</value></data>
+  <data name="Config_Unreadable" xml:space="preserve"><value>{0}: could not be read, so defaults were used. ({1})</value></data>
+  <data name="Config_BadRegex" xml:space="preserve"><value>{0}: invalid regular expression ({1})</value></data>
+  <data name="Scan_TimedOut" xml:space="preserve"><value>Stopped because it did not finish within {0:0} s.</value></data>
+  <data name="Scan_Canceled" xml:space="preserve"><value>The user canceled the scan.</value></data>
+</root>

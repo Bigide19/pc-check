@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Err_Irreversible" xml:space="preserve"><value>되돌릴 수 없는 조치입니다. 복원 지점을 사용하세요.</value></data>
+  <data name="Err_CommandFailed" xml:space="preserve"><value>{0} 실패 (exit {1}): {2}</value></data>
+  <data name="Err_UnknownRemediation" xml:space="preserve"><value>{0} 조치를 찾을 수 없습니다.</value></data>
+  <data name="Err_BadHive" xml:space="preserve"><value>지원하지 않는 레지스트리 루트: {0}</value></data>
+  <data name="Err_StartFailed" xml:space="preserve"><value>{0}를 시작하지 못했습니다.</value></data>
+  <data name="T_TempClean" xml:space="preserve"><value>임시 파일 정리 (1일 지난 파일)</value></data>
+  <data name="T_PowerPlan" xml:space="preserve"><value>전원 계획을 균형 조정으로 변경</value></data>
+  <data name="T_Startup" xml:space="preserve"><value>시작 항목 끄기: {0}</value></data>
+  <data name="T_Service" xml:space="preserve"><value>서비스 끄기: {0}</value></data>
+  <data name="T_Task" xml:space="preserve"><value>예약 작업 끄기: {0}</value></data>
+  <data name="T_Uninstall" xml:space="preserve"><value>프로그램 제거: {0}</value></data>
+  <data name="T_BrowserPolicy" xml:space="preserve"><value>{0} 강제 정책 삭제</value></data>
+  <data name="T_Hosts" xml:space="preserve"><value>hosts 파일 초기화</value></data>
+  <data name="T_Proxy" xml:space="preserve"><value>프록시 설정 해제</value></data>
+  <data name="T_Defender" xml:space="preserve"><value>Defender 실시간 보호 켜기, 정의 업데이트, 위협 제거</value></data>
+  <data name="Note_Quarantine" xml:space="preserve"><value>격리된 항목은 Windows 보안 &gt; 보호 기록에서 복원할 수 있습니다.</value></data>
+</root>

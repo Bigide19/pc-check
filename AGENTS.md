@@ -18,10 +18,13 @@ This file is shared by Claude Code (via `CLAUDE.md`) and Codex. Keep rules here,
 - PowerShell is called through `PowerShellRunner` (`-NoProfile -NonInteractive -ExecutionPolicy Bypass -EncodedCommand`); results come back as JSON. Emit dates with `.ToString('o')`, since PowerShell 5.1 serializes DateTime as `/Date(...)/`.
 - Thresholds come from `rules.json`; the only allowed hardcoded value is the default in `RulesConfig`/`KnownBadConfig`.
 - Secrets (VirusTotal key) only via env var `PCCHECK_VT_KEY`; never in logs or reports.
+- UI and report text is Korean and English. Each project keeps it in `Strings.resx` (English, the default) and `Strings.ko.resx` (Korean); add a key to both in the same change. `Directory.Build.targets` generates the `Strings` class at build time (public in the WPF project, since `{x:Static}` cannot reach internal members). Text in config data gets an `...En` field (`reasonEn`, `purposeEn`) read through `Lang.Pick`. `LocalizationTests` checks that both files have the same keys and placeholders.
+- The language lives in `Lang.Culture`, not `CurrentUICulture` (async-local: a change inside an async method or dispatcher operation reverts, and later screens fall back to the Windows language). Each assembly binds its `Strings.Culture` in `StringsCulture.cs`. `--lang ko|en` overrides the Windows language; the start-screen toggle rebuilds the window.
+- Never branch on display text; use IDs or evidence keys (`RM-TEMP-CLEAN` plans on the `tempGb` evidence, not the title). Korean literals that match Windows output (`"위치 "` in `PowerShellRunner`, `"기본 디스플레이"` in `DisplayCollector`) depend on the Windows language and stay literal.
 - Tests for code that changes the system never run on a real PC. Remediation end-to-end tests run only in the VM, after a Parallels snapshot.
 
 ## Build and test
-- macOS: `dotnet build PcCheck.slnx`, `dotnet test PcCheck.slnx` (WPF compiles thanks to `EnableWindowsTargeting`; it cannot run on macOS).
+- macOS: `dotnet build PcCheck.slnx`, `dotnet test PcCheck.slnx` (WPF compiles thanks to `EnableWindowsTargeting`; it cannot run on macOS). Test assemblies pin Korean (`TestCulture.cs`) and run serially, because switching `Lang` is process-wide.
 - Windows VM: Parallels "Windows 11 Pro" (ARM64, ko-KR; the x64 build runs under emulation). Drive it with `tools/vm/vm.sh`:
   `deploy | scan [--quick] | gui [--mock] | invoke <AutomationId> | tab N | max | front | shot FILE [MAXWIDTH] | capture FILE | run-ps NAME`.
   - Screenshots: use `shot` (taken inside the guest session). `prlctl capture` (`capture`) can return an empty file.

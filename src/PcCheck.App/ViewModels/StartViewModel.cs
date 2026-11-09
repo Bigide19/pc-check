@@ -28,14 +28,14 @@ public sealed partial class StartViewModel : ObservableObject
         QuickDurationSec = config.Rules.Sampling.QuickDurationSec;
 
         var warnings = new List<string>();
-        if (!Machine.IsAdmin) warnings.Add("관리자 권한이 아닙니다. 대부분의 항목을 수집할 수 없습니다.");
-        if (MachineInfoReader.OsBuild < 19045) warnings.Add($"지원 대상(Windows 10 22H2, Windows 11)보다 오래된 빌드({MachineInfoReader.OsBuild})입니다.");
+        if (!Machine.IsAdmin) warnings.Add(Strings.Start_NotAdmin);
+        if (MachineInfoReader.OsBuild < 19045) warnings.Add(string.Format(Strings.Start_OldBuild, MachineInfoReader.OsBuild));
         warnings.AddRange(configWarnings);
         Warnings = warnings;
     }
 
-    public string DurationLabel => $"기본 측정 ({DurationSec}초)";
-    public string QuickLabel => $"빠른 측정 ({QuickDurationSec}초)";
+    public string DurationLabel => string.Format(Strings.Start_Duration, DurationSec);
+    public string QuickLabel => string.Format(Strings.Start_Quick, QuickDurationSec);
 
     public bool CanUndo { get; } = Remediation.ActionLogStore.LatestUndoable(ScanPipeline.BaseDir) is not null;
 

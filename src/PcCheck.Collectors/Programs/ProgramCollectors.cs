@@ -62,8 +62,8 @@ public sealed class KnownBadProgramCollector(UninstallSource source) : ICollecto
             var hit = knownBad.Programs.FirstOrDefault(k => k.Regex is not null && k.Regex.IsMatch(
                 k.Field.Equals("Publisher", StringComparison.OrdinalIgnoreCase) ? p.Publisher ?? "" : p.DisplayName));
             if (hit is null) continue;
-            findings.Add(F.Make("APP-KNOWN-BAD", Categories.Program, Severity.High, $"알려진 불필요 프로그램: {p.DisplayName}",
-                hit.Reason, "RM-UNINSTALL",
+            findings.Add(F.Make("APP-KNOWN-BAD", Categories.Program, Severity.High, string.Format(Strings.KnownBad_Title, p.DisplayName),
+                hit.DisplayReason, "RM-UNINSTALL",
                 ("displayName", p.DisplayName), ("publisher", p.Publisher), ("installDate", p.InstallDate?.ToString("yyyy-MM-dd")),
                 ("pattern", hit.Match), ("uninstallString", p.UninstallString), ("registryKey", p.RegistryKey)));
         }
@@ -91,7 +91,7 @@ public sealed class RecentProgramCollector(UninstallSource source, TimeProvider?
             .ToList();
         if (recent.Count == 0) return [];
         var ev = recent.Select((p, i) => ($"{i + 1:00}", (object?)$"{p.DisplayName} ({p.InstallDate:yyyy-MM-dd}){(p.Publisher is null ? "" : $" - {p.Publisher}")}")).ToArray();
-        return [F.Make("APP-RECENT", Categories.Program, Severity.Info, $"최근 {days}일 설치 프로그램 {recent.Count}개",
-            "느려지기 시작한 시점과 겹치는 프로그램이 있는지 확인하세요.", null, ev)];
+        return [F.Make("APP-RECENT", Categories.Program, Severity.Info, string.Format(Strings.Recent_Title, days, recent.Count),
+            Strings.Recent_Detail, null, ev)];
     }
 }

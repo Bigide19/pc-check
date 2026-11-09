@@ -54,10 +54,10 @@ public partial class LeakDrop : UserControl
 
         AutomationProperties.SetName(this, mode switch
         {
-            LeakDropMode.Progress => $"진행 {Math.Round(Math.Clamp(Value, 0, 1) * 100)}%",
-            LeakDropMode.Leaking => $"새는 곳 {Count}곳",
-            LeakDropMode.Fixed => "막음",
-            _ => "새는 곳 없음",
+            LeakDropMode.Progress => string.Format(Strings.Drop_Progress, Math.Round(Math.Clamp(Value, 0, 1) * 100)),
+            LeakDropMode.Leaking => Count == 1 ? Strings.Drop_LeakOne : string.Format(Strings.Drop_Leaks, Count),
+            LeakDropMode.Fixed => Strings.Drop_Fixed,
+            _ => Strings.Drop_NoLeak,
         });
     }
 

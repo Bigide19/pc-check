@@ -55,6 +55,7 @@ PC가 느려지면 흔히 포맷부터 떠올립니다. 그런데 원인이 HDD�
 - **리포트 파일**: 사람이 읽는 `report.html`(외부 리소스 없는 단일 파일)과 기계가 읽는 `findings.json`을 함께 저장하고, 결과 파일을 zip 하나로 묶어 둡니다.
 - **Slack으로 받기**: 결과 화면에 Slack 웹훅 주소를 붙여 넣으면, 요약과 발견 항목을 메시지 여러 개로 나눠 보냅니다.
 - **보호 목록**: `config/protect.json`에 등록한 업무 프로그램은 의심 판정과 조치 대상에서 뺍니다. 보안 모듈 목록은 `config/kr-modules.json`에서 고칠 수 있습니다.
+- **한국어와 영어**: 화면과 리포트가 Windows 표시 언어를 따르고, 시작 화면에서 언어를 바꿀 수 있습니다.
 - **오프라인 동작**: 악성코드 탐지는 Windows Defender에 맡기고, Slack으로 보내기를 누르지 않으면 네트워크를 쓰지 않습니다.
 
 <img src="docs/images/report.png" alt="report.html 예시 (샘플 데이터)" width="720" />
@@ -87,6 +88,10 @@ PC가 느려지면 흔히 포맷부터 떠올립니다. 그런데 원인이 HDD�
 
 결과는 exe와 같은 폴더의 `PcCheck_{yyyyMMdd_HHmm}\`에 저장됩니다. **결과 묶음(zip)** 버튼을 누르면 파일들을 zip 하나로 묶어 탐색기에서 보여 줍니다. 메신저나 USB로 옮길 때 이 파일 하나만 보내면 됩니다.
 
+### 화면 언어
+
+화면과 리포트는 Windows 표시 언어를 따릅니다. 한국어 Windows에서는 한국어로, 그 밖의 언어에서는 영어로 나옵니다. 시작 화면 오른쪽 위의 **English** 버튼을 누르면 영어로 바뀌고, 영어 화면에서는 **한국어** 버튼으로 돌아옵니다. 고른 언어는 저장하지 않으므로, 늘 같은 언어로 쓰려면 `.\PcCheck.exe --lang en`처럼 실행하세요. 점검 결과(`report.html`, `findings.json`)는 점검할 때의 언어로 저장됩니다.
+
 ### Slack으로 결과 받기
 
 1. Slack에서 받을 채널의 [수신 웹훅(Incoming Webhook)](https://api.slack.com/messaging/webhooks) 주소를 만듭니다.
@@ -102,6 +107,7 @@ PC가 느려지면 흔히 포맷부터 떠올립니다. 그런데 원인이 HDD�
 .\PcCheck.exe scan --defender-scan        # Defender 빠른 검사 포함
 .\PcCheck.exe scan --defender-full-scan   # Defender 전체 검사 포함 (오래 걸림)
 .\PcCheck.exe scan --slack                # 점검 후 PCCHECK_SLACK_WEBHOOK 주소로 결과 전송
+.\PcCheck.exe scan --lang en              # 리포트를 영어로 작성 (ko, en)
 ```
 
 창 없이 `findings.json`과 `report.html`만 만들고 종료합니다. 종료 코드 0은 결과 파일을 저장했다는 뜻이고, 3은 결과는 저장했지만 Slack 전송에 실패했다는 뜻입니다(이유는 결과 폴더의 `slack-error.txt`). 조치와 되돌리기는 승인이 필요해서 화면에서만 실행할 수 있습니다.

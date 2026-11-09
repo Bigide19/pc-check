@@ -15,7 +15,7 @@ public abstract class ResourceCollectorBase(IResourceSampler sampler) : ICollect
     {
         var snap = await sampler.GetAsync(ctx, ct);
         if (!HasData(snap))
-            return CollectorResult.Fail(Id, "성능 카운터를 읽지 못해 측정하지 못했습니다. " + string.Join(" / ", snap.CounterProblems.Take(2)));
+            return CollectorResult.Fail(Id, Strings.Res_CountersFailed + string.Join(" / ", snap.CounterProblems.Take(2)));
         var findings = Evaluate(snap, ctx.Config.Rules).ToList();
         // Counter health and top processes ride on RES-CPU only, so the report gets them once.
         if (Id == "RES-CPU") findings.AddRange(PerfCounterHealth.Check(snap));
@@ -36,10 +36,10 @@ public static class PerfCounterHealth
         var ev = new List<(string, object?)>();
         if (s.DisabledCounterSets.Count > 0) ev.Add(("disabled", string.Join(", ", s.DisabledCounterSets)));
         ev.AddRange(s.CounterProblems.Take(8).Select((p, i) => ($"problem{i + 1}", (object?)p)));
-        return [F.Make("SYS-PERF", Categories.System, Severity.Low, "성능 카운터 손상",
+        return [F.Make("SYS-PERF", Categories.System, Severity.Low, Strings.Perf_Title,
             s.DisabledCounterSets.Count > 0
-                ? "성능 카운터가 꺼져 있습니다. 최적화 프로그램이 끄는 경우가 많습니다. 일부 측정은 다른 방법으로 대신했습니다."
-                : "일부 성능 카운터를 읽지 못했습니다. 가능한 측정은 다른 방법으로 대신했습니다.",
+                ? Strings.Perf_DisabledDetail
+                : Strings.Perf_PartialDetail,
             "ADV-PERFCOUNTER", ev.ToArray())];
     }
 }
@@ -57,8 +57,8 @@ public sealed class CpuCollector(IResourceSampler sampler) : ResourceCollectorBa
         var sev = F.Above(cpu.Avg, rules.Thresholds.CpuAvgPercent);
         if (sev is null) return [];
         var top = string.Join(", ", s.Top.Cpu.Take(3).Select(p => $"{p.Name} {p.Value}%"));
-        return [F.Make("RES-CPU", Categories.Resource, sev.Value, $"CPU 사용률 평균 {Pct(cpu.Avg)}%",
-            $"{s.DurationSec}초 동안 CPU가 계속 바빴습니다. 상위: {top}", "ADV-CPU",
+        return [F.Make("RES-CPU", Categories.Resource, sev.Value, string.Format(Strings.Cpu_Title, Pct(cpu.Avg)),
+            string.Format(Strings.Cpu_Detail, s.DurationSec, top), "ADV-CPU",
             ("avgPercent", Pct(cpu.Avg)), ("p95Percent", Pct(cpu.P95)), ("samples", cpu.Count))];
     }
 }
@@ -76,8 +76,8 @@ public sealed class MemoryCollector(IResourceSampler sampler) : ResourceCollecto
         var lowAvail = t.MemAvailableMb.High is { } a && s.MemAvailableMb is { } av && av.Avg < a;
         var highCommit = t.MemCommittedPercent.High is { } c && s.MemCommittedPercent is { } cm && cm.Avg > c;
         if (!lowAvail && !highCommit) return [];
-        return [F.Make("RES-MEM", Categories.Resource, Severity.High, "메모리 압박",
-            $"가용 메모리 평균 {s.MemAvailableMb?.Avg:0}MB, 커밋 {Pct(s.MemCommittedPercent?.Avg ?? 0)}%입니다. 디스크로 페이지 교체가 자주 일어납니다.", "ADV-MEM",
+        return [F.Make("RES-MEM", Categories.Resource, Severity.High, Strings.Mem_Title,
+            string.Format(Strings.Mem_Detail, s.MemAvailableMb?.Avg, Pct(s.MemCommittedPercent?.Avg ?? 0)), "ADV-MEM",
             ("availableAvgMb", s.MemAvailableMb?.Avg.ToString("0")), ("availableP95Mb", s.MemAvailableMb?.P95.ToString("0")),
             ("committedAvgPercent", s.MemCommittedPercent is { } x ? Pct(x.Avg) : null),
             ("committedP95Percent", s.MemCommittedPercent is { } y ? Pct(y.P95) : null))];
@@ -97,8 +97,8 @@ public sealed class DiskIoCollector(IResourceSampler sampler) : ResourceCollecto
         var lowIdle = t.DiskIdlePercent.High is { } i && s.DiskIdlePercent is { } id && id.Avg < i;
         var longQueue = t.DiskQueueLength.High is { } q && s.DiskQueue is { } dq && dq.Avg > q;
         if (!lowIdle && !longQueue) return [];
-        return [F.Make("RES-DISK", Categories.Resource, Severity.High, "디스크 병목",
-            $"샘플링 중 디스크 Idle 평균 {Pct(s.DiskIdlePercent?.Avg ?? 100)}%, 큐 길이 평균 {s.DiskQueue?.Avg ?? 0:0.0}입니다.", "ADV-DISK-IO",
+        return [F.Make("RES-DISK", Categories.Resource, Severity.High, Strings.DiskIo_Title,
+            string.Format(Strings.DiskIo_Detail, Pct(s.DiskIdlePercent?.Avg ?? 100), s.DiskQueue?.Avg ?? 0), "ADV-DISK-IO",
             ("idleAvgPercent", s.DiskIdlePercent is { } a ? Pct(a.Avg) : null), ("idleP95Percent", s.DiskIdlePercent is { } b ? Pct(b.P95) : null),
             ("queueAvg", s.DiskQueue?.Avg.ToString("0.0")), ("queueP95", s.DiskQueue?.P95.ToString("0.0")))];
     }

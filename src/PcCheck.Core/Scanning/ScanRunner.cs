@@ -40,7 +40,7 @@ public sealed class ScanRunner(IReadOnlyList<ICollector> collectors, Action<stri
             {
                 CollectorId = collector.Id,
                 Status = CollectorStatus.TimedOut,
-                Error = $"{timeout.TotalSeconds:0}초 안에 끝나지 않아 중단했습니다.",
+                Error = string.Format(Strings.Scan_TimedOut, timeout.TotalSeconds),
                 Elapsed = sw.Elapsed,
             };
         }
@@ -50,7 +50,7 @@ public sealed class ScanRunner(IReadOnlyList<ICollector> collectors, Action<stri
             {
                 CollectorId = collector.Id,
                 Status = CollectorStatus.Canceled,
-                Error = "사용자가 점검을 취소했습니다.",
+                Error = Strings.Scan_Canceled,
                 Elapsed = sw.Elapsed,
             };
         }

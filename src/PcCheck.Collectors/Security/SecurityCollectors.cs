@@ -79,21 +79,21 @@ public sealed class AntivirusCollector(IPowerShell ps) : ICollector
         var defenderOff = s.DefenderIsPrimary && s.RealTimeProtection == false;
         var nothingOn = active.Count == 0 && !(s.DefenderIsPrimary && s.RealTimeProtection == true);
         if (defenderOff || nothingOn)
-            findings.Add(F.Make("SEC-AV", Categories.Security, Severity.High, "실시간 보호 꺼짐",
-                "백신의 실시간 보호가 동작하지 않습니다.", "RM-DEFENDER", ev));
+            findings.Add(F.Make("SEC-AV", Categories.Security, Severity.High, Strings.Av_RealtimeOffTitle,
+                Strings.Av_RealtimeOffDetail, "RM-DEFENDER", ev));
 
         if (s.DefenderIsPrimary && s.RealTimeProtection == true && s.SignatureAgeDays is { } age
             && F.Above(age, rules.Thresholds.DefenderSignatureAgeDays) is { } sev)
-            findings.Add(F.Make("SEC-AV", Categories.Security, sev, $"백신 정의 {age:0}일 지남",
-                "Defender 정의 업데이트가 오래되었습니다.", "RM-DEFENDER", ev));
+            findings.Add(F.Make("SEC-AV", Categories.Security, sev, string.Format(Strings.Av_DefsAgeTitle, age),
+                Strings.Av_DefsAgeDetail, "RM-DEFENDER", ev));
 
         foreach (var p in active.Where(p => !p.IsDefender && !p.UpToDate))
-            findings.Add(F.Make("SEC-AV", Categories.Security, Severity.Medium, $"{p.Name} 정의 업데이트 필요",
-                "백신이 최신 상태가 아니라고 보고합니다.", "ADV-AV-UPDATE", ev));
+            findings.Add(F.Make("SEC-AV", Categories.Security, Severity.Medium, string.Format(Strings.Av_OutdatedTitle, p.Name),
+                Strings.Av_OutdatedDetail, "ADV-AV-UPDATE", ev));
 
         if (active.Count >= 2)
-            findings.Add(F.Make("SEC-AV", Categories.Security, Severity.Medium, $"백신 {active.Count}개 동시 활성",
-                $"{string.Join(", ", active.Select(a => a.Name))}가 함께 켜져 있어 서로 검사하며 느려질 수 있습니다.", "ADV-AV-DUP", ev));
+            findings.Add(F.Make("SEC-AV", Categories.Security, Severity.Medium, string.Format(Strings.Av_DupTitle, active.Count),
+                string.Format(Strings.Av_DupDetail, string.Join(", ", active.Select(a => a.Name))), "ADV-AV-DUP", ev));
         return findings;
     }
 }
@@ -124,7 +124,7 @@ public sealed class ThreatCollector(IPowerShell ps, TimeProvider? clock = null) 
     };
 
     private static string Script(DefenderScanType scan) => $$"""
-        if (-not (Get-MpComputerStatus -ErrorAction SilentlyContinue)) { throw 'Windows Defender를 사용할 수 없습니다 (다른 백신이 주 백신일 수 있음).' }
+        if (-not (Get-MpComputerStatus -ErrorAction SilentlyContinue)) { throw '{{Strings.Threat_NoDefender.Replace("'", "''")}}' }
         $scanError = $null
         $scanType = '{{scan}}'
         if ($scanType -ne 'None') { try { Start-MpScan -ScanType "$($scanType)Scan" } catch { $scanError = $_.Exception.Message } }
@@ -150,7 +150,7 @@ public sealed class ThreatCollector(IPowerShell ps, TimeProvider? clock = null) 
     {
         var scan = ctx.Options.DefenderScan;
         if (scan != DefenderScanType.None)
-            ctx.Progress?.Report(new CollectorProgress(Id, scan == DefenderScanType.Full ? "Defender 전체 검사 중 (오래 걸림)" : "Defender 빠른 검사 중"));
+            ctx.Progress?.Report(new CollectorProgress(Id, scan == DefenderScanType.Full ? Strings.Threat_FullScanning : Strings.Threat_QuickScanning));
         var r = (await ps.RunJsonAsync(Script(scan), ct)).EnumerateArray().First();
         var dets = r.TryGetProperty("Detections", out var d) && d.ValueKind == JsonValueKind.Array
             ? d.EnumerateArray().Select(x => new ThreatDetection(x.Str("ThreatID") ?? "", x.Str("Name") ?? "", (int)(x.Num("StatusID") ?? 0),
@@ -169,21 +169,21 @@ public sealed class ThreatCollector(IPowerShell ps, TimeProvider? clock = null) 
         var findings = new List<Finding>();
         var scanText = report.ScanType switch
         {
-            DefenderScanType.Quick => "빠른 검사 후",
-            DefenderScanType.Full => "전체 검사 후",
-            _ => "검사 없이 이력만 확인",
+            DefenderScanType.Quick => Strings.Threat_AfterQuick,
+            DefenderScanType.Full => Strings.Threat_AfterFull,
+            _ => Strings.Threat_HistoryOnly,
         };
 
         foreach (var t in report.Detections.Where(t => t.Unresolved).DistinctBy(t => t.ThreatId))
-            findings.Add(F.Make("SEC-THREAT", Categories.Security, Severity.Critical, $"미해결 위협: {Name(t)}",
-                $"Defender가 찾았지만 제거하지 못한 위협이 남아 있습니다 ({scanText}).", "RM-DEFENDER",
+            findings.Add(F.Make("SEC-THREAT", Categories.Security, Severity.Critical, string.Format(Strings.Threat_UnresolvedTitle, Name(t)),
+                string.Format(Strings.Threat_UnresolvedDetail, scanText), "RM-DEFENDER",
                 ("threatId", t.ThreatId), ("name", t.Name), ("statusId", t.StatusId), ("detected", t.Detected?.ToString("yyyy-MM-dd HH:mm")),
                 ("resources", t.Resources), ("scan", report.ScanType), ("scanError", report.ScanError)));
 
         var recent = report.Detections.Where(t => !t.Unresolved && t.Detected is { } dt && dt >= now.AddDays(-30)).DistinctBy(t => t.ThreatId).ToList();
         if (recent.Count > 0)
-            findings.Add(F.Make("SEC-THREAT", Categories.Security, Severity.Medium, $"최근 30일 위협 {recent.Count}건 처리됨",
-                "Defender가 최근 위협을 찾아 처리했습니다. 같은 경로로 다시 들어오지 않는지 확인하세요.", null,
+            findings.Add(F.Make("SEC-THREAT", Categories.Security, Severity.Medium, string.Format(Strings.Threat_RecentTitle, recent.Count),
+                Strings.Threat_RecentDetail, null,
                 recent.Select((t, i) => ($"{i + 1:00}", (object?)$"{Name(t)} ({t.Detected:yyyy-MM-dd}) {t.Resources}")).ToArray()));
 
         if (report.ScanError is not null)
@@ -191,11 +191,11 @@ public sealed class ThreatCollector(IPowerShell ps, TimeProvider? clock = null) 
             var passive = report.RunningMode?.Contains("Passive", StringComparison.OrdinalIgnoreCase) == true;
             var other = string.Join(", ", report.OtherAntivirus);
             var detail = report.OtherAntivirus.Count > 0
-                ? $"다른 백신({other})이 주 백신이라 Defender가 검사를 거부했습니다. 정상적인 동작입니다. 바이러스 검사는 {other}에서 하세요."
+                ? string.Format(Strings.Threat_OtherAv, other)
                 : passive
-                    ? "Defender가 대기(수동) 모드라 검사를 거부했습니다. 다른 백신이 주 백신으로 설정되어 있을 수 있습니다."
-                    : $"Defender가 검사를 시작하지 못했습니다. Windows 보안 앱에서 직접 검사해 보세요. ({report.ScanError})";
-            findings.Add(F.Make("SEC-THREAT", Categories.Security, Severity.Info, "Defender 검사를 실행하지 못함", detail, null,
+                    ? Strings.Threat_Passive
+                    : string.Format(Strings.Threat_ScanFailed, report.ScanError);
+            findings.Add(F.Make("SEC-THREAT", Categories.Security, Severity.Info, Strings.Threat_ScanFailedTitle, detail, null,
                 ("scan", report.ScanType), ("defenderMode", report.RunningMode), ("otherAntivirus", other.Length > 0 ? other : null),
                 ("error", report.ScanError)));
         }

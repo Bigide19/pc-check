@@ -7,6 +7,7 @@
       "name": "TouchEn nxKey",
       "vendor": "RaonSecure (라온시큐어)",
       "purpose": "키보드 입력을 암호화해 키로거를 막는다는 키보드 보안 프로그램",
+      "purposeEn": "Keyboard security program that claims to block keyloggers by encrypting keystrokes",
       "displayNamePatterns": [
         "TouchEn\\s*nxKey"
       ],
@@ -78,6 +79,7 @@
       "name": "AhnLab Safe Transaction (ASTx)",
       "vendor": "AhnLab (안랩)",
       "purpose": "온라인 뱅킹용 보안 프로그램 (악성코드 탐지, 거래 보호)",
+      "purposeEn": "Online banking security program (malware detection, transaction protection)",
       "displayNamePatterns": [
         "AhnLab\\s*Safe\\s*Transaction"
       ],
@@ -118,6 +120,7 @@
       "name": "Veraport",
       "vendor": "Wizvera (위즈베라)",
       "purpose": "은행 사이트가 요구하는 보안 프로그램을 일괄 설치하고 관리하는 통합 설치 프로그램",
+      "purposeEn": "Installer that installs and manages the security programs bank sites require",
       "displayNamePatterns": [
         "Veraport"
       ],
@@ -173,6 +176,7 @@
       "name": "Delfino G3",
       "vendor": "Wizvera (위즈베라)",
       "purpose": "공동인증서 로그인과 전자서명 처리 모듈",
+      "purposeEn": "Module for certificate login and digital signatures",
       "displayNamePatterns": [
         "Delfino"
       ],
@@ -209,6 +213,7 @@
       "name": "IPinside LWS Agent",
       "vendor": "Interezen (인터리젠)",
       "purpose": "이용자의 실제 IP와 PC 정보(MAC, 디스크 시리얼, 실행 프로세스 등)를 은행 사이트에 제공하는 로컬 서버",
+      "purposeEn": "Local server that gives bank sites your real IP and PC details (MAC, disk serial, running processes, and more)",
       "displayNamePatterns": [
         "IPinside"
       ],
@@ -257,6 +262,7 @@
       "name": "MagicLine4NX",
       "vendor": "DreamSecurity (드림시큐리티)",
       "purpose": "공동인증서 인증과 전자서명 처리 프로그램",
+      "purposeEn": "Program for certificate authentication and digital signatures",
       "displayNamePatterns": [
         "MagicLine4NX"
       ],
@@ -304,6 +310,7 @@
       "name": "CrossCert UniSignCRS (UniCRSLocalServer)",
       "vendor": "CrossCert (한국전자인증)",
       "purpose": "한국전자인증 인증서 관련 로컬 서버 프로그램",
+      "purposeEn": "Local server for CrossCert certificates",
       "displayNamePatterns": [
         "UniSign\\s*CRS|UniCRS"
       ],
@@ -341,6 +348,7 @@
       "name": "AnySign4PC (XecureWeb)",
       "vendor": "Hancom WITH (한컴위드, 구 소프트포럼)",
       "purpose": "Non-ActiveX 공동인증서 인증과 웹 구간 암호화 프로그램",
+      "purposeEn": "Non-ActiveX program for certificate authentication and web traffic encryption",
       "displayNamePatterns": [
         "AnySign|XecureWeb"
       ],
@@ -388,6 +396,7 @@
       "name": "CrossEX (CrossEXService)",
       "vendor": "iniLINE (이니라인)",
       "purpose": "TouchEn nxKey 등 보안 모듈과 브라우저를 연결하는 확장 연동 서비스",
+      "purposeEn": "Service that connects security modules such as TouchEn nxKey to the browser",
       "displayNamePatterns": [
         "CrossEX"
       ],
@@ -434,6 +443,7 @@
       "name": "MarkAny EPS (MaEPSBroker)",
       "vendor": "MarkAny (마크애니)",
       "purpose": "마크애니 문서 보안 제품용 로컬 브로커 프로그램",
+      "purposeEn": "Local broker for MarkAny document security products",
       "displayNamePatterns": [
         "EPS\\s*Broker|MaEPS"
       ],
@@ -475,6 +485,7 @@
       "name": "nProtect Online Security",
       "vendor": "INCA Internet (잉카인터넷)",
       "purpose": "온라인 뱅킹 접속 시 쓰는 PC 보안 프로그램",
+      "purposeEn": "PC security program used when you open online banking",
       "displayNamePatterns": [
         "nProtect\\s*Online\\s*Security"
       ],
@@ -511,6 +522,7 @@
       "name": "INISAFE CrossWeb EX",
       "vendor": "Initech (이니텍, KT 그룹)",
       "purpose": "공동인증서 전자서명과 금융 서비스 접속에 쓰는 인증 보안 프로그램",
+      "purposeEn": "Authentication security program for certificate signatures and financial services",
       "displayNamePatterns": [
         "INISAFE\\s*CrossWeb|CrossWeb\\s*EX"
       ],

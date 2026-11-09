@@ -43,9 +43,9 @@ public sealed class HostsCollector : ICollector
         var critical = custom.Where(e => knownBad.HostsCriticalDomains.Any(d => e.Host == d || e.Host.EndsWith("." + d))).ToList();
         var sev = critical.Count > 0 ? Severity.Critical : Severity.Medium;
         var detail = critical.Count > 0
-            ? $"포털, 은행, 보안 사이트 주소가 다른 곳으로 재지정되어 있습니다: {string.Join(", ", critical.Select(e => e.Host).Distinct().Take(5))}"
-            : $"hosts 파일에 기본값이 아닌 항목이 {custom.Count}개 있습니다.";
-        return [F.Make("NET-HOSTS", Categories.BrowserNetwork, sev, critical.Count > 0 ? "hosts 파일 변조 (중요 사이트 재지정)" : "hosts 파일에 추가 항목",
+            ? string.Format(Strings.Hosts_CriticalDetail, string.Join(", ", critical.Select(e => e.Host).Distinct().Take(5)))
+            : string.Format(Strings.Hosts_CustomDetail, custom.Count);
+        return [F.Make("NET-HOSTS", Categories.BrowserNetwork, sev, critical.Count > 0 ? Strings.Hosts_CriticalTitle : Strings.Hosts_CustomTitle,
             detail, "RM-HOSTS-RESET",
             custom.Take(30).Select(e => ($"line{e.Line:000}", (object?)$"{e.Address} {e.Host}")).ToArray())];
     }
@@ -72,8 +72,8 @@ public sealed class ProxyCollector : ICollector
         var proxy = s.Enabled && !string.IsNullOrWhiteSpace(s.Server);
         var pac = !string.IsNullOrWhiteSpace(s.AutoConfigUrl);
         if (!proxy && !pac) return [];
-        return [F.Make("NET-PROXY", Categories.BrowserNetwork, Severity.High, "프록시 설정됨",
-            "인터넷 연결이 다른 서버를 거치도록 설정되어 있습니다. 직접 설정한 적이 없다면 변조입니다.", "RM-PROXY-RESET",
+        return [F.Make("NET-PROXY", Categories.BrowserNetwork, Severity.High, Strings.Proxy_Title,
+            Strings.Proxy_Detail, "RM-PROXY-RESET",
             ("proxyEnable", s.Enabled), ("proxyServer", s.Server), ("autoConfigUrl", s.AutoConfigUrl))];
     }
 }

@@ -26,7 +26,7 @@ public sealed record RemediationGroup(string Title, IReadOnlyList<RemediationCan
 
 public sealed record RemediationCandidate(string Id, string Name, string FindingId, string FindingTitle, RiskLevel Risk, bool Reversible)
 {
-    public string ReversibleText => Risk == RiskLevel.AdviceOnly ? "" : Reversible ? "되돌릴 수 있음" : "되돌릴 수 없음";
+    public string ReversibleText => Risk == RiskLevel.AdviceOnly ? "" : Reversible ? Strings.Result_Reversible : Strings.Result_Irreversible;
 }
 
 public sealed record ErrorItem(CollectorError Error)
@@ -52,11 +52,11 @@ public sealed partial class ResultViewModel : ObservableObject
 
     public string VerdictText => Labels.Of(Report.Verdict.Primary);
     public string VerdictDescription => Labels.DescribeVerdict(Report.Verdict.Primary);
-    public string? SecondaryText => Report.Verdict.Secondary is { } s ? $"보조 판정: {Labels.Of(s)}" : null;
+    public string? SecondaryText => Report.Verdict.Secondary is { } s ? string.Format(Strings.Result_Secondary, Labels.Of(s)) : null;
     public string BasisText =>
-        (Report.Verdict.Basis.Count > 0 ? $"근거: {string.Join(", ", Report.Verdict.Basis)}" : "근거 항목 없음")
-        + (Report.Verdict.SecondaryBasis is { Count: > 0 } sb ? $"   보조 근거: {string.Join(", ", sb)}" : "");
-    public string ScannedAtText => $"{Report.ScannedAt:yyyy-MM-dd HH:mm}\n" + (Report.SamplingSec > 0 ? $"리소스 측정 {Report.SamplingSec}초" : "리소스 측정 안 함");
+        (Report.Verdict.Basis.Count > 0 ? string.Format(Strings.Result_Basis, string.Join(", ", Report.Verdict.Basis)) : Strings.Result_NoBasis)
+        + (Report.Verdict.SecondaryBasis is { Count: > 0 } sb ? string.Format(Strings.Result_SecondaryBasis, string.Join(", ", sb)) : "");
+    public string ScannedAtText => $"{Report.ScannedAt:yyyy-MM-dd HH:mm}\n" + (Report.SamplingSec > 0 ? string.Format(Strings.Result_Sampled, Report.SamplingSec) : Strings.Result_NotSampled);
 
     public IReadOnlyList<FindingItem> Findings { get; }
     public IReadOnlyList<CategoryScore> CategoryScores { get; }
@@ -64,12 +64,12 @@ public sealed partial class ResultViewModel : ObservableObject
     public IReadOnlyList<ProcessColumn> ProcessColumns { get; }
     public IReadOnlyList<ErrorItem> Errors { get; }
 
-    public string FindingsHeader => $"발견 항목 ({Findings.Count})";
+    public string FindingsHeader => string.Format(Strings.Result_Findings, Findings.Count);
     // Follows the verdict so the drop never says "leaking" next to a "healthy" verdict.
     public int LeakCount => Report.Verdict.Primary == Verdict.Healthy ? 0 : Report.Findings.Count(f => f.Severity != Severity.Info);
     public LeakDropMode LeakMode => LeakCount == 0 ? LeakDropMode.Clean : LeakDropMode.Leaking;
-    public string LeakText => LeakCount == 0 ? "새는 곳 없음" : $"새는 곳 {LeakCount}곳";
-    public string ErrorsHeader => $"수집 오류 ({Report.CollectorErrors.Count})";
+    public string LeakText => LeakCount switch { 0 => Strings.Result_NoLeak, 1 => Strings.Result_LeakOne, var n => string.Format(Strings.Result_Leaks, n) };
+    public string ErrorsHeader => string.Format(Strings.Result_Errors, Report.CollectorErrors.Count);
     public bool HasErrors => Report.CollectorErrors.Count > 0;
     public string ReportPath => Path.Combine(OutputDir, "report.html");
     public bool CanOpenReport => File.Exists(ReportPath);
@@ -100,8 +100,8 @@ public sealed partial class ResultViewModel : ObservableObject
         ProcessColumns = tp is null ? [] :
         [
             ProcessColumn.Of("CPU", "%", "0.0", tp.Cpu),
-            ProcessColumn.Of("메모리", "MB", "0", tp.Memory),
-            ProcessColumn.Of("디스크", "MB/s", "0.0", tp.Disk),
+            ProcessColumn.Of(Strings.Result_Memory, "MB", "0", tp.Memory),
+            ProcessColumn.Of(Strings.Result_Disk, "MB/s", "0.0", tp.Disk),
         ];
     }
 
@@ -144,18 +144,18 @@ public sealed partial class ResultViewModel : ObservableObject
         IsSendingSlack = true;
         SlackFailed = false;
         var messages = SlackReportFormatter.Format(Report);
-        SlackStatus = $"보내는 중 (0/{messages.Count})";
+        SlackStatus = string.Format(Strings.Result_Sending, 0, messages.Count);
         try
         {
             using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
-            var progress = new Progress<int>(n => SlackStatus = $"보내는 중 ({n}/{messages.Count})");
+            var progress = new Progress<int>(n => SlackStatus = string.Format(Strings.Result_Sending, n, messages.Count));
             await new SlackWebhookSender(http).SendAsync(SlackUrl, messages, progress, CancellationToken.None);
-            SlackStatus = $"보냈습니다 (메시지 {messages.Count}개)";
+            SlackStatus = string.Format(Strings.Result_Sent, messages.Count);
         }
         catch (Exception ex) when (ex is ArgumentException or HttpRequestException or TaskCanceledException)
         {
             SlackFailed = true;
-            SlackStatus = ex is TaskCanceledException ? "Slack이 응답하지 않습니다. 인터넷 연결을 확인하세요." : ex.Message;
+            SlackStatus = ex is TaskCanceledException ? Strings.Result_SlackTimeout : ex.Message;
         }
         finally
         {

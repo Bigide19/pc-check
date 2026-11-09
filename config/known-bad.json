@@ -1,11 +1,11 @@
 {
   "version": 1,
   "programs": [
-    { "field": "DisplayName", "match": "(pc|system)\\s*(optimizer|booster|speed ?up)", "reason": "가짜 최적화 프로그램 유형" },
-    { "field": "DisplayName", "match": "driver\\s*(updater|booster)", "reason": "드라이버 업데이트 유도형 프로그램" },
-    { "field": "DisplayName", "match": "registry\\s*(cleaner|fixer)", "reason": "레지스트리 정리 유도형 프로그램" }
+    { "field": "DisplayName", "match": "(pc|system)\\s*(optimizer|booster|speed ?up)", "reason": "가짜 최적화 프로그램 유형", "reasonEn": "Fake optimizer type" },
+    { "field": "DisplayName", "match": "driver\\s*(updater|booster)", "reason": "드라이버 업데이트 유도형 프로그램", "reasonEn": "Program that pushes driver updates" },
+    { "field": "DisplayName", "match": "registry\\s*(cleaner|fixer)", "reason": "레지스트리 정리 유도형 프로그램", "reasonEn": "Program that pushes registry cleaning" }
   ],
   "extensions": [
-    { "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "reason": "형식 예시 (32자 확장 ID)" }
+    { "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "reason": "형식 예시 (32자 확장 ID)", "reasonEn": "Format example (32-character extension ID)" }
   ]
 }

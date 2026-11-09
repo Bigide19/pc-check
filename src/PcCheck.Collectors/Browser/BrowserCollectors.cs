@@ -48,8 +48,8 @@ public sealed class BrowserPolicyCollector : ICollector
 
     // A standalone PC is not domain-managed, so any forced browser policy was not set by its user.
     public static IReadOnlyList<Finding> Evaluate(IReadOnlyList<BrowserPolicy> policies) =>
-        policies.Select(p => F.Make("BR-POLICY", Categories.BrowserNetwork, Severity.High, $"{p.Browser} 강제 정책 설정됨",
-                $"{p.Browser}의 시작 페이지, 검색엔진, 확장 프로그램 등이 정책으로 고정되어 있습니다. 사용자가 바꿀 수 없습니다.",
+        policies.Select(p => F.Make("BR-POLICY", Categories.BrowserNetwork, Severity.High, string.Format(Strings.Policy_Title, p.Browser),
+                string.Format(Strings.Policy_Detail, p.Browser),
                 "RM-BROWSER-POLICY",
                 new[] { ("browser", (object?)p.Browser), ("key", p.KeyPath) }.Concat(p.Values.Select(kv => (kv.Key, (object?)kv.Value))).ToArray()))
             .ToList();
@@ -131,16 +131,16 @@ public sealed class BrowserExtensionCollector : ICollector
         {
             var bad = knownBad.Extensions.FirstOrDefault(k => k.Id.Equals(x.Id, StringComparison.OrdinalIgnoreCase));
             if (bad is not null || !x.FromStore)
-                findings.Add(F.Make("BR-EXT", Categories.BrowserNetwork, Severity.High, $"의심 확장 프로그램: {x.Name}",
-                    bad is not null ? bad.Reason : "웹스토어가 아닌 경로로 설치된 확장 프로그램입니다.", "ADV-EXT",
+                findings.Add(F.Make("BR-EXT", Categories.BrowserNetwork, Severity.High, string.Format(Strings.Ext_SuspectTitle, x.Name),
+                    bad is not null ? bad.DisplayReason : Strings.Ext_OffStore, "ADV-EXT",
                     ("browser", x.Browser), ("profile", x.Profile), ("id", x.Id), ("name", x.Name),
                     ("fromStore", x.FromStore), ("location", x.Location), ("enabled", x.Enabled)));
             else others.Add(x);
         }
         if (others.Count > 0)
-            findings.Add(F.Make("BR-EXT", Categories.BrowserNetwork, Severity.Info, $"설치된 확장 프로그램 {others.Count}개",
-                "웹스토어에서 설치한 확장 프로그램 목록입니다. 쓰지 않는 것은 브라우저에서 직접 제거하세요.", null,
-                others.Select((x, i) => ($"{i + 1:00}", (object?)$"[{x.Browser} {x.Profile}] {x.Name} ({x.Id}){(x.Enabled ? "" : " 꺼짐")}")).ToArray()));
+            findings.Add(F.Make("BR-EXT", Categories.BrowserNetwork, Severity.Info, string.Format(Strings.Ext_ListTitle, others.Count),
+                Strings.Ext_ListDetail, null,
+                others.Select((x, i) => ($"{i + 1:00}", (object?)$"[{x.Browser} {x.Profile}] {x.Name} ({x.Id}){(x.Enabled ? "" : Strings.Ext_Off)}")).ToArray()));
         return findings;
     }
 }

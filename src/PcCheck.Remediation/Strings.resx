@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Err_Irreversible" xml:space="preserve"><value>This action cannot be undone. Use the restore point.</value></data>
+  <data name="Err_CommandFailed" xml:space="preserve"><value>{0} failed (exit {1}): {2}</value></data>
+  <data name="Err_UnknownRemediation" xml:space="preserve"><value>Could not find the action {0}.</value></data>
+  <data name="Err_BadHive" xml:space="preserve"><value>Unsupported registry root: {0}</value></data>
+  <data name="Err_StartFailed" xml:space="preserve"><value>Could not start {0}.</value></data>
+  <data name="T_TempClean" xml:space="preserve"><value>Clean temp files (older than 1 day)</value></data>
+  <data name="T_PowerPlan" xml:space="preserve"><value>Switch the power plan to Balanced</value></data>
+  <data name="T_Startup" xml:space="preserve"><value>Turn off startup item: {0}</value></data>
+  <data name="T_Service" xml:space="preserve"><value>Turn off service: {0}</value></data>
+  <data name="T_Task" xml:space="preserve"><value>Turn off scheduled task: {0}</value></data>
+  <data name="T_Uninstall" xml:space="preserve"><value>Uninstall program: {0}</value></data>
+  <data name="T_BrowserPolicy" xml:space="preserve"><value>Delete {0} forced policies</value></data>
+  <data name="T_Hosts" xml:space="preserve"><value>Reset the hosts file</value></data>
+  <data name="T_Proxy" xml:space="preserve"><value>Turn off proxy settings</value></data>
+  <data name="T_Defender" xml:space="preserve"><value>Turn on Defender real-time protection, update definitions, remove threats</value></data>
+  <data name="Note_Quarantine" xml:space="preserve"><value>Quarantined items can be restored from Windows Security &gt; Protection history.</value></data>
+</root>

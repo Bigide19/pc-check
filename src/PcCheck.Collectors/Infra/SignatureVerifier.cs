@@ -61,7 +61,7 @@ public sealed class SignatureVerifier(IPowerShell ps) : ISignatureVerifier
                 }
             // Every path unanswered means the script itself misbehaved; failing loudly beats reporting all files as "unknown".
             if (matched == 0)
-                throw new PowerShellException($"서명 확인 결과에서 경로를 하나도 찾지 못했습니다 ({chunk.Length}개 요청).");
+                throw new PowerShellException(string.Format(Strings.Sig_NoPaths, chunk.Length));
         }
         return all.ToDictionary(p => p, p => _cache.TryGetValue(p, out var s) ? s : new SignatureInfo("Unknown", null),
             StringComparer.OrdinalIgnoreCase);

@@ -13,6 +13,9 @@ public partial class App : Application
     {
         base.OnStartup(e);
         var args = e.Args.Select(a => a.ToLowerInvariant()).ToArray();
+        // Before anything reads a resource or starts a scan task.
+        if (Lang.FromArgs(args) is { } lang) Lang.Set(lang);
+        ApplyLanguageFont();
 
         if (args.FirstOrDefault() == "scan")
         {
@@ -25,6 +28,10 @@ public partial class App : Application
         MainWindow = new MainWindow { DataContext = vm };
         MainWindow.Show();
     }
+
+    // Segoe UI draws Latin text better; Hangul it lacks falls back to Malgun Gothic. Read by windows created afterwards.
+    public static void ApplyLanguageFont() =>
+        Current.Resources["UiFont"] = new System.Windows.Media.FontFamily(Lang.IsKorean ? "Malgun Gothic, Segoe UI" : "Segoe UI, Malgun Gothic");
 
     private static async Task<int> RunHeadlessAsync(string[] args)
     {

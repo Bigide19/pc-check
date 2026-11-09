@@ -1,6 +1,8 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
+using PcCheck.App.ViewModels;
+using PcCheck.Core;
 
 namespace PcCheck.App;
 
@@ -18,6 +20,23 @@ public partial class MainWindow : Window
         WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
     private void OnClose(object sender, RoutedEventArgs e) => Close();
 
+    // x:Static text is read when a view loads, so a new window is the simplest way to show every string in the new language.
+    private void OnSwitchLanguage(object sender, RoutedEventArgs e)
+    {
+        Lang.Set(Lang.IsKorean ? "en" : "ko");
+        App.ApplyLanguageFont();
+        var next = new MainWindow
+        {
+            DataContext = new MainViewModel(),
+            WindowStartupLocation = WindowStartupLocation.Manual,
+            Left = RestoreBounds.Left, Top = RestoreBounds.Top, Width = RestoreBounds.Width, Height = RestoreBounds.Height,
+        };
+        Application.Current.MainWindow = next;
+        next.Show();
+        if (WindowState == WindowState.Maximized) next.WindowState = WindowState.Maximized;
+        Close();
+    }
+
     private void OnStateChanged()
     {
         var maximized = WindowState == WindowState.Maximized;
@@ -25,7 +44,7 @@ public partial class MainWindow : Window
         var b = SystemParameters.WindowResizeBorderThickness;
         Root.Margin = maximized ? new Thickness(b.Left + 1, b.Top + 1, b.Right + 1, b.Bottom + 1) : new Thickness(0);
         MaxButton.Content = maximized ? "\uE923" : "\uE922";
-        MaxButton.ToolTip = maximized ? "이전 크기로" : "최대화";
+        MaxButton.ToolTip = maximized ? Strings.Win_Restore : Strings.Win_Maximize;
     }
 
     [DllImport("dwmapi.dll")]

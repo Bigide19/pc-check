@@ -9,9 +9,9 @@ public sealed class KnownBadConfig
     public int Version { get; set; } = 1;
     [JsonObjectCreationHandling(JsonObjectCreationHandling.Replace)] public List<KnownBadProgram> Programs { get; set; } =
     [
-        new() { Field = "DisplayName", Match = @"(pc|system)\s*(optimizer|booster|speed ?up)", Reason = "가짜 최적화 프로그램 유형" },
-        new() { Field = "DisplayName", Match = @"driver\s*(updater|booster)", Reason = "드라이버 업데이트 유도형 프로그램" },
-        new() { Field = "DisplayName", Match = @"registry\s*(cleaner|fixer)", Reason = "레지스트리 정리 유도형 프로그램" },
+        new() { Field = "DisplayName", Match = @"(pc|system)\s*(optimizer|booster|speed ?up)", Reason = "가짜 최적화 프로그램 유형", ReasonEn = "Fake optimizer type" },
+        new() { Field = "DisplayName", Match = @"driver\s*(updater|booster)", Reason = "드라이버 업데이트 유도형 프로그램", ReasonEn = "Program that pushes driver updates" },
+        new() { Field = "DisplayName", Match = @"registry\s*(cleaner|fixer)", Reason = "레지스트리 정리 유도형 프로그램", ReasonEn = "Program that pushes registry cleaning" },
     ];
     [JsonObjectCreationHandling(JsonObjectCreationHandling.Replace)] public List<KnownBadExtension> Extensions { get; set; } = [];
 
@@ -32,6 +32,8 @@ public sealed class KnownBadProgram
     public string Field { get; set; } = "DisplayName";
     public string Match { get; set; } = "";
     public string Reason { get; set; } = "";
+    public string ReasonEn { get; set; } = "";
+    [JsonIgnore] public string DisplayReason => Lang.Pick(Reason, ReasonEn);
 
     [JsonIgnore] public Regex? Regex { get; set; }
 }
@@ -40,6 +42,8 @@ public sealed class KnownBadExtension
 {
     public string Id { get; set; } = "";
     public string Reason { get; set; } = "";
+    public string ReasonEn { get; set; } = "";
+    [JsonIgnore] public string DisplayReason => Lang.Pick(Reason, ReasonEn);
 }
 
 public sealed class ProtectConfig
