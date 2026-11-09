@@ -31,6 +31,7 @@ This file is shared by Claude Code (via `CLAUDE.md`) and Codex. Keep rules here,
 - Report pages: render `HtmlReportRenderer` output and look at it once (headless Chrome screenshot works on macOS).
 
 ## Workflow
+- README comes in two languages: `README.md` (Korean, the default) and `README.en.md` (English). Change both in the same commit.
 - The user is Korean; answer in Korean. Before each stage, show the implementation plan and wait for confirmation unless the user said to run all stages.
 - At the end of a stage, report whether the stage's completion criteria (in `docs/spec.md`) are met, with evidence.
 - Do not commit, push, or open PRs without the user's explicit instruction. Commit messages: Conventional Commits prefix + Korean description, author `Bigide19 <bigide19@gmail.com>`, no AI attribution lines.

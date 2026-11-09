@@ -7,6 +7,8 @@
 
   <p>느려진 Windows PC를 포맷하기 전에, 정리로 충분한지부터 진단하는 도구</p>
 
+  <p><b>한국어</b> | <a href="README.en.md">English</a></p>
+
   <p>
     <a href="https://github.com/Bigide19/pc-check/releases/latest/download/pccheck-win-x64.zip"><img src="https://img.shields.io/badge/다운로드-pccheck--win--x64.zip-0E6E7A?style=for-the-badge&logo=windows&logoColor=white" alt="다운로드 (zip)" /></a>
     <a href="https://github.com/Bigide19/pc-check/releases/latest/download/PcCheck.exe"><img src="https://img.shields.io/badge/exe만-PcCheck.exe-123238?style=for-the-badge&logo=windows&logoColor=white" alt="다운로드 (exe)" /></a>
@@ -160,8 +162,8 @@ src/
   PcCheck.Collectors/   진단 항목별 Collector
   PcCheck.Analysis/     점수 계산, 판정 규칙
   PcCheck.Remediation/  조치, 복원 지점, 조치 기록, 되돌리기
-  PcCheck.Report/       findings.json, report.html
-config/                 rules.json, known-bad.json, protect.json
+  PcCheck.Report/       findings.json, report.html, Slack
+config/                 rules.json, known-bad.json, protect.json, kr-modules.json
 tests/                  단위 테스트
 tools/vm/               Parallels VM 테스트 도구
 docs/                   설계 명세, 작업 인계 문서
